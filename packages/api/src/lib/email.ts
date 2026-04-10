@@ -8,8 +8,8 @@ import type { Env } from '../env.js'
 export async function sendMagicLinkEmail(env: Env, to: string, magicLinkUrl: string): Promise<void> {
   const resend = new Resend(env.RESEND_API_KEY)
 
-  await resend.emails.send({
-    from: '7 Flows Synergy <noreply@7flows.com>',
+  const { data, error } = await resend.emails.send({
+    from: '7 Flows Synergy <noreply@synergy.7flows.com>',
     to,
     subject: 'Your magic link to sign in',
     html: `
@@ -37,4 +37,11 @@ export async function sendMagicLinkEmail(env: Env, to: string, magicLinkUrl: str
       </div>
     `,
   })
+
+  if (error) {
+    console.error('Resend email error:', JSON.stringify(error))
+    throw new Error(`Failed to send email: ${error.message}`)
+  }
+
+  console.log('Email sent successfully:', data?.id)
 }
