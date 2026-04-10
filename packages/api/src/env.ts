@@ -19,11 +19,11 @@ export interface Env {
   AI: Ai
 
   // Secrets
-  ANTHROPIC_API_KEY: string
   JWT_SECRET: string
   MAGIC_LINK_SECRET: string
+  AI_GATEWAY_TOKEN: string
 
-  // AI Gateway
+  // AI Gateway (BYOK — Anthropic key stored on gateway dashboard)
   CF_ACCOUNT_ID: string
   AI_GATEWAY_ID: string
 

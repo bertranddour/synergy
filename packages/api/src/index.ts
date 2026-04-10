@@ -75,15 +75,10 @@ export default {
     const { createDb } = await import('./lib/db.js')
     const { users } = await import('./db/schema.js')
     const { generateProactiveObservations } = await import('./services/proactive.js')
-    const Anthropic = (await import('@anthropic-ai/sdk')).default
+    const { createAnthropicClient } = await import('./lib/anthropic.js')
 
     const db = createDb(env.DB)
-    const anthropic = new Anthropic({
-      apiKey: env.ANTHROPIC_API_KEY,
-      baseURL: env.AI_GATEWAY_ID
-        ? `https://gateway.ai.cloudflare.com/v1/${env.CF_ACCOUNT_ID}/${env.AI_GATEWAY_ID}/anthropic`
-        : undefined,
-    })
+    const anthropic = createAnthropicClient(env)
 
     // Process active users (limit to 50 per cron run)
     const activeUsers = await db.select({ id: users.id }).from(users).limit(50)

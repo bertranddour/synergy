@@ -1,10 +1,10 @@
-import Anthropic from '@anthropic-ai/sdk'
 import { assessmentListQuerySchema, startAssessmentSchema, submitAnswerSchema } from '@synergy/shared'
 import { and, desc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
 import { assessments, frameworks } from '../db/schema.js'
 import type { Env } from '../env.js'
+import { createAnthropicClient } from '../lib/anthropic.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
 
@@ -163,12 +163,7 @@ assessmentRoutes.post('/:id/complete', async (c) => {
   // Generate Alicia debrief via Claude
   let aliciaDebrief = ''
   try {
-    const anthropic = new Anthropic({
-      apiKey: c.env.ANTHROPIC_API_KEY,
-      baseURL: c.env.AI_GATEWAY_ID
-        ? `https://gateway.ai.cloudflare.com/v1/${c.env.CF_ACCOUNT_ID}/${c.env.AI_GATEWAY_ID}/anthropic`
-        : undefined,
-    })
+    const anthropic = createAnthropicClient(c.env)
 
     const debriefResponse = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',

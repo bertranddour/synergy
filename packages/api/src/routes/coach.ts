@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+import type Anthropic from '@anthropic-ai/sdk'
 import { coachMessageSchema } from '@synergy/shared'
 import { and, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
@@ -9,6 +9,7 @@ import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
 import { getSurfacePrompt } from '../agents/alicia/prompts/surfaces.js'
 import { proactiveObservations } from '../db/schema.js'
 import type { Env } from '../env.js'
+import { createAnthropicClient } from '../lib/anthropic.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
 
@@ -66,13 +67,8 @@ coachRoutes.post('/stream', async (c) => {
     { role: 'user' as const, content: message },
   ]
 
-  // Create Anthropic client through AI Gateway
-  const anthropic = new Anthropic({
-    apiKey: c.env.ANTHROPIC_API_KEY,
-    baseURL: c.env.AI_GATEWAY_ID
-      ? `https://gateway.ai.cloudflare.com/v1/${c.env.CF_ACCOUNT_ID}/${c.env.AI_GATEWAY_ID}/anthropic`
-      : undefined,
-  })
+  // Create Anthropic client through AI Gateway (BYOK)
+  const anthropic = createAnthropicClient(c.env)
 
   // SSE stream
   const encoder = new TextEncoder()

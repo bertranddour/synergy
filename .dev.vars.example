@@ -1,6 +1,3 @@
-# Anthropic API key — get from https://console.anthropic.com/settings/keys
-ANTHROPIC_API_KEY=sk-ant-api03-...
-
 # JWT signing secret — generate with: openssl rand -hex 32
 JWT_SECRET=your-jwt-secret-min-32-characters-long
 
@@ -12,6 +9,11 @@ CF_ACCOUNT_ID=your-cloudflare-account-id
 
 # AI Gateway ID — create at Cloudflare dashboard → AI → AI Gateway
 AI_GATEWAY_ID=your-ai-gateway-id
+
+# AI Gateway authentication token — generate in AI Gateway settings
+# NOTE: The Anthropic API key is stored on the AI Gateway dashboard under Provider Keys.
+# This token authenticates the Worker to the gateway (BYOK pattern).
+AI_GATEWAY_TOKEN=your-ai-gateway-token
 
 # Environment
 ENVIRONMENT=development
