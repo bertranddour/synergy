@@ -22,6 +22,7 @@ import { Route as AuthCoachIndexRouteImport } from './routes/_auth/coach/index'
 import { Route as AuthAssessmentsIndexRouteImport } from './routes/_auth/assessments/index'
 import { Route as AuthTeamsIdRouteImport } from './routes/_auth/teams/$id'
 import { Route as AuthRunnerSessionIdRouteImport } from './routes/_auth/runner/$sessionId'
+import { Route as AuthProgramsActiveRouteImport } from './routes/_auth/programs/active'
 import { Route as AuthModesSlugRouteImport } from './routes/_auth/modes/$slug'
 import { Route as AuthAssessmentsIdRouteImport } from './routes/_auth/assessments/$id'
 
@@ -89,6 +90,11 @@ const AuthRunnerSessionIdRoute = AuthRunnerSessionIdRouteImport.update({
   path: '/runner/$sessionId',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthProgramsActiveRoute = AuthProgramsActiveRouteImport.update({
+  id: '/programs/active',
+  path: '/programs/active',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthModesSlugRoute = AuthModesSlugRouteImport.update({
   id: '/modes/$slug',
   path: '/modes/$slug',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/verify': typeof VerifyRoute
   '/assessments/$id': typeof AuthAssessmentsIdRoute
   '/modes/$slug': typeof AuthModesSlugRoute
+  '/programs/active': typeof AuthProgramsActiveRoute
   '/runner/$sessionId': typeof AuthRunnerSessionIdRoute
   '/teams/$id': typeof AuthTeamsIdRoute
   '/assessments/': typeof AuthAssessmentsIndexRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthIndexRoute
   '/assessments/$id': typeof AuthAssessmentsIdRoute
   '/modes/$slug': typeof AuthModesSlugRoute
+  '/programs/active': typeof AuthProgramsActiveRoute
   '/runner/$sessionId': typeof AuthRunnerSessionIdRoute
   '/teams/$id': typeof AuthTeamsIdRoute
   '/assessments': typeof AuthAssessmentsIndexRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/_auth/': typeof AuthIndexRoute
   '/_auth/assessments/$id': typeof AuthAssessmentsIdRoute
   '/_auth/modes/$slug': typeof AuthModesSlugRoute
+  '/_auth/programs/active': typeof AuthProgramsActiveRoute
   '/_auth/runner/$sessionId': typeof AuthRunnerSessionIdRoute
   '/_auth/teams/$id': typeof AuthTeamsIdRoute
   '/_auth/assessments/': typeof AuthAssessmentsIndexRoute
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/assessments/$id'
     | '/modes/$slug'
+    | '/programs/active'
     | '/runner/$sessionId'
     | '/teams/$id'
     | '/assessments/'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assessments/$id'
     | '/modes/$slug'
+    | '/programs/active'
     | '/runner/$sessionId'
     | '/teams/$id'
     | '/assessments'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/_auth/'
     | '/_auth/assessments/$id'
     | '/_auth/modes/$slug'
+    | '/_auth/programs/active'
     | '/_auth/runner/$sessionId'
     | '/_auth/teams/$id'
     | '/_auth/assessments/'
@@ -301,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRunnerSessionIdRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/programs/active': {
+      id: '/_auth/programs/active'
+      path: '/programs/active'
+      fullPath: '/programs/active'
+      preLoaderRoute: typeof AuthProgramsActiveRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/modes/$slug': {
       id: '/_auth/modes/$slug'
       path: '/modes/$slug'
@@ -322,6 +341,7 @@ interface AuthRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
   AuthAssessmentsIdRoute: typeof AuthAssessmentsIdRoute
   AuthModesSlugRoute: typeof AuthModesSlugRoute
+  AuthProgramsActiveRoute: typeof AuthProgramsActiveRoute
   AuthRunnerSessionIdRoute: typeof AuthRunnerSessionIdRoute
   AuthTeamsIdRoute: typeof AuthTeamsIdRoute
   AuthAssessmentsIndexRoute: typeof AuthAssessmentsIndexRoute
@@ -337,6 +357,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
   AuthAssessmentsIdRoute: AuthAssessmentsIdRoute,
   AuthModesSlugRoute: AuthModesSlugRoute,
+  AuthProgramsActiveRoute: AuthProgramsActiveRoute,
   AuthRunnerSessionIdRoute: AuthRunnerSessionIdRoute,
   AuthTeamsIdRoute: AuthTeamsIdRoute,
   AuthAssessmentsIndexRoute: AuthAssessmentsIndexRoute,

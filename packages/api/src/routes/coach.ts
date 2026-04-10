@@ -2,7 +2,6 @@ import type Anthropic from '@anthropic-ai/sdk'
 import { coachMessageSchema } from '@synergy/shared'
 import { and, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
-import type { AliciaAgent } from '../agents/alicia/agent.js'
 import { runAliciaLoop } from '../agents/alicia/loop.js'
 import { CROSS_FRAMEWORK_PROMPT } from '../agents/alicia/prompts/cross-fw.js'
 import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
@@ -29,39 +28,27 @@ coachRoutes.post('/stream', async (c) => {
     const { message, conversationId, surface } = parsed.data
     const db = createDb(c.env.DB)
 
-    // Get or create Alicia DO instance for this user
+    // Get Alicia DO stub via RPC — fully typed, no fetch() needed
     const aliciaId = c.env.ALICIA.idFromName(userId)
-    const aliciaDO = c.env.ALICIA.get(aliciaId) as unknown as AliciaAgent
+    const aliciaDO = c.env.ALICIA.get(aliciaId)
 
-    // Initialize DO if needed
-    await aliciaDO.fetch(
-      new Request('http://internal/init', {
-        method: 'POST',
-        body: JSON.stringify({ userId }),
-      }),
-    )
+    // Initialize DO for this user
+    await aliciaDO.init(userId)
 
     // Load existing conversation if provided
     if (conversationId) {
-      await aliciaDO.fetch(
-        new Request(`http://internal/load?id=${conversationId}`, {
-          method: 'POST',
-        }),
-      )
+      aliciaDO.loadConversation(conversationId)
     }
 
     // Build system prompt from layers
     const systemPrompt = `${PERSONALITY_PROMPT}\n\n${CROSS_FRAMEWORK_PROMPT}\n\n${getSurfacePrompt(surface)}`
 
-    // Get conversation history from DO
-    const historyRes = await aliciaDO.fetch(new Request('http://internal/history'))
-    const history = (await historyRes.json()) as {
-      messages: Array<{ role: 'user' | 'assistant'; content: string }>
-    }
+    // Get conversation history via RPC
+    const historyMessages = await aliciaDO.getConversationHistory()
 
     // Build Anthropic messages from history + new message
     const anthropicMessages: Anthropic.Messages.MessageParam[] = [
-      ...history.messages.map((m) => ({
+      ...historyMessages.map((m) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),
@@ -92,20 +79,10 @@ coachRoutes.post('/stream', async (c) => {
             },
           })
 
-          // Persist conversation to Durable Object
-          await aliciaDO.fetch(
-            new Request('http://internal/add-user-message', {
-              method: 'POST',
-              body: JSON.stringify({ content: message }),
-            }),
-          )
+          // Persist conversation to Durable Object via RPC
+          await aliciaDO.addUserMessage(message)
           if (result.fullResponse) {
-            await aliciaDO.fetch(
-              new Request('http://internal/add-assistant-message', {
-                method: 'POST',
-                body: JSON.stringify({ content: result.fullResponse }),
-              }),
-            )
+            await aliciaDO.addAssistantMessage(result.fullResponse)
           }
 
           // Send done event

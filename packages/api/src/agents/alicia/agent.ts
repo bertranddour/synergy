@@ -142,42 +142,9 @@ export class AliciaAgent extends DurableObject<Env> {
     this.persist()
   }
 
-  /** Handle HTTP requests to this Durable Object */
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url)
-
-    if (url.pathname === '/init' && request.method === 'POST') {
-      const body = (await request.json()) as { userId: string }
-      await this.init(body.userId)
-      return Response.json({ ok: true })
-    }
-
-    if (url.pathname === '/history') {
-      return Response.json({
-        messages: this.getConversationHistory(),
-        count: this.getMessageCount(),
-      })
-    }
-
-    if (url.pathname === '/reset' && request.method === 'POST') {
-      await this.reset()
-      return Response.json({ ok: true })
-    }
-
-    if (url.pathname === '/add-user-message' && request.method === 'POST') {
-      const body = (await request.json()) as { content: string }
-      await this.addUserMessage(body.content)
-      return Response.json({ ok: true })
-    }
-
-    if (url.pathname === '/add-assistant-message' && request.method === 'POST') {
-      const body = (await request.json()) as { content: string }
-      await this.addAssistantMessage(body.content)
-      return Response.json({ ok: true })
-    }
-
-    return Response.json({ error: 'Not found' }, { status: 404 })
-  }
+  // All public methods are exposed as RPC endpoints automatically.
+  // Per CF docs: "Projects with a compatibility date of 2024-04-03 or later should use RPC methods."
+  // No fetch() handler needed — callers use stub.methodName() directly with full type safety.
 
   /** Persist state to SQLite (no KV) */
   private persist(): void {

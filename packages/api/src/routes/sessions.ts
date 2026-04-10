@@ -49,10 +49,13 @@ sessionRoutes.post('/', async (c) => {
     })
 
     const session = await db.query.sessions.findFirst({ where: eq(sessions.id, id) })
+    if (!session) {
+      return c.json({ error: 'Failed to create session' }, 500)
+    }
 
     return c.json(
       {
-        session: formatSession(session!),
+        session: formatSession(session),
         mode: {
           id: mode.id,
           slug: mode.slug,
@@ -110,8 +113,9 @@ sessionRoutes.patch('/:id', async (c) => {
       .where(eq(sessions.id, sessionId))
 
     const updated = await db.query.sessions.findFirst({ where: eq(sessions.id, sessionId) })
+    if (!updated) return c.json({ error: 'Session not found after update' }, 500)
 
-    return c.json({ session: formatSession(updated!) })
+    return c.json({ session: formatSession(updated) })
   } catch (err) {
     console.error('Route error:', err)
     return c.json({ error: 'Internal server error' }, 500)
@@ -163,6 +167,7 @@ sessionRoutes.post('/:id/complete', async (c) => {
       }))
 
     const completed = await db.query.sessions.findFirst({ where: eq(sessions.id, sessionId) })
+    if (!completed) return c.json({ error: 'Session not found after completion' }, 500)
 
     // Record metrics
     const metricsUpdated = await recordSessionMetrics(db, {
@@ -180,7 +185,7 @@ sessionRoutes.post('/:id/complete', async (c) => {
     await c.env.KV.delete(`health:${userId}`)
 
     return c.json({
-      session: formatSession(completed!),
+      session: formatSession(completed),
       metricsUpdated,
       composabilitySuggestions,
     })

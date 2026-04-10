@@ -12,8 +12,8 @@ export interface Env {
   // Queue
   QUEUE: Queue
 
-  // Durable Objects
-  ALICIA: DurableObjectNamespace
+  // Durable Objects (typed for RPC — methods callable directly on stub)
+  ALICIA: DurableObjectNamespace<import('./agents/alicia/agent.js').AliciaAgent>
 
   // Static Assets
   ASSETS: Fetcher

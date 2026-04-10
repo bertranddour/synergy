@@ -273,6 +273,41 @@ export const userPrograms = sqliteTable('user_programs', {
   completedAt: integer('completed_at', { mode: 'timestamp' }),
 })
 
+// ─── Relations ───────────────────────────────────────────────────────────────
+
+import { relations } from 'drizzle-orm'
+
+export const usersRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+  teamMemberships: many(teamMembers),
+  assessments: many(assessments),
+  frameworks: many(userFrameworks),
+}))
+
+export const frameworksRelations = relations(frameworks, ({ many }) => ({
+  modes: many(modes),
+  userFrameworks: many(userFrameworks),
+}))
+
+export const modesRelations = relations(modes, ({ one }) => ({
+  framework: one(frameworks, { fields: [modes.frameworkId], references: [frameworks.id] }),
+}))
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+  mode: one(modes, { fields: [sessions.modeId], references: [modes.id] }),
+}))
+
+export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
+  team: one(teams, { fields: [teamMembers.teamId], references: [teams.id] }),
+  user: one(users, { fields: [teamMembers.userId], references: [users.id] }),
+}))
+
+export const teamsRelations = relations(teams, ({ one, many }) => ({
+  owner: one(users, { fields: [teams.ownerId], references: [users.id] }),
+  members: many(teamMembers),
+}))
+
 // ─── JSON Type Helpers ───────────────────────────────────────────────────────
 
 interface FieldDefinitionJson {

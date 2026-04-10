@@ -145,36 +145,10 @@ authRoutes.get('/me', async (c) => {
 
     const token = authorization.replace('Bearer ', '')
 
-    // Inline JWT verification (this route is outside the auth middleware)
-    const [headerB64, payloadB64, signatureB64] = token.split('.')
-    if (!headerB64 || !payloadB64 || !signatureB64) {
-      return c.json({ error: 'Invalid token' }, 401)
-    }
-
-    const encoder = new TextEncoder()
-    const key = await crypto.subtle.importKey(
-      'raw',
-      encoder.encode(c.env.JWT_SECRET),
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['verify'],
-    )
-    const data = encoder.encode(`${headerB64}.${payloadB64}`)
-    const signature = Uint8Array.from(atob(signatureB64.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))
-    const valid = await crypto.subtle.verify('HMAC', key, signature, data)
-    if (!valid) {
-      return c.json({ error: 'Invalid token' }, 401)
-    }
-
-    const jwtPayload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/'))) as {
-      sub: string
-      email: string
-      iat: number
-      exp: number
-    }
-
-    if (jwtPayload.exp < Date.now() / 1000) {
-      return c.json({ error: 'Token expired' }, 401)
+    // Reuse exported verifyJWT — no duplicated crypto logic
+    const jwtPayload = await verifyJWT(token, c.env.JWT_SECRET)
+    if (!jwtPayload) {
+      return c.json({ error: 'Invalid or expired token' }, 401)
     }
 
     // Check session

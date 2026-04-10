@@ -75,19 +75,25 @@ export default {
   // Cron trigger: generate proactive observations hourly
   async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext) {
     const { createDb } = await import('./lib/db.js')
-    const { users } = await import('./db/schema.js')
     const { generateProactiveObservations } = await import('./services/proactive.js')
     const { createAnthropicClient } = await import('./lib/anthropic.js')
 
     const db = createDb(env.DB)
     const anthropic = createAnthropicClient(env)
 
-    // Process active users (limit to 50 per cron run)
-    const activeUsers = await db.select({ id: users.id }).from(users).limit(50)
+    // Process only recently active users (sessions in last 30 days)
+    const { sessions } = await import('./db/schema.js')
+    const { gte } = await import('drizzle-orm')
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 
-    for (const user of activeUsers) {
-      await generateProactiveObservations(db, anthropic, user.id)
-    }
+    const activeUserIds = await db
+      .selectDistinct({ userId: sessions.userId })
+      .from(sessions)
+      .where(gte(sessions.startedAt, thirtyDaysAgo))
+      .limit(50)
+
+    // Use Promise.allSettled for concurrent processing with resilience
+    await Promise.allSettled(activeUserIds.map((u) => generateProactiveObservations(db, anthropic, u.userId)))
   },
 
   // Queue consumer: async background processing

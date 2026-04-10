@@ -242,8 +242,23 @@ userRoutes.get('/me/export', async (c) => {
       .from(proactiveObservations)
       .where(eq(proactiveObservations.userId, userId))
 
+    // Explicitly shape user data for export (no internal fields leak)
+    const safeUser = user
+      ? {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          avatarUrl: user.avatarUrl,
+          stage: user.stage,
+          teamSize: user.teamSize,
+          onboardingCompleted: user.onboardingCompleted,
+          createdAt: user.createdAt.toISOString(),
+          updatedAt: user.updatedAt.toISOString(),
+        }
+      : null
+
     return c.json({
-      user,
+      user: safeUser,
       sessions: userSessions,
       metrics: userMetrics,
       assessments: userAssessments,

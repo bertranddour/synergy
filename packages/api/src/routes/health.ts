@@ -1,6 +1,6 @@
 import { and, desc, eq, gte } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { sessions } from '../db/schema.js'
+import { modes, sessions } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
 import { calculateHealth, getMetricSparkline } from '../services/health.js'
@@ -59,8 +59,9 @@ healthRoutes.get('/:category', async (c) => {
     // Get recent sessions for this category
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
     const recentCategorySessions = await db
-      .select({ id: sessions.id, completedAt: sessions.completedAt })
+      .select({ id: sessions.id, completedAt: sessions.completedAt, modeSlug: modes.slug })
       .from(sessions)
+      .innerJoin(modes, eq(sessions.modeId, modes.id))
       .where(
         and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.completedAt, thirtyDaysAgo)),
       )
@@ -74,7 +75,7 @@ healthRoutes.get('/:category', async (c) => {
       metrics: metricsWithSparklines,
       recentSessions: recentCategorySessions.map((s) => ({
         id: s.id,
-        modeSlug: '',
+        modeSlug: s.modeSlug,
         completedAt: s.completedAt?.toISOString() ?? '',
       })),
       recommendations: categoryData.recommendedModes,

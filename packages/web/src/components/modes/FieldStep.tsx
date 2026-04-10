@@ -87,14 +87,47 @@ export function FieldStep({
         ) : type === 'number' ? (
           <input
             type="number"
+            min="0"
+            step="1"
+            inputMode="numeric"
+            aria-label={name}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="input-embossed w-full px-6 py-4 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
             placeholder={`Enter ${name.toLowerCase()}...`}
           />
+        ) : type === 'toggle' ? (
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => setInputValue(inputValue === 'true' ? 'false' : 'true')}
+              className={`neo-btn h-12 w-20 rounded-full transition-all ${
+                inputValue === 'true' ? 'shadow-neo-inset bg-[var(--color-core)]' : 'shadow-neo-button'
+              }`}
+              aria-label={`Toggle ${name}`}
+              aria-pressed={inputValue === 'true'}
+            >
+              <span
+                className={`block h-8 w-8 rounded-full bg-[var(--surface)] shadow-neo-button transition-transform ${
+                  inputValue === 'true' ? 'translate-x-8' : 'translate-x-1'
+                }`}
+              />
+            </button>
+            <span className="text-[var(--text-secondary)]">{inputValue === 'true' ? 'Yes' : 'No'}</span>
+          </div>
+        ) : type === 'structured' ? (
+          <textarea
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            rows={8}
+            aria-label={name}
+            className="shadow-neo-inset w-full resize-none rounded-[1.2rem] bg-[var(--surface)] p-6 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none"
+            placeholder={`Enter structured data for ${name.toLowerCase()}...\n\nExample:\n- Item 1: value\n- Item 2: value`}
+          />
         ) : (
           <input
             type="text"
+            aria-label={name}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="input-embossed w-full px-6 py-4 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
