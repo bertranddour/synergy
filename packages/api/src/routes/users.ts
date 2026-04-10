@@ -236,7 +236,10 @@ userRoutes.get('/me/export', async (c) => {
     const userAssessments = await db.select().from(assessments).where(eq(assessments.userId, userId))
     const userProgress = await db.select().from(progress).where(eq(progress.userId, userId))
     const userConversations = await db.select().from(coachConversations).where(eq(coachConversations.userId, userId))
-    const userObservations = await db.select().from(proactiveObservations).where(eq(proactiveObservations.userId, userId))
+    const userObservations = await db
+      .select()
+      .from(proactiveObservations)
+      .where(eq(proactiveObservations.userId, userId))
 
     return c.json({
       user,

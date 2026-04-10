@@ -16,8 +16,8 @@ interface AliciaState {
 
 /**
  * AliciaAgent Durable Object.
- * Manages per-user coaching state with SQLite persistence.
- * Handles conversation history, context snapshots, and scheduled proactive checks.
+ * Manages per-user coaching state with SQLite-only persistence.
+ * All state stored via this.ctx.storage.sql — no KV mixed storage.
  */
 export class AliciaAgent extends DurableObject<Env> {
   private state: AliciaState = {
@@ -30,22 +30,32 @@ export class AliciaAgent extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env)
 
-    // Initialize SQLite tables
-    this.ctx.storage.sql.exec(`
-      CREATE TABLE IF NOT EXISTS conversations (
-        id TEXT PRIMARY KEY,
-        user_id TEXT NOT NULL,
-        messages TEXT NOT NULL DEFAULT '[]',
-        context TEXT NOT NULL DEFAULT '{}',
-        created_at INTEGER NOT NULL,
-        updated_at INTEGER NOT NULL
-      )
-    `)
-
-    // Load state from storage on construction
+    // All initialization inside blockConcurrencyWhile per CF best practices
     this.ctx.blockConcurrencyWhile(async () => {
-      const stored = await this.ctx.storage.get<AliciaState>('state')
-      if (stored) {
+      // Create tables
+      this.ctx.storage.sql.exec(`
+        CREATE TABLE IF NOT EXISTS conversations (
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL,
+          messages TEXT NOT NULL DEFAULT '[]',
+          context TEXT NOT NULL DEFAULT '{}',
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        )
+      `)
+
+      this.ctx.storage.sql.exec(`
+        CREATE TABLE IF NOT EXISTS agent_state (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL
+        )
+      `)
+
+      // Load state from SQLite
+      const cursor = this.ctx.storage.sql.exec("SELECT value FROM agent_state WHERE key = 'main'")
+      const rows = cursor.toArray()
+      if (rows.length > 0) {
+        const stored = JSON.parse(rows[0]!.value as string) as AliciaState
         this.state = stored
       }
     })
@@ -54,7 +64,7 @@ export class AliciaAgent extends DurableObject<Env> {
   /** Initialize for a specific user */
   async init(userId: string): Promise<void> {
     this.state.userId = userId
-    await this.persist()
+    this.persist()
   }
 
   /** Get conversation history for building Anthropic messages */
@@ -67,28 +77,20 @@ export class AliciaAgent extends DurableObject<Env> {
 
   /** Add a user message to the conversation */
   async addUserMessage(content: string): Promise<void> {
-    this.state.messages.push({
-      role: 'user',
-      content,
-      timestamp: Date.now(),
-    })
-    await this.persist()
+    this.state.messages.push({ role: 'user', content, timestamp: Date.now() })
+    this.persist()
   }
 
   /** Add an assistant (Alicia) message to the conversation */
   async addAssistantMessage(content: string): Promise<void> {
-    this.state.messages.push({
-      role: 'assistant',
-      content,
-      timestamp: Date.now(),
-    })
-    await this.persist()
+    this.state.messages.push({ role: 'assistant', content, timestamp: Date.now() })
+    this.persist()
   }
 
   /** Update context snapshot */
   async updateContext(context: Record<string, unknown>): Promise<void> {
     this.state.contextSnapshot = { ...this.state.contextSnapshot, ...context }
-    await this.persist()
+    this.persist()
   }
 
   /** Get conversation count for context management */
@@ -96,20 +98,19 @@ export class AliciaAgent extends DurableObject<Env> {
     return this.state.messages.length
   }
 
-  /** Trim old messages if conversation is getting long (basic context management) */
+  /** Trim old messages if conversation is getting long */
   async trimIfNeeded(maxMessages = 40): Promise<void> {
     if (this.state.messages.length > maxMessages) {
-      // Keep the last N messages
       this.state.messages = this.state.messages.slice(-maxMessages)
-      await this.persist()
+      this.persist()
     }
   }
 
   /** Save a conversation to SQLite for long-term storage */
-  async saveConversation(conversationId: string, userId: string): Promise<void> {
+  saveConversation(conversationId: string, userId: string): void {
     const now = Date.now()
     this.ctx.storage.sql.exec(
-      `INSERT OR REPLACE INTO conversations (id, user_id, messages, context, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+      'INSERT OR REPLACE INTO conversations (id, user_id, messages, context, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
       conversationId,
       userId,
       JSON.stringify(this.state.messages),
@@ -120,8 +121,8 @@ export class AliciaAgent extends DurableObject<Env> {
   }
 
   /** Load a conversation from SQLite */
-  async loadConversation(conversationId: string): Promise<boolean> {
-    const cursor = this.ctx.storage.sql.exec(`SELECT messages, context FROM conversations WHERE id = ?`, conversationId)
+  loadConversation(conversationId: string): boolean {
+    const cursor = this.ctx.storage.sql.exec('SELECT messages, context FROM conversations WHERE id = ?', conversationId)
     const rows = cursor.toArray()
     if (rows.length === 0) return false
 
@@ -129,7 +130,7 @@ export class AliciaAgent extends DurableObject<Env> {
     this.state.messages = JSON.parse(row.messages as string) as ConversationMessage[]
     this.state.contextSnapshot = JSON.parse(row.context as string) as Record<string, unknown>
     this.state.conversationId = conversationId
-    await this.persist()
+    this.persist()
     return true
   }
 
@@ -138,7 +139,7 @@ export class AliciaAgent extends DurableObject<Env> {
     this.state.messages = []
     this.state.contextSnapshot = {}
     this.state.conversationId = null
-    await this.persist()
+    this.persist()
   }
 
   /** Handle HTTP requests to this Durable Object */
@@ -166,7 +167,11 @@ export class AliciaAgent extends DurableObject<Env> {
     return Response.json({ error: 'Not found' }, { status: 404 })
   }
 
-  private async persist(): Promise<void> {
-    await this.ctx.storage.put('state', this.state)
+  /** Persist state to SQLite (no KV) */
+  private persist(): void {
+    this.ctx.storage.sql.exec(
+      "INSERT OR REPLACE INTO agent_state (key, value) VALUES ('main', ?)",
+      JSON.stringify(this.state),
+    )
   }
 }

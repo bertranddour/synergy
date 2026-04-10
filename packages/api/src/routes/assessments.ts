@@ -56,7 +56,10 @@ assessmentRoutes.post('/', async (c) => {
     // Generate 7 scenarios for the framework
     const scenarios = generateScenarios(parsed.data.frameworkSlug)
 
-    return c.json({ assessment: { id, frameworkSlug: parsed.data.frameworkSlug, status: 'in_progress' }, scenarios }, 201)
+    return c.json(
+      { assessment: { id, frameworkSlug: parsed.data.frameworkSlug, status: 'in_progress' }, scenarios },
+      201,
+    )
   } catch (err) {
     console.error('Route error:', err)
     return c.json({ error: 'Internal server error' }, 500)

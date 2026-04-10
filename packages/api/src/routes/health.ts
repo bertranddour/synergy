@@ -61,7 +61,9 @@ healthRoutes.get('/:category', async (c) => {
     const recentCategorySessions = await db
       .select({ id: sessions.id, completedAt: sessions.completedAt })
       .from(sessions)
-      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.completedAt, thirtyDaysAgo)))
+      .where(
+        and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.completedAt, thirtyDaysAgo)),
+      )
       .orderBy(desc(sessions.completedAt))
       .limit(5)
 
