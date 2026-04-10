@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthModesIndexRouteImport } from './routes/_auth/modes/index'
+import { Route as AuthCoachIndexRouteImport } from './routes/_auth/coach/index'
 import { Route as AuthRunnerSessionIdRouteImport } from './routes/_auth/runner/$sessionId'
 import { Route as AuthModesSlugRouteImport } from './routes/_auth/modes/$slug'
 
@@ -41,6 +42,11 @@ const AuthModesIndexRoute = AuthModesIndexRouteImport.update({
   path: '/modes/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthCoachIndexRoute = AuthCoachIndexRouteImport.update({
+  id: '/coach/',
+  path: '/coach/',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthRunnerSessionIdRoute = AuthRunnerSessionIdRouteImport.update({
   id: '/runner/$sessionId',
   path: '/runner/$sessionId',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/verify': typeof VerifyRoute
   '/modes/$slug': typeof AuthModesSlugRoute
   '/runner/$sessionId': typeof AuthRunnerSessionIdRoute
+  '/coach/': typeof AuthCoachIndexRoute
   '/modes/': typeof AuthModesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthIndexRoute
   '/modes/$slug': typeof AuthModesSlugRoute
   '/runner/$sessionId': typeof AuthRunnerSessionIdRoute
+  '/coach': typeof AuthCoachIndexRoute
   '/modes': typeof AuthModesIndexRoute
 }
 export interface FileRoutesById {
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/_auth/': typeof AuthIndexRoute
   '/_auth/modes/$slug': typeof AuthModesSlugRoute
   '/_auth/runner/$sessionId': typeof AuthRunnerSessionIdRoute
+  '/_auth/coach/': typeof AuthCoachIndexRoute
   '/_auth/modes/': typeof AuthModesIndexRoute
 }
 export interface FileRouteTypes {
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/modes/$slug'
     | '/runner/$sessionId'
+    | '/coach/'
     | '/modes/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
     | '/'
     | '/modes/$slug'
     | '/runner/$sessionId'
+    | '/coach'
     | '/modes'
   id:
     | '__root__'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
     | '/_auth/'
     | '/_auth/modes/$slug'
     | '/_auth/runner/$sessionId'
+    | '/_auth/coach/'
     | '/_auth/modes/'
   fileRoutesById: FileRoutesById
 }
@@ -149,6 +161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthModesIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/coach/': {
+      id: '/_auth/coach/'
+      path: '/coach'
+      fullPath: '/coach/'
+      preLoaderRoute: typeof AuthCoachIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/runner/$sessionId': {
       id: '/_auth/runner/$sessionId'
       path: '/runner/$sessionId'
@@ -170,6 +189,7 @@ interface AuthRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
   AuthModesSlugRoute: typeof AuthModesSlugRoute
   AuthRunnerSessionIdRoute: typeof AuthRunnerSessionIdRoute
+  AuthCoachIndexRoute: typeof AuthCoachIndexRoute
   AuthModesIndexRoute: typeof AuthModesIndexRoute
 }
 
@@ -177,6 +197,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
   AuthModesSlugRoute: AuthModesSlugRoute,
   AuthRunnerSessionIdRoute: AuthRunnerSessionIdRoute,
+  AuthCoachIndexRoute: AuthCoachIndexRoute,
   AuthModesIndexRoute: AuthModesIndexRoute,
 }
 

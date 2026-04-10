@@ -65,3 +65,6 @@ app.all('/api/*', (c) => c.json({ error: 'Not found' }, 404))
 
 export default app
 export type AppType = typeof app
+
+// Durable Object exports (required by Cloudflare)
+export { AliciaAgent } from './agents/alicia/agent.js'
