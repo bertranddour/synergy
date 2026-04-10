@@ -25,6 +25,7 @@ export interface Env {
   JWT_SECRET: string
   MAGIC_LINK_SECRET: string
   AI_GATEWAY_TOKEN: string
+  RESEND_API_KEY: string
 
   // AI Gateway (BYOK — Anthropic key stored on gateway dashboard)
   CF_ACCOUNT_ID: string

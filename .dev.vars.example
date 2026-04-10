@@ -15,5 +15,8 @@ AI_GATEWAY_ID=your-ai-gateway-id
 # This token authenticates the Worker to the gateway (BYOK pattern).
 AI_GATEWAY_TOKEN=your-ai-gateway-token
 
+# Resend API Key
+RESEND_API_KEY=your-resend-api-key
+
 # Environment
 ENVIRONMENT=development

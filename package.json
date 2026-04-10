@@ -22,5 +22,8 @@
     "typescript": "^5.8",
     "vitest": "^3",
     "wrangler": "^4.81.1"
+  },
+  "dependencies": {
+    "resend": "^6.10.0"
   }
 }

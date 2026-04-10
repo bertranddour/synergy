@@ -5,6 +5,7 @@ import { users } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { signToken, verifyToken } from '../lib/crypto.js'
 import { createDb } from '../lib/db.js'
+import { sendMagicLinkEmail } from '../lib/email.js'
 import { newId } from '../lib/id.js'
 import { signJWT, verifyJWT } from '../middleware/auth.js'
 
@@ -26,8 +27,16 @@ authRoutes.post('/magic-link', async (c) => {
 
     await c.env.KV.put(`magic:${token}`, email, { expirationTtl: 900 })
 
-    const verifyUrl = `${c.req.url.replace('/magic-link', '/verify')}?token=${encodeURIComponent(token)}`
-    // Only log magic link URL in development — in production, send via email service
+    // Build the verification URL — points to the frontend /verify page
+    // The frontend page calls GET /api/auth/verify and handles the JWT
+    const baseUrl =
+      c.env.ENVIRONMENT === 'development' ? 'http://localhost:5173/verify' : 'https://synergy.7flows.com/verify'
+    const verifyUrl = `${baseUrl}?token=${encodeURIComponent(token)}`
+
+    // Send magic link email via Resend
+    await sendMagicLinkEmail(c.env, email, verifyUrl)
+
+    // Also log in development for debugging
     if (c.env.ENVIRONMENT === 'development') {
       console.log(`[Magic Link] ${email}: ${verifyUrl}`)
     }
