@@ -16,6 +16,8 @@
     "lint": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply synergy-db",
+    "db:seed:generate": "bun run src/db/generate-seed-sql.ts",
+    "db:seed": "wrangler d1 execute synergy-db --local --file=src/db/seed.sql",
     "clean": "rm -rf dist"
   },
   "dependencies": {

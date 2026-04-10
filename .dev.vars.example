@@ -1,0 +1,17 @@
+# Anthropic API key — get from https://console.anthropic.com/settings/keys
+ANTHROPIC_API_KEY=sk-ant-api03-...
+
+# JWT signing secret — generate with: openssl rand -hex 32
+JWT_SECRET=your-jwt-secret-min-32-characters-long
+
+# Magic link token signing secret — generate with: openssl rand -hex 32
+MAGIC_LINK_SECRET=your-magic-link-secret-min-32-characters-long
+
+# Cloudflare account ID — find in Cloudflare dashboard → Workers & Pages
+CF_ACCOUNT_ID=your-cloudflare-account-id
+
+# AI Gateway ID — create at Cloudflare dashboard → AI → AI Gateway
+AI_GATEWAY_ID=your-ai-gateway-id
+
+# Environment
+ENVIRONMENT=development
