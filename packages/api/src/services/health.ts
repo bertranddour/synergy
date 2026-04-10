@@ -28,7 +28,7 @@ const CATEGORY_MODE_RECOMMENDATIONS: Record<string, string[]> = {
   'ai-collaboration': ['ai-onboarding', 'centaur-assessment', 'trust-calibration'],
 }
 
-function scoreToColor(score: number): 'green' | 'yellow' | 'orange' | 'red' {
+export function scoreToColor(score: number): 'green' | 'yellow' | 'orange' | 'red' {
   if (score >= 70) return 'green'
   if (score >= 40) return 'yellow'
   if (score >= 20) return 'orange'
@@ -60,7 +60,7 @@ function calculateScoreFromMetrics(
  * Declining: current < previous - 5
  * Stable: within ±5
  */
-function determineTrend(currentScore: number, previousScore: number): 'improving' | 'stable' | 'declining' {
+export function determineTrend(currentScore: number, previousScore: number): 'improving' | 'stable' | 'declining' {
   const delta = currentScore - previousScore
   if (delta > 5) return 'improving'
   if (delta < -5) return 'declining'

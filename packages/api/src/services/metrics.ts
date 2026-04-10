@@ -4,7 +4,7 @@ import type { Database } from '../lib/db.js'
 import { newId } from '../lib/id.js'
 
 /** Map mode categories to health categories */
-const MODE_CATEGORY_MAP: Record<string, string> = {
+export const MODE_CATEGORY_MAP: Record<string, string> = {
   'fw-core': 'validation',
   'fw-air': 'team',
   'fw-max': 'scaling',
@@ -12,7 +12,7 @@ const MODE_CATEGORY_MAP: Record<string, string> = {
 }
 
 /** Operational modes that map to operational health */
-const OPERATIONAL_MODES = new Set([
+export const OPERATIONAL_MODES = new Set([
   'execution-tracker',
   'delivery-check',
   'priority-stack',
