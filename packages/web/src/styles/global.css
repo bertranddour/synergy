@@ -1,0 +1,281 @@
+@import "tailwindcss";
+
+/* ─── Font Faces ──────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Gambarino";
+  src: url("/fonts/Gambarino-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/BricolageGrotesque-Variable.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Design Tokens ───────────────────────────────────────────────────────── */
+
+:root {
+  /* Surface & shadows (light neumorphic — Wave Artisans base) */
+  --surface: oklch(0.92 0.004 286.32);
+  --shadow-dark: oklch(0.712 0.0129 286.07);
+  --shadow-light: oklch(0.985 0 0);
+
+  /* Text hierarchy */
+  --text-primary: oklch(0.274 0.006 286.03);
+  --text-secondary: oklch(0.442 0.0146 285.79);
+  --text-tertiary: oklch(0.552 0.0138 285.94);
+
+  /* Zinc scale (for borders, subtle elements) */
+  --zinc-50: oklch(0.985 0 0);
+  --zinc-100: oklch(0.967 0.0013 286.38);
+  --zinc-200: oklch(0.92 0.004 286.32);
+  --zinc-300: oklch(0.871 0.0055 286.29);
+  --zinc-400: oklch(0.712 0.0129 286.07);
+  --zinc-500: oklch(0.552 0.0138 285.94);
+  --zinc-600: oklch(0.442 0.0146 285.79);
+  --zinc-800: oklch(0.274 0.006 286.03);
+  --zinc-900: oklch(0.21 0.006 286);
+
+  /* Framework accent colors */
+  --color-core: #3B82F6;
+  --color-air: #14B8A6;
+  --color-max: #8B5CF6;
+  --color-synergy: #F59E0B;
+
+  /* Health score colors */
+  --color-health-green: #22C55E;
+  --color-health-yellow: #EAB308;
+  --color-health-orange: #F97316;
+  --color-health-red: #EF4444;
+
+  /* Wave Motion System */
+  --wave-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --wave-ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --wave-duration-fast: 200ms;
+  --wave-duration-base: 450ms;
+  --wave-duration-slow: 700ms;
+  --wave-distance: 24px;
+  --wave-stagger: 80ms;
+}
+
+/* ─── Dark Mode ───────────────────────────────────────────────────────────── */
+
+.dark {
+  --surface: oklch(0.21 0.006 286);
+  --shadow-dark: oklch(0.14 0.005 286);
+  --shadow-light: oklch(0.30 0.007 286);
+
+  --text-primary: oklch(0.92 0.004 286.32);
+  --text-secondary: oklch(0.712 0.013 286);
+  --text-tertiary: oklch(0.552 0.014 286);
+
+  --zinc-50: oklch(0.30 0.007 286);
+  --zinc-100: oklch(0.274 0.006 286);
+  --zinc-200: oklch(0.21 0.006 286);
+  --zinc-300: oklch(0.18 0.005 286);
+  --zinc-400: oklch(0.30 0.007 286);
+  --zinc-500: oklch(0.442 0.015 286);
+  --zinc-600: oklch(0.552 0.014 286);
+  --zinc-800: oklch(0.92 0.004 286);
+  --zinc-900: oklch(0.967 0.001 286);
+}
+
+/* ─── Base Layer ──────────────────────────────────────────────────────────── */
+
+@layer base {
+  html,
+  body {
+    font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-optical-sizing: auto;
+    background-color: var(--surface);
+    color: var(--text-primary);
+  }
+  body {
+    min-height: 100vh;
+    line-height: 1.6;
+    text-rendering: optimizelegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: "Gambarino", Georgia, serif;
+    font-weight: 400;
+  }
+}
+
+/* ─── Component Layer ─────────────────────────────────────────────────────── */
+
+@layer components {
+  /* Neumorphic button */
+  .neo-btn {
+    transition: transform var(--wave-duration-fast) ease,
+                box-shadow var(--wave-duration-fast) ease;
+  }
+  .neo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 16px 16px 36px var(--shadow-dark),
+                -16px -16px 36px var(--shadow-light);
+  }
+  .neo-btn:active {
+    transform: translateY(0);
+    box-shadow: inset 8px 8px 18px var(--shadow-dark),
+                inset -8px -8px 18px var(--shadow-light);
+  }
+
+  /* Embossed input */
+  .input-embossed {
+    border: none;
+    border-radius: 9999px;
+    background-color: var(--surface);
+    box-shadow: inset 8px 8px 20px var(--shadow-dark),
+                inset -8px -8px 20px var(--shadow-light);
+    transition: box-shadow var(--wave-duration-fast) ease;
+  }
+  .input-embossed:focus {
+    outline: none;
+    box-shadow: inset 10px 10px 26px var(--shadow-dark),
+                inset -10px -10px 26px var(--shadow-light);
+  }
+
+  /* Spinner */
+  .wave-spinner {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    border: 3px solid var(--zinc-300);
+    border-top-color: var(--zinc-600);
+    animation: wave-spin 1.8s linear infinite;
+  }
+
+  /* Skeleton loading */
+  .wave-skeleton {
+    border-radius: 999px;
+    background: linear-gradient(120deg, var(--surface) 30%, var(--zinc-50) 50%, var(--surface) 70%);
+    background-size: 300% 100%;
+    animation: wave-shimmer 2.5s ease-in-out infinite;
+  }
+
+  /* Reveal on scroll */
+  .wave-reveal {
+    opacity: 0;
+    transform: translateY(var(--wave-distance));
+    transition: opacity var(--wave-duration-base) var(--wave-ease),
+                transform var(--wave-duration-base) var(--wave-ease);
+  }
+  .wave-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Staggered page-load entrances */
+  .wave-entrance-1 { animation: wave-entrance var(--wave-duration-base) var(--wave-ease) 0ms both; }
+  .wave-entrance-2 { animation: wave-entrance var(--wave-duration-base) var(--wave-ease) calc(var(--wave-stagger) * 1) both; }
+  .wave-entrance-3 { animation: wave-entrance var(--wave-duration-base) var(--wave-ease) calc(var(--wave-stagger) * 2) both; }
+  .wave-entrance-4 { animation: wave-entrance var(--wave-duration-base) var(--wave-ease) calc(var(--wave-stagger) * 3) both; }
+  .wave-entrance-5 { animation: wave-entrance var(--wave-duration-base) var(--wave-ease) calc(var(--wave-stagger) * 4) both; }
+
+  /* Card hover (pointer-only) */
+  @media (hover: hover) and (pointer: fine) {
+    .wave-card-hover {
+      transition: transform var(--wave-duration-fast) var(--wave-ease),
+                  box-shadow var(--wave-duration-fast) var(--wave-ease);
+    }
+    .wave-card-hover:hover {
+      transform: translateY(-3px);
+      box-shadow: 28px 28px 64px var(--shadow-dark),
+                  -28px -28px 64px var(--shadow-light);
+    }
+  }
+}
+
+/* ─── Utility Layer ───────────────────────────────────────────────────────── */
+
+@layer utilities {
+  /* Neumorphic shadow set */
+  .shadow-neo-panel {
+    box-shadow: 25px 25px 60px var(--shadow-dark),
+                -25px -25px 60px var(--shadow-light);
+  }
+  .shadow-neo-well {
+    box-shadow: 18px 18px 40px var(--shadow-dark),
+                -18px -18px 40px var(--shadow-light);
+  }
+  .shadow-neo-button {
+    box-shadow: 12px 12px 32px var(--shadow-dark),
+                -12px -12px 32px var(--shadow-light);
+  }
+  .shadow-neo-inset {
+    box-shadow: inset 20px 20px 40px var(--shadow-dark),
+                inset -20px -20px 40px var(--shadow-light);
+  }
+  .shadow-neo-embossed {
+    box-shadow: inset 15px 15px 32px var(--shadow-dark),
+                inset -15px -15px 32px var(--shadow-light);
+  }
+  .shadow-neo-knob {
+    box-shadow: 22px 22px 44px var(--shadow-dark),
+                -22px -22px 44px var(--shadow-light);
+  }
+
+  /* Scrollbar hiding */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Font utilities */
+  .font-display {
+    font-family: "Gambarino", Georgia, serif;
+  }
+  .font-body {
+    font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+/* ─── Keyframes ───────────────────────────────────────────────────────────── */
+
+@keyframes wave-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes wave-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes wave-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(var(--wave-distance));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Reduced Motion ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .wave-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

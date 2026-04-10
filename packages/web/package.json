@@ -1,0 +1,37 @@
+{
+  "name": "@synergy/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@synergy/shared": "workspace:*",
+    "@tanstack/react-query": "^5",
+    "@tanstack/react-router": "^1",
+    "hono": "^4",
+    "react": "^19",
+    "react-dom": "^19",
+    "zustand": "^5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260410.1",
+    "@tailwindcss/vite": "^4",
+    "@tanstack/react-router-devtools": "^1",
+    "@tanstack/router-plugin": "^1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4",
+    "tailwindcss": "^4",
+    "typescript": "^5.8",
+    "vite": "^6",
+    "vitest": "^3"
+  }
+}

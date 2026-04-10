@@ -1,0 +1,97 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "synergy-api",
+  "main": "packages/api/src/index.ts",
+  "compatibility_date": "2026-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Workers Static Assets — serves React SPA + API from one Worker
+  "assets": {
+    "directory": "./packages/web/dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+    "not_found_handling": "single-page-application"
+  },
+
+  // D1 Database
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "synergy-db",
+      "database_id": "placeholder-generate-with-wrangler-d1-create"
+    }
+  ],
+
+  // KV Namespace (sessions, cache)
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "placeholder-generate-with-wrangler-kv-create"
+    }
+  ],
+
+  // R2 Bucket (exports, uploads)
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "synergy-uploads"
+    }
+  ],
+
+  // Queues (background jobs)
+  "queues": {
+    "producers": [
+      {
+        "binding": "QUEUE",
+        "queue": "synergy-background"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "synergy-background",
+        "max_batch_size": 10,
+        "max_batch_timeout": 30
+      }
+    ]
+  },
+
+  // Durable Objects (Alicia Agent)
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "ALICIA",
+        "class_name": "AliciaAgent"
+      }
+    ]
+  },
+
+  // Durable Object migrations
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["AliciaAgent"]
+    }
+  ],
+
+  // Cron Triggers (proactive observations — hourly)
+  "triggers": {
+    "crons": ["0 * * * *"]
+  },
+
+  // Workers AI
+  "ai": {
+    "binding": "AI"
+  },
+
+  // Environment variables
+  "vars": {
+    "ENVIRONMENT": "production"
+  }
+
+  // Secrets (set via `wrangler secret put`):
+  // ANTHROPIC_API_KEY
+  // JWT_SECRET
+  // MAGIC_LINK_SECRET
+  // CF_ACCOUNT_ID
+  // AI_GATEWAY_ID
+}

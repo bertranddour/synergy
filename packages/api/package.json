@@ -1,0 +1,37 @@
+{
+  "name": "@synergy/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "wrangler d1 migrations apply synergy-db",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.52",
+    "@synergy/shared": "workspace:*",
+    "agents": "^0.0",
+    "drizzle-orm": "^0.44",
+    "hono": "^4",
+    "nanoid": "^5",
+    "zod": "^3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4",
+    "drizzle-kit": "^0.31",
+    "typescript": "^5.8",
+    "vitest": "^3",
+    "wrangler": "^4"
+  }
+}
