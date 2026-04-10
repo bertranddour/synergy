@@ -25,10 +25,5 @@ export const authResponseSchema = z.object({
   }),
 })
 
-export const oauthCallbackSchema = z.object({
-  code: z.string().min(1),
-  state: z.string().optional(),
-})
-
 export type MagicLinkRequest = z.infer<typeof magicLinkRequestSchema>
 export type AuthResponse = z.infer<typeof authResponseSchema>

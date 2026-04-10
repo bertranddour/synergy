@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { authResponseSchema, magicLinkRequestSchema, oauthCallbackSchema } from './auth'
+import { authResponseSchema, magicLinkRequestSchema } from './auth'
 
 describe('auth schemas', () => {
   describe('magicLinkRequestSchema', () => {
@@ -20,23 +20,6 @@ describe('auth schemas', () => {
 
     it('rejects empty email', () => {
       const result = magicLinkRequestSchema.safeParse({ email: '' })
-      expect(result.success).toBe(false)
-    })
-  })
-
-  describe('oauthCallbackSchema', () => {
-    it('accepts valid callback data', () => {
-      const result = oauthCallbackSchema.safeParse({ code: 'abc123' })
-      expect(result.success).toBe(true)
-    })
-
-    it('accepts callback with state', () => {
-      const result = oauthCallbackSchema.safeParse({ code: 'abc123', state: 'xyz' })
-      expect(result.success).toBe(true)
-    })
-
-    it('rejects empty code', () => {
-      const result = oauthCallbackSchema.safeParse({ code: '' })
       expect(result.success).toBe(false)
     })
   })

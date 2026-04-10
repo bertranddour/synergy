@@ -1,4 +1,4 @@
-import { magicLinkRequestSchema, oauthCallbackSchema } from '@synergy/shared'
+import { magicLinkRequestSchema } from '@synergy/shared'
 import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { users } from '../db/schema.js'
@@ -117,30 +117,6 @@ authRoutes.get('/verify', async (c) => {
       onboardingCompleted: user.onboardingCompleted,
     },
   })
-})
-
-// ─── OAuth: Google ───────────────────────────────────────────────────────────
-
-authRoutes.post('/oauth/google', async (c) => {
-  const body = await c.req.json()
-  const parsed = oauthCallbackSchema.safeParse(body)
-  if (!parsed.success) {
-    return c.json({ error: 'Invalid callback data' }, 400)
-  }
-
-  return c.json({ error: 'Google OAuth requires GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables' }, 503)
-})
-
-// ─── OAuth: GitHub ───────────────────────────────────────────────────────────
-
-authRoutes.post('/oauth/github', async (c) => {
-  const body = await c.req.json()
-  const parsed = oauthCallbackSchema.safeParse(body)
-  if (!parsed.success) {
-    return c.json({ error: 'Invalid callback data' }, 400)
-  }
-
-  return c.json({ error: 'GitHub OAuth requires GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET environment variables' }, 503)
 })
 
 // ─── Get Current User ────────────────────────────────────────────────────────

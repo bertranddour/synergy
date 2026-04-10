@@ -97,30 +97,6 @@ function LoginPage() {
             >
               {loading ? 'Sending...' : 'Send magic link'}
             </button>
-
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[var(--zinc-300)]" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase tracking-[0.2em]">
-                <span className="bg-[var(--surface)] px-4 text-[var(--text-tertiary)]">or</span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              disabled
-              className="neo-btn shadow-neo-button w-full rounded-full bg-[var(--surface)] px-6 py-3 text-sm text-[var(--text-secondary)] opacity-50"
-            >
-              Continue with Google
-            </button>
-            <button
-              type="button"
-              disabled
-              className="neo-btn shadow-neo-button w-full rounded-full bg-[var(--surface)] px-6 py-3 text-sm text-[var(--text-secondary)] opacity-50"
-            >
-              Continue with GitHub
-            </button>
           </form>
         )}
       </div>

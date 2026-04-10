@@ -38,7 +38,10 @@ describe('metrics service logic', () => {
   })
 
   describe('metric extraction logic', () => {
-    function extractValue(extraction: string, context: { decision?: string; fieldCount: number; totalFields: number }): number {
+    function extractValue(
+      extraction: string,
+      context: { decision?: string; fieldCount: number; totalFields: number },
+    ): number {
       if (extraction.includes('Increment by 1')) return 1
       if (extraction.includes('Pivot') && context.decision) {
         return context.decision === 'pivot' ? 100 : 0
@@ -54,8 +57,16 @@ describe('metrics service logic', () => {
     })
 
     it('extracts pivot rate', () => {
-      expect(extractValue('Percentage of decisions that are Pivot', { decision: 'pivot', fieldCount: 0, totalFields: 0 })).toBe(100)
-      expect(extractValue('Percentage of decisions that are Pivot', { decision: 'persevere', fieldCount: 0, totalFields: 0 })).toBe(0)
+      expect(
+        extractValue('Percentage of decisions that are Pivot', { decision: 'pivot', fieldCount: 0, totalFields: 0 }),
+      ).toBe(100)
+      expect(
+        extractValue('Percentage of decisions that are Pivot', {
+          decision: 'persevere',
+          fieldCount: 0,
+          totalFields: 0,
+        }),
+      ).toBe(0)
     })
 
     it('extracts coverage percentages', () => {

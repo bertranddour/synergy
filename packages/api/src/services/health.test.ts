@@ -81,19 +81,19 @@ describe('health service logic', () => {
     })
 
     it('validation maps to core', () => {
-      expect(CATEGORY_FRAMEWORK_MAP['validation']).toEqual(['core'])
+      expect(CATEGORY_FRAMEWORK_MAP.validation).toEqual(['core'])
     })
 
     it('operational maps to core + max', () => {
-      expect(CATEGORY_FRAMEWORK_MAP['operational']).toEqual(['core', 'max'])
+      expect(CATEGORY_FRAMEWORK_MAP.operational).toEqual(['core', 'max'])
     })
 
     it('team maps to air', () => {
-      expect(CATEGORY_FRAMEWORK_MAP['team']).toEqual(['air'])
+      expect(CATEGORY_FRAMEWORK_MAP.team).toEqual(['air'])
     })
 
     it('scaling maps to max', () => {
-      expect(CATEGORY_FRAMEWORK_MAP['scaling']).toEqual(['max'])
+      expect(CATEGORY_FRAMEWORK_MAP.scaling).toEqual(['max'])
     })
 
     it('ai-collaboration maps to synergy', () => {
