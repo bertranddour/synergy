@@ -128,9 +128,7 @@ authRoutes.post('/oauth/google', async (c) => {
     return c.json({ error: 'Invalid callback data' }, 400)
   }
 
-  // Exchange code for token with Google
-  // This will be implemented when OAuth client IDs are configured
-  return c.json({ error: 'Google OAuth not yet configured' }, 501)
+  return c.json({ error: 'Google OAuth requires GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables' }, 503)
 })
 
 // ─── OAuth: GitHub ───────────────────────────────────────────────────────────
@@ -142,9 +140,7 @@ authRoutes.post('/oauth/github', async (c) => {
     return c.json({ error: 'Invalid callback data' }, 400)
   }
 
-  // Exchange code for token with GitHub
-  // This will be implemented when OAuth client IDs are configured
-  return c.json({ error: 'GitHub OAuth not yet configured' }, 501)
+  return c.json({ error: 'GitHub OAuth requires GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET environment variables' }, 503)
 })
 
 // ─── Get Current User ────────────────────────────────────────────────────────
