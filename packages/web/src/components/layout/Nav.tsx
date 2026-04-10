@@ -21,7 +21,7 @@ export function Nav() {
   return (
     <>
       {/* Desktop sidebar */}
-      <nav className="hidden md:fixed md:inset-y-0 md:left-0 md:flex md:w-64 md:flex-col">
+      <nav className="hidden md:fixed md:inset-y-0 md:left-0 md:flex md:w-64 md:flex-col" aria-label="Main navigation">
         <div className="flex flex-1 flex-col gap-1 px-4 py-6">
           {/* Logo */}
           <Link to="/" className="mb-6 px-3">
@@ -99,7 +99,10 @@ export function Nav() {
       </nav>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-50 flex border-t border-[var(--zinc-300)] bg-[var(--surface)] md:hidden">
+      <nav
+        className="fixed inset-x-0 bottom-0 z-50 flex border-t border-[var(--zinc-300)] bg-[var(--surface)] md:hidden"
+        aria-label="Mobile navigation"
+      >
         {NAV_ITEMS.slice(0, 5).map((item) => {
           const isActive = item.to === '/' ? location.pathname === '/' : location.pathname.startsWith(item.to)
 

@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build-and-test:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,6 +19,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Lint (Biome)
+        run: bunx biome check .
+
       - name: Typecheck
         run: bun turbo typecheck --filter='*'
 
@@ -26,10 +29,13 @@ jobs:
         run: bun turbo test --filter='*'
 
       - name: Build frontend
-        run: bun run --filter @synergy/web build
+        run: cd packages/web && bunx vite build
+
+      - name: Verify migrations exist
+        run: test -f packages/api/src/db/migrations/0000_dazzling_raza.sql
 
   deploy:
-    needs: build-and-test
+    needs: check
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +49,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build frontend
-        run: bun run --filter @synergy/web build
+        run: cd packages/web && bunx vite build
 
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
