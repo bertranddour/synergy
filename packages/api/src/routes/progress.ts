@@ -33,29 +33,33 @@ progressRoutes.get('/', async (c) => {
     const completionPercentage = Math.min(100, Math.round((modesCompleted / modesTarget) * 100))
 
     // Consistency: consecutive weeks with completions
-    let streakWeeks = modesCompleted > 0 ? 1 : 0
-    const checkDate = new Date(periodStart)
-    checkDate.setDate(checkDate.getDate() - 7)
+    // Streak: single query fetching all completed session dates in last year, then calculate in JS
+    const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+    const allCompletedDates = await db
+      .select({ completedAt: sessions.completedAt })
+      .from(sessions)
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.completedAt, oneYearAgo)))
 
+    // Group by ISO week and count consecutive weeks backward
+    const weekSet = new Set<string>()
+    for (const s of allCompletedDates) {
+      if (s.completedAt) {
+        const d = new Date(s.completedAt)
+        const dayOfWeek = d.getDay()
+        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
+        const monday = new Date(d)
+        monday.setDate(d.getDate() + mondayOffset)
+        weekSet.add(monday.toISOString().split('T')[0]!)
+      }
+    }
+
+    let streakWeeks = 0
+    const checkWeek = new Date(periodStart)
     for (let i = 0; i < 52; i++) {
-      const weekEnd = new Date(checkDate)
-      weekEnd.setDate(weekEnd.getDate() + 7)
-      const weekSessions = await db
-        .select()
-        .from(sessions)
-        .where(
-          and(
-            eq(sessions.userId, userId),
-            eq(sessions.status, 'completed'),
-            gte(sessions.completedAt, checkDate),
-            lt(sessions.completedAt, weekEnd),
-          ),
-        )
-        .limit(1)
-
-      if (weekSessions.length > 0) {
+      const weekKey = checkWeek.toISOString().split('T')[0]!
+      if (weekSet.has(weekKey)) {
         streakWeeks++
-        checkDate.setDate(checkDate.getDate() - 7)
+        checkWeek.setDate(checkWeek.getDate() - 7)
       } else {
         break
       }
@@ -123,9 +127,32 @@ progressRoutes.get('/history', async (c) => {
   try {
     const userId = c.get('userId')
     const db = createDb(c.env.DB)
-    const limit = Number(c.req.query('limit') ?? '12')
+    const rawLimit = Number(c.req.query('limit') ?? '12')
+    const limit = Math.min(Math.max(rawLimit, 1), 52) // HI10: clamp 1-52
 
     const now = new Date()
+    const weeksAgo = new Date(now.getTime() - limit * 7 * 24 * 60 * 60 * 1000)
+
+    // Single query: fetch all completed sessions in the history range
+    const allSessions = await db
+      .select({ completedAt: sessions.completedAt })
+      .from(sessions)
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.completedAt, weeksAgo)))
+
+    // Group by week in JS (single query instead of N queries)
+    const weekCounts = new Map<string, number>()
+    for (const s of allSessions) {
+      if (s.completedAt) {
+        const d = new Date(s.completedAt)
+        const dayOfWeek = d.getDay()
+        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
+        const monday = new Date(d)
+        monday.setDate(d.getDate() + mondayOffset)
+        const key = monday.toISOString().split('T')[0]!
+        weekCounts.set(key, (weekCounts.get(key) ?? 0) + 1)
+      }
+    }
+
     const history: Array<{
       periodStart: string
       periodEnd: string
@@ -147,19 +174,9 @@ progressRoutes.get('/history', async (c) => {
       weekEnd.setDate(weekStart.getDate() + 6)
       weekEnd.setHours(23, 59, 59, 999)
 
-      const weekSessions = await db
-        .select()
-        .from(sessions)
-        .where(
-          and(
-            eq(sessions.userId, userId),
-            eq(sessions.status, 'completed'),
-            gte(sessions.completedAt, weekStart),
-            lt(sessions.completedAt, weekEnd),
-          ),
-        )
+      const key = weekStart.toISOString().split('T')[0]!
+      const modesCompleted = weekCounts.get(key) ?? 0
 
-      const modesCompleted = weekSessions.length
       history.push({
         periodStart: weekStart.toISOString(),
         periodEnd: weekEnd.toISOString(),

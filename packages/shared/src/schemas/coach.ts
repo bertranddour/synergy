@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const coachMessageSchema = z.object({
-  message: z.string().min(1),
+  message: z.string().min(1).max(10000),
   conversationId: z.string().optional(),
   sessionId: z.string().optional(),
   surface: z.enum(['dashboard', 'mode-runner', 'chat', 'assessment', 'composability']),

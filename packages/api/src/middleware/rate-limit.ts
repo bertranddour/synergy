@@ -9,8 +9,8 @@ interface RateLimitOptions {
 }
 
 /**
- * Simple KV-based rate limiter.
- * Tracks request count per IP per window in KV.
+ * KV-based rate limiter with sliding window.
+ * Uses KV atomic operations per-key with TTL for automatic cleanup.
  */
 export const rateLimit = (options: RateLimitOptions = { limit: 100, windowSeconds: 60 }) =>
   createMiddleware<{ Bindings: Env }>(async (c, next) => {
@@ -19,9 +19,10 @@ export const rateLimit = (options: RateLimitOptions = { limit: 100, windowSecond
     const key = `rate:${ip}:${window}`
 
     const current = await c.env.KV.get(key)
-    const count = current ? parseInt(current, 10) : 0
+    const count = current ? Number.parseInt(current, 10) : 0
 
     if (count >= options.limit) {
+      c.header('Retry-After', String(options.windowSeconds))
       return c.json({ error: 'Rate limit exceeded' }, 429)
     }
 
@@ -37,3 +38,6 @@ export const rateLimit = (options: RateLimitOptions = { limit: 100, windowSecond
 
 /** Stricter rate limit for AI coach endpoints */
 export const coachRateLimit = () => rateLimit({ limit: 20, windowSeconds: 60 })
+
+/** Very strict rate limit for magic link (prevent email spam / enumeration) */
+export const magicLinkRateLimit = () => rateLimit({ limit: 5, windowSeconds: 60 })

@@ -10,6 +10,7 @@ import {
   progress,
   sessions,
   teamMembers,
+  teams,
   userFrameworks,
   userPrograms,
   users,
@@ -264,17 +265,20 @@ userRoutes.delete('/me', async (c) => {
     const userId = c.get('userId')
     const db = createDb(c.env.DB)
 
-    // Cascade delete all user data
-    await db.delete(proactiveObservations).where(eq(proactiveObservations.userId, userId))
-    await db.delete(coachConversations).where(eq(coachConversations.userId, userId))
-    await db.delete(progress).where(eq(progress.userId, userId))
-    await db.delete(metrics).where(eq(metrics.userId, userId))
-    await db.delete(sessions).where(eq(sessions.userId, userId))
-    await db.delete(assessments).where(eq(assessments.userId, userId))
-    await db.delete(userFrameworks).where(eq(userFrameworks.userId, userId))
-    await db.delete(teamMembers).where(eq(teamMembers.userId, userId))
-    await db.delete(userPrograms).where(eq(userPrograms.userId, userId))
-    await db.delete(users).where(eq(users.id, userId))
+    // Cascade delete all user data using D1 batch for atomicity
+    await db.batch([
+      db.delete(proactiveObservations).where(eq(proactiveObservations.userId, userId)),
+      db.delete(coachConversations).where(eq(coachConversations.userId, userId)),
+      db.delete(progress).where(eq(progress.userId, userId)),
+      db.delete(metrics).where(eq(metrics.userId, userId)),
+      db.delete(sessions).where(eq(sessions.userId, userId)),
+      db.delete(assessments).where(eq(assessments.userId, userId)),
+      db.delete(userFrameworks).where(eq(userFrameworks.userId, userId)),
+      db.delete(teamMembers).where(eq(teamMembers.userId, userId)),
+      db.delete(userPrograms).where(eq(userPrograms.userId, userId)),
+      db.delete(teams).where(eq(teams.ownerId, userId)),
+      db.delete(users).where(eq(users.id, userId)),
+    ])
 
     // Delete KV session
     await c.env.KV.delete(`session:${userId}`)

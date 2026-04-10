@@ -1,4 +1,4 @@
-import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 // ─── Users ───────────────────────────────────────────────────────────────────
 
@@ -104,72 +104,87 @@ export const modes = sqliteTable('modes', {
 
 // ─── Sessions ────────────────────────────────────────────────────────────────
 
-export const sessions = sqliteTable('sessions', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
-  teamId: text('team_id').references(() => teams.id),
-  modeId: text('mode_id')
-    .notNull()
-    .references(() => modes.id),
-  status: text('status', {
-    enum: ['in_progress', 'completed', 'abandoned'],
-  })
-    .notNull()
-    .default('in_progress'),
-  fieldsData: text('fields_data', { mode: 'json' }).notNull().default('{}').$type<Record<string, unknown>>(),
-  currentFieldIndex: integer('current_field_index').notNull().default(0),
-  decision: text('decision', {
-    enum: ['persevere', 'pivot', 'experiment-again'],
-  }),
-  startedAt: integer('started_at', { mode: 'timestamp' }).notNull(),
-  completedAt: integer('completed_at', { mode: 'timestamp' }),
-})
+export const sessions = sqliteTable(
+  'sessions',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id),
+    teamId: text('team_id').references(() => teams.id),
+    modeId: text('mode_id')
+      .notNull()
+      .references(() => modes.id),
+    status: text('status', {
+      enum: ['in_progress', 'completed', 'abandoned'],
+    })
+      .notNull()
+      .default('in_progress'),
+    fieldsData: text('fields_data', { mode: 'json' }).notNull().default('{}').$type<Record<string, unknown>>(),
+    currentFieldIndex: integer('current_field_index').notNull().default(0),
+    decision: text('decision', {
+      enum: ['persevere', 'pivot', 'experiment-again'],
+    }),
+    startedAt: integer('started_at', { mode: 'timestamp' }).notNull(),
+    completedAt: integer('completed_at', { mode: 'timestamp' }),
+  },
+  (table) => [index('idx_sessions_user_status').on(table.userId, table.status, table.completedAt)],
+)
 
 // ─── Metrics ─────────────────────────────────────────────────────────────────
 
-export const metrics = sqliteTable('metrics', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
-  teamId: text('team_id').references(() => teams.id),
-  sessionId: text('session_id').references(() => sessions.id),
-  category: text('category', {
-    enum: ['validation', 'operational', 'team', 'scaling', 'ai-collaboration'],
-  }).notNull(),
-  name: text('name').notNull(),
-  value: integer('value', { mode: 'number' }).notNull(),
-  unit: text('unit').notNull(),
-  recordedAt: integer('recorded_at', { mode: 'timestamp' }).notNull(),
-})
+export const metrics = sqliteTable(
+  'metrics',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id),
+    teamId: text('team_id').references(() => teams.id),
+    sessionId: text('session_id').references(() => sessions.id),
+    category: text('category', {
+      enum: ['validation', 'operational', 'team', 'scaling', 'ai-collaboration'],
+    }).notNull(),
+    name: text('name').notNull(),
+    value: integer('value', { mode: 'number' }).notNull(),
+    unit: text('unit').notNull(),
+    recordedAt: integer('recorded_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [
+    index('idx_metrics_user_category').on(table.userId, table.category, table.recordedAt),
+    index('idx_metrics_user_name').on(table.userId, table.name, table.recordedAt),
+  ],
+)
 
 // ─── Assessments ─────────────────────────────────────────────────────────────
 
-export const assessments = sqliteTable('assessments', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
-  frameworkId: text('framework_id')
-    .notNull()
-    .references(() => frameworks.id),
-  status: text('status', {
-    enum: ['in_progress', 'completed'],
-  })
-    .notNull()
-    .default('in_progress'),
-  responses: text('responses', { mode: 'json' }).notNull().default('[]').$type<AssessmentResponseJson[]>(),
-  totalScore: integer('total_score'),
-  maxScore: integer('max_score'),
-  level: text('level', {
-    enum: ['standing-still', 'crawling', 'walking', 'running', 'flying'],
-  }),
-  recommendations: text('recommendations', { mode: 'json' }).$type<string[]>(),
-  startedAt: integer('started_at', { mode: 'timestamp' }).notNull(),
-  completedAt: integer('completed_at', { mode: 'timestamp' }),
-})
+export const assessments = sqliteTable(
+  'assessments',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id),
+    frameworkId: text('framework_id')
+      .notNull()
+      .references(() => frameworks.id),
+    status: text('status', {
+      enum: ['in_progress', 'completed'],
+    })
+      .notNull()
+      .default('in_progress'),
+    responses: text('responses', { mode: 'json' }).notNull().default('[]').$type<AssessmentResponseJson[]>(),
+    totalScore: integer('total_score'),
+    maxScore: integer('max_score'),
+    level: text('level', {
+      enum: ['standing-still', 'crawling', 'walking', 'running', 'flying'],
+    }),
+    recommendations: text('recommendations', { mode: 'json' }).$type<string[]>(),
+    startedAt: integer('started_at', { mode: 'timestamp' }).notNull(),
+    completedAt: integer('completed_at', { mode: 'timestamp' }),
+  },
+  (table) => [index('idx_assessments_user_framework').on(table.userId, table.frameworkId)],
+)
 
 // ─── Progress ────────────────────────────────────────────────────────────────
 
@@ -203,21 +218,25 @@ export const coachConversations = sqliteTable('coach_conversations', {
 
 // ─── Proactive Observations ──────────────────────────────────────────────────
 
-export const proactiveObservations = sqliteTable('proactive_observations', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
-  triggerType: text('trigger_type', {
-    enum: ['stale-assumption', 'procrastination', 'health-decline', 'framework-readiness', 'missing-context'],
-  }).notNull(),
-  title: text('title').notNull(),
-  message: text('message').notNull(),
-  suggestedModeSlug: text('suggested_mode_slug'),
-  dismissed: integer('dismissed', { mode: 'boolean' }).notNull().default(false),
-  actedOn: integer('acted_on', { mode: 'boolean' }).notNull().default(false),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-})
+export const proactiveObservations = sqliteTable(
+  'proactive_observations',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id),
+    triggerType: text('trigger_type', {
+      enum: ['stale-assumption', 'procrastination', 'health-decline', 'framework-readiness', 'missing-context'],
+    }).notNull(),
+    title: text('title').notNull(),
+    message: text('message').notNull(),
+    suggestedModeSlug: text('suggested_mode_slug'),
+    dismissed: integer('dismissed', { mode: 'boolean' }).notNull().default(false),
+    actedOn: integer('acted_on', { mode: 'boolean' }).notNull().default(false),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [index('idx_observations_user_dismissed').on(table.userId, table.dismissed)],
+)
 
 // ─── Training Programs ───────────────────────────────────────────────────────
 

@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import type { Env } from './env.js'
 import { auth } from './middleware/auth.js'
-import { coachRateLimit, rateLimit } from './middleware/rate-limit.js'
+import { coachRateLimit, magicLinkRateLimit, rateLimit } from './middleware/rate-limit.js'
 import { assessmentRoutes } from './routes/assessments.js'
 import { authRoutes } from './routes/auth.js'
 import { coachRoutes } from './routes/coach.js'
@@ -36,6 +36,7 @@ app.use(
 // Rate limiting
 app.use('/api/*', rateLimit())
 app.use('/api/coach/*', coachRateLimit())
+app.use('/api/auth/magic-link', magicLinkRateLimit())
 
 // Health check (no auth)
 app.get('/api/health-check', (c) => c.json({ status: 'ok', timestamp: new Date().toISOString() }))
