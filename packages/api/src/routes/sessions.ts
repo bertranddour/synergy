@@ -10,6 +10,7 @@ import { modes, sessions } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
+import { recordSessionMetrics } from '../services/metrics.js'
 
 const sessionRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
@@ -152,9 +153,24 @@ sessionRoutes.post('/:id/complete', async (c) => {
 
   const completed = await db.query.sessions.findFirst({ where: eq(sessions.id, sessionId) })
 
+  // Record metrics
+  const metricsUpdated = await recordSessionMetrics(db, {
+    id: sessionId,
+    userId,
+    teamId: session.teamId,
+    modeId: session.modeId,
+    fieldsData: session.fieldsData,
+    startedAt: session.startedAt,
+    completedAt: now,
+    decision: parsed.data.decision ?? null,
+  })
+
+  // Invalidate health cache
+  await c.env.KV.delete(`health:${userId}`)
+
   return c.json({
     session: formatSession(completed!),
-    metricsUpdated: [],
+    metricsUpdated,
     composabilitySuggestions,
   })
 })

@@ -1,4 +1,4 @@
-import { and, desc, eq, gte } from 'drizzle-orm'
+import { and, desc, eq, gte, lt } from 'drizzle-orm'
 import { frameworks, metrics, userFrameworks } from '../db/schema.js'
 import type { Database } from '../lib/db.js'
 
@@ -12,7 +12,6 @@ export interface HealthCategory {
   recommendedModes: string[]
 }
 
-/** Map health categories to the frameworks that feed them */
 const CATEGORY_FRAMEWORK_MAP: Record<string, string[]> = {
   validation: ['core'],
   operational: ['core', 'max'],
@@ -21,7 +20,6 @@ const CATEGORY_FRAMEWORK_MAP: Record<string, string[]> = {
   'ai-collaboration': ['synergy'],
 }
 
-/** Mode recommendations per health category */
 const CATEGORY_MODE_RECOMMENDATIONS: Record<string, string[]> = {
   validation: ['validation', 'insight-capture', 'business-engine'],
   operational: ['execution-tracker', 'delivery-check', 'priority-stack'],
@@ -37,10 +35,38 @@ function scoreToColor(score: number): 'green' | 'yellow' | 'orange' | 'red' {
   return 'red'
 }
 
+function calculateScoreFromMetrics(
+  categoryMetrics: Array<{ name: string; value: number; unit: string; recordedAt: Date }>,
+): { score: number; topMetrics: Array<{ name: string; value: number; unit: string }> } {
+  if (categoryMetrics.length === 0) return { score: 0, topMetrics: [] }
+
+  const latestByName = new Map<string, (typeof categoryMetrics)[0]>()
+  for (const m of categoryMetrics) {
+    if (!latestByName.has(m.name)) {
+      latestByName.set(m.name, m)
+    }
+  }
+
+  const values = Array.from(latestByName.values())
+  const score = Math.min(100, Math.round(values.reduce((sum, m) => sum + Math.min(100, m.value), 0) / values.length))
+  const topMetrics = values.slice(0, 5).map((m) => ({ name: m.name, value: m.value, unit: m.unit }))
+
+  return { score, topMetrics }
+}
+
 /**
- * Calculate health dashboard for a user.
- * Only shows categories for activated frameworks.
+ * Calculate trend by comparing current period score to previous period score.
+ * Improving: current > previous + 5
+ * Declining: current < previous - 5
+ * Stable: within ±5
  */
+function determineTrend(currentScore: number, previousScore: number): 'improving' | 'stable' | 'declining' {
+  const delta = currentScore - previousScore
+  if (delta > 5) return 'improving'
+  if (delta < -5) return 'declining'
+  return 'stable'
+}
+
 export async function calculateHealth(
   db: Database,
   userId: string,
@@ -50,7 +76,6 @@ export async function calculateHealth(
   biggestRisk: string
   lastUpdated: string
 }> {
-  // Get active framework slugs
   const activeFrameworkRows = await db
     .select({ slug: frameworks.slug })
     .from(userFrameworks)
@@ -59,9 +84,8 @@ export async function calculateHealth(
 
   const activeSlugs = new Set<string>(activeFrameworkRows.map((f) => f.slug))
 
-  // Determine which categories to show
   const activeCategories = Object.entries(CATEGORY_FRAMEWORK_MAP)
-    .filter(([_, fws]) => fws.some((fw) => activeSlugs.has(fw)))
+    .filter(([, fws]) => fws.some((fw) => activeSlugs.has(fw)))
     .map(([cat]) => cat)
 
   if (activeCategories.length === 0) {
@@ -73,48 +97,41 @@ export async function calculateHealth(
     }
   }
 
-  // Get recent metrics for this user (last 90 days)
-  const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
-  const recentMetrics = await db
+  // Current period: last 30 days
+  const now = new Date()
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+  const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
+
+  // Current period metrics
+  const currentMetrics = await db
     .select()
     .from(metrics)
-    .where(and(eq(metrics.userId, userId), gte(metrics.recordedAt, ninetyDaysAgo)))
+    .where(and(eq(metrics.userId, userId), gte(metrics.recordedAt, thirtyDaysAgo)))
     .orderBy(desc(metrics.recordedAt))
 
-  // Build category scores
+  // Previous period metrics (30-60 days ago)
+  const previousMetrics = await db
+    .select()
+    .from(metrics)
+    .where(
+      and(eq(metrics.userId, userId), gte(metrics.recordedAt, sixtyDaysAgo), lt(metrics.recordedAt, thirtyDaysAgo)),
+    )
+    .orderBy(desc(metrics.recordedAt))
+
   const categories: HealthCategory[] = activeCategories.map((categoryName) => {
-    const categoryMetrics = recentMetrics.filter((m) => m.category === categoryName)
+    const currentCategoryMetrics = currentMetrics.filter((m) => m.category === categoryName)
+    const previousCategoryMetrics = previousMetrics.filter((m) => m.category === categoryName)
 
-    // Calculate score (average of metric values, normalized to 0-100)
-    let score = 0
-    const topMetrics: Array<{ name: string; value: number; unit: string }> = []
+    const { score, topMetrics } = calculateScoreFromMetrics(currentCategoryMetrics)
+    const { score: previousScore } = calculateScoreFromMetrics(previousCategoryMetrics)
 
-    if (categoryMetrics.length > 0) {
-      // Group by metric name, take latest value
-      const latestByName = new Map<string, (typeof categoryMetrics)[0]>()
-      for (const m of categoryMetrics) {
-        if (!latestByName.has(m.name)) {
-          latestByName.set(m.name, m)
-        }
-      }
-
-      const values = Array.from(latestByName.values())
-      score = Math.min(100, Math.round(values.reduce((sum, m) => sum + Math.min(100, m.value), 0) / values.length))
-
-      topMetrics.push(
-        ...values.slice(0, 5).map((m) => ({
-          name: m.name,
-          value: m.value,
-          unit: m.unit,
-        })),
-      )
-    }
+    const trend = previousCategoryMetrics.length > 0 ? determineTrend(score, previousScore) : 'stable'
 
     return {
       name: categoryName,
       score,
-      trend: 'stable' as const,
-      trendPeriods: 0,
+      trend,
+      trendPeriods: previousCategoryMetrics.length > 0 ? 1 : 0,
       color: scoreToColor(score),
       topMetrics,
       recommendedModes: CATEGORY_MODE_RECOMMENDATIONS[categoryName] ?? [],
@@ -135,4 +152,18 @@ export async function calculateHealth(
         : 'Complete some modes to start tracking health.',
     lastUpdated: new Date().toISOString(),
   }
+}
+
+/**
+ * Get sparkline data for a specific metric (last 12 data points).
+ */
+export async function getMetricSparkline(db: Database, userId: string, metricName: string): Promise<number[]> {
+  const results = await db
+    .select({ value: metrics.value })
+    .from(metrics)
+    .where(and(eq(metrics.userId, userId), eq(metrics.name, metricName)))
+    .orderBy(desc(metrics.recordedAt))
+    .limit(12)
+
+  return results.map((r) => r.value).reverse()
 }

@@ -66,7 +66,47 @@ app.route('/api/teams', teamRoutes)
 // 404 for unmatched API routes
 app.all('/api/*', (c) => c.json({ error: 'Not found' }, 404))
 
-export default app
+// Worker export with fetch, scheduled, and queue handlers
+export default {
+  fetch: app.fetch,
+
+  // Cron trigger: generate proactive observations hourly
+  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext) {
+    const { createDb } = await import('./lib/db.js')
+    const { users } = await import('./db/schema.js')
+    const { generateProactiveObservations } = await import('./services/proactive.js')
+    const Anthropic = (await import('@anthropic-ai/sdk')).default
+
+    const db = createDb(env.DB)
+    const anthropic = new Anthropic({
+      apiKey: env.ANTHROPIC_API_KEY,
+      baseURL: env.AI_GATEWAY_ID
+        ? `https://gateway.ai.cloudflare.com/v1/${env.CF_ACCOUNT_ID}/${env.AI_GATEWAY_ID}/anthropic`
+        : undefined,
+    })
+
+    // Process active users (limit to 50 per cron run)
+    const activeUsers = await db.select({ id: users.id }).from(users).limit(50)
+
+    for (const user of activeUsers) {
+      await generateProactiveObservations(db, anthropic, user.id)
+    }
+  },
+
+  // Queue consumer: async background processing
+  async queue(batch: MessageBatch, _env: Env, _ctx: ExecutionContext) {
+    for (const message of batch.messages) {
+      try {
+        const data = message.body as Record<string, unknown>
+        console.log('Queue message:', data)
+        message.ack()
+      } catch {
+        message.retry()
+      }
+    }
+  },
+}
+
 export type AppType = typeof app
 
 // Durable Object exports (required by Cloudflare)

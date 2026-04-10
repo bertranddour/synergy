@@ -1,6 +1,8 @@
+import Anthropic from '@anthropic-ai/sdk'
 import { assessmentListQuerySchema, startAssessmentSchema, submitAnswerSchema } from '@synergy/shared'
 import { and, desc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
+import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
 import { assessments, frameworks } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
@@ -117,13 +119,90 @@ assessmentRoutes.post('/:id/complete', async (c) => {
     })
     .where(eq(assessments.id, assessmentId))
 
+  // Generate mode recommendations based on weak scenarios
+  const weakScenarios = responses.filter((r) => r.score <= 1)
+  const SCENARIO_MODE_MAP: Record<string, string> = {
+    'core-1': 'validation',
+    'core-2': 'validation',
+    'core-3': 'insight-capture',
+    'core-4': 'priority-stack',
+    'core-5': 'validation',
+    'core-6': 'delivery-check',
+    'core-7': 'validation',
+    'air-1': 'async-decision',
+    'air-2': 'team-rhythm',
+    'air-3': 'information-architecture',
+    'air-4': 'package',
+    'air-5': 'contribution-tracker',
+    'air-6': 'async-decision',
+    'air-7': 'culture-at-distance',
+    'max-1': 'connection-map',
+    'max-2': 'company-priority',
+    'max-3': 'quality-matrix',
+    'max-4': 'team-blueprint',
+    'max-5': 'scaled-execution',
+    'max-6': 'relationship-health',
+    'max-7': 'dashboard',
+    'syn-1': 'ai-onboarding',
+    'syn-2': 'centaur-assessment',
+    'syn-3': 'verification-ritual',
+    'syn-4': 'knowledge-architecture',
+    'syn-5': 'trust-calibration',
+    'syn-6': 'ai-scaling',
+    'syn-7': 'decision-protocol',
+  }
+
+  const recommendations = weakScenarios
+    .map((r) => {
+      const modeSlug = SCENARIO_MODE_MAP[r.scenarioId]
+      return modeSlug ? { modeSlug, reason: `Scenario ${r.scenarioId} scored ${r.score}/5` } : null
+    })
+    .filter((r): r is { modeSlug: string; reason: string } => r !== null)
+    .slice(0, 3)
+
+  // Generate Alicia debrief via Claude
+  let aliciaDebrief = ''
+  try {
+    const anthropic = new Anthropic({
+      apiKey: c.env.ANTHROPIC_API_KEY,
+      baseURL: c.env.AI_GATEWAY_ID
+        ? `https://gateway.ai.cloudflare.com/v1/${c.env.CF_ACCOUNT_ID}/${c.env.AI_GATEWAY_ID}/anthropic`
+        : undefined,
+    })
+
+    const debriefResponse = await anthropic.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 512,
+      system: `${PERSONALITY_PROMPT}\n\nYou are delivering assessment results. This is NOT a score card — this is a coaching debrief. Be honest, specific, and end with a concrete action.`,
+      messages: [
+        {
+          role: 'user',
+          content: `Assessment results: ${totalScore}/${maxScore} — ${level}. Weak areas: ${weakScenarios.map((s) => s.scenarioId).join(', ') || 'none'}. Strong areas: ${
+            responses
+              .filter((r) => r.score >= 5)
+              .map((s) => s.scenarioId)
+              .join(', ') || 'none'
+          }. Deliver the debrief.`,
+        },
+      ],
+    })
+
+    aliciaDebrief = debriefResponse.content[0]?.type === 'text' ? debriefResponse.content[0].text : ''
+  } catch {
+    aliciaDebrief = `You scored ${totalScore}/${maxScore} — ${level.replace('-', ' ')}. ${
+      weakScenarios.length > 0
+        ? `Focus on the ${weakScenarios.length} weak areas identified.`
+        : 'Solid across the board.'
+    }`
+  }
+
   return c.json({
     assessment: { id: assessmentId, totalScore, maxScore, level },
     score: totalScore,
     maxScore,
     level,
-    recommendations: [],
-    aliciaDebrief: '',
+    recommendations,
+    aliciaDebrief,
   })
 })
 

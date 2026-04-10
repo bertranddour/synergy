@@ -1,16 +1,15 @@
+import { and, desc, eq, gte } from 'drizzle-orm'
 import { Hono } from 'hono'
+import { sessions } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
-import { calculateHealth } from '../services/health.js'
+import { calculateHealth, getMetricSparkline } from '../services/health.js'
 
 const healthRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
-
-// ─── Health Dashboard ────────────────────────────────────────────────────────
 
 healthRoutes.get('/', async (c) => {
   const userId = c.get('userId')
 
-  // Check KV cache first (5-min TTL)
   const cacheKey = `health:${userId}`
   const cached = await c.env.KV.get(cacheKey)
   if (cached) {
@@ -20,39 +19,56 @@ healthRoutes.get('/', async (c) => {
   const db = createDb(c.env.DB)
   const result = await calculateHealth(db, userId)
 
-  // Cache for 5 minutes
   await c.env.KV.put(cacheKey, JSON.stringify(result), { expirationTtl: 300 })
 
   return c.json(result)
 })
 
-// ─── Health Category Detail ──────────────────────────────────────────────────
-
 healthRoutes.get('/:category', async (c) => {
   const userId = c.get('userId')
   const category = c.req.param('category')
-
   const db = createDb(c.env.DB)
-  const health = await calculateHealth(db, userId)
 
+  const health = await calculateHealth(db, userId)
   const categoryData = health.categories.find((cat) => cat.name === category)
   if (!categoryData) {
     return c.json({ error: 'Category not found' }, 404)
   }
 
+  // Get sparklines for each metric
+  const metricsWithSparklines = await Promise.all(
+    categoryData.topMetrics.map(async (m) => {
+      const sparkline = await getMetricSparkline(db, userId, m.name)
+      return {
+        name: m.name,
+        currentValue: m.value,
+        previousValue: 0,
+        unit: m.unit,
+        trend: categoryData.trend,
+        sparkline,
+      }
+    }),
+  )
+
+  // Get recent sessions for this category
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  const recentCategorySessions = await db
+    .select({ id: sessions.id, completedAt: sessions.completedAt })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.completedAt, thirtyDaysAgo)))
+    .orderBy(desc(sessions.completedAt))
+    .limit(5)
+
   return c.json({
     category: categoryData.name,
     score: categoryData.score,
     trend: categoryData.trend,
-    metrics: categoryData.topMetrics.map((m) => ({
-      name: m.name,
-      currentValue: m.value,
-      previousValue: 0,
-      unit: m.unit,
-      trend: 'stable' as const,
-      sparkline: [] as number[],
+    metrics: metricsWithSparklines,
+    recentSessions: recentCategorySessions.map((s) => ({
+      id: s.id,
+      modeSlug: '',
+      completedAt: s.completedAt?.toISOString() ?? '',
     })),
-    recentSessions: [],
     recommendations: categoryData.recommendedModes,
   })
 })
