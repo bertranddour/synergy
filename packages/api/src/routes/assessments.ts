@@ -29,234 +29,259 @@ const assessmentRoutes = new Hono<{ Bindings: Env; Variables: { userId: string }
 // ─── Start Assessment ────────────────────────────────────────────────────────
 
 assessmentRoutes.post('/', async (c) => {
-  const userId = c.get('userId')
-  const body = await c.req.json()
-  const parsed = startAssessmentSchema.safeParse(body)
-  if (!parsed.success) {
-    return c.json({ error: 'Invalid data', details: parsed.error.flatten() }, 400)
+  try {
+    const userId = c.get('userId')
+    const body = await c.req.json()
+    const parsed = startAssessmentSchema.safeParse(body)
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid data', details: parsed.error.flatten() }, 400)
+    }
+
+    const db = createDb(c.env.DB)
+    const framework = await db.query.frameworks.findFirst({
+      where: eq(frameworks.slug, parsed.data.frameworkSlug),
+    })
+    if (!framework) return c.json({ error: 'Framework not found' }, 404)
+
+    const id = newId()
+    await db.insert(assessments).values({
+      id,
+      userId,
+      frameworkId: framework.id,
+      status: 'in_progress',
+      responses: [],
+      startedAt: new Date(),
+    })
+
+    // Generate 7 scenarios for the framework
+    const scenarios = generateScenarios(parsed.data.frameworkSlug)
+
+    return c.json({ assessment: { id, frameworkSlug: parsed.data.frameworkSlug, status: 'in_progress' }, scenarios }, 201)
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
   }
-
-  const db = createDb(c.env.DB)
-  const framework = await db.query.frameworks.findFirst({
-    where: eq(frameworks.slug, parsed.data.frameworkSlug),
-  })
-  if (!framework) return c.json({ error: 'Framework not found' }, 404)
-
-  const id = newId()
-  await db.insert(assessments).values({
-    id,
-    userId,
-    frameworkId: framework.id,
-    status: 'in_progress',
-    responses: [],
-    startedAt: new Date(),
-  })
-
-  // Generate 7 scenarios for the framework
-  const scenarios = generateScenarios(parsed.data.frameworkSlug)
-
-  return c.json({ assessment: { id, frameworkSlug: parsed.data.frameworkSlug, status: 'in_progress' }, scenarios }, 201)
 })
 
 // ─── Submit Answer ───────────────────────────────────────────────────────────
 
 assessmentRoutes.patch('/:id', async (c) => {
-  const userId = c.get('userId')
-  const assessmentId = c.req.param('id')
-  const body = await c.req.json()
-  const parsed = submitAnswerSchema.safeParse(body)
-  if (!parsed.success) {
-    return c.json({ error: 'Invalid data', details: parsed.error.flatten() }, 400)
+  try {
+    const userId = c.get('userId')
+    const assessmentId = c.req.param('id')
+    const body = await c.req.json()
+    const parsed = submitAnswerSchema.safeParse(body)
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid data', details: parsed.error.flatten() }, 400)
+    }
+
+    const db = createDb(c.env.DB)
+    const assessment = await db.query.assessments.findFirst({
+      where: and(eq(assessments.id, assessmentId), eq(assessments.userId, userId)),
+    })
+    if (!assessment) return c.json({ error: 'Assessment not found' }, 404)
+    if (assessment.status !== 'in_progress') return c.json({ error: 'Assessment already completed' }, 400)
+
+    const score = SCORING[parsed.data.answer] ?? 0
+    const responses = [
+      ...(assessment.responses ?? []),
+      {
+        scenarioId: parsed.data.scenarioId,
+        answer: parsed.data.answer,
+        score,
+      },
+    ]
+
+    await db.update(assessments).set({ responses }).where(eq(assessments.id, assessmentId))
+
+    return c.json({ assessment: { id: assessmentId }, scenariosRemaining: 7 - responses.length })
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
   }
-
-  const db = createDb(c.env.DB)
-  const assessment = await db.query.assessments.findFirst({
-    where: and(eq(assessments.id, assessmentId), eq(assessments.userId, userId)),
-  })
-  if (!assessment) return c.json({ error: 'Assessment not found' }, 404)
-  if (assessment.status !== 'in_progress') return c.json({ error: 'Assessment already completed' }, 400)
-
-  const score = SCORING[parsed.data.answer] ?? 0
-  const responses = [
-    ...(assessment.responses ?? []),
-    {
-      scenarioId: parsed.data.scenarioId,
-      answer: parsed.data.answer,
-      score,
-    },
-  ]
-
-  await db.update(assessments).set({ responses }).where(eq(assessments.id, assessmentId))
-
-  return c.json({ assessment: { id: assessmentId }, scenariosRemaining: 7 - responses.length })
 })
 
 // ─── Complete Assessment ─────────────────────────────────────────────────────
 
 assessmentRoutes.post('/:id/complete', async (c) => {
-  const userId = c.get('userId')
-  const assessmentId = c.req.param('id')
-  const db = createDb(c.env.DB)
+  try {
+    const userId = c.get('userId')
+    const assessmentId = c.req.param('id')
+    const db = createDb(c.env.DB)
 
-  const assessment = await db.query.assessments.findFirst({
-    where: and(eq(assessments.id, assessmentId), eq(assessments.userId, userId)),
-  })
-  if (!assessment) return c.json({ error: 'Assessment not found' }, 404)
+    const assessment = await db.query.assessments.findFirst({
+      where: and(eq(assessments.id, assessmentId), eq(assessments.userId, userId)),
+    })
+    if (!assessment) return c.json({ error: 'Assessment not found' }, 404)
 
-  const responses = assessment.responses ?? []
-  const totalScore = responses.reduce((sum, r) => sum + r.score, 0)
-  const maxScore = 35
-  const level = getLevel(totalScore) as 'standing-still' | 'crawling' | 'walking' | 'running' | 'flying'
+    const responses = assessment.responses ?? []
+    const totalScore = responses.reduce((sum, r) => sum + r.score, 0)
+    const maxScore = 35
+    const level = getLevel(totalScore) as 'standing-still' | 'crawling' | 'walking' | 'running' | 'flying'
 
-  await db
-    .update(assessments)
-    .set({
-      status: 'completed',
-      totalScore,
+    await db
+      .update(assessments)
+      .set({
+        status: 'completed',
+        totalScore,
+        maxScore,
+        level,
+        completedAt: new Date(),
+      })
+      .where(eq(assessments.id, assessmentId))
+
+    // Generate mode recommendations based on weak scenarios
+    const weakScenarios = responses.filter((r) => r.score <= 1)
+    const SCENARIO_MODE_MAP: Record<string, string> = {
+      'core-1': 'validation',
+      'core-2': 'validation',
+      'core-3': 'insight-capture',
+      'core-4': 'priority-stack',
+      'core-5': 'validation',
+      'core-6': 'delivery-check',
+      'core-7': 'validation',
+      'air-1': 'async-decision',
+      'air-2': 'team-rhythm',
+      'air-3': 'information-architecture',
+      'air-4': 'package',
+      'air-5': 'contribution-tracker',
+      'air-6': 'async-decision',
+      'air-7': 'culture-at-distance',
+      'max-1': 'connection-map',
+      'max-2': 'company-priority',
+      'max-3': 'quality-matrix',
+      'max-4': 'team-blueprint',
+      'max-5': 'scaled-execution',
+      'max-6': 'relationship-health',
+      'max-7': 'dashboard',
+      'syn-1': 'ai-onboarding',
+      'syn-2': 'centaur-assessment',
+      'syn-3': 'verification-ritual',
+      'syn-4': 'knowledge-architecture',
+      'syn-5': 'trust-calibration',
+      'syn-6': 'ai-scaling',
+      'syn-7': 'decision-protocol',
+    }
+
+    const recommendations = weakScenarios
+      .map((r) => {
+        const modeSlug = SCENARIO_MODE_MAP[r.scenarioId]
+        return modeSlug ? { modeSlug, reason: `Scenario ${r.scenarioId} scored ${r.score}/5` } : null
+      })
+      .filter((r): r is { modeSlug: string; reason: string } => r !== null)
+      .slice(0, 3)
+
+    // Generate Alicia debrief via Claude
+    let aliciaDebrief = ''
+    try {
+      const anthropic = createAnthropicClient(c.env)
+
+      const debriefResponse = await anthropic.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 512,
+        system: `${PERSONALITY_PROMPT}\n\nYou are delivering assessment results. This is NOT a score card — this is a coaching debrief. Be honest, specific, and end with a concrete action.`,
+        messages: [
+          {
+            role: 'user',
+            content: `Assessment results: ${totalScore}/${maxScore} — ${level}. Weak areas: ${weakScenarios.map((s) => s.scenarioId).join(', ') || 'none'}. Strong areas: ${
+              responses
+                .filter((r) => r.score >= 5)
+                .map((s) => s.scenarioId)
+                .join(', ') || 'none'
+            }. Deliver the debrief.`,
+          },
+        ],
+      })
+
+      aliciaDebrief = debriefResponse.content[0]?.type === 'text' ? debriefResponse.content[0].text : ''
+    } catch {
+      aliciaDebrief = `You scored ${totalScore}/${maxScore} — ${level.replace('-', ' ')}. ${
+        weakScenarios.length > 0
+          ? `Focus on the ${weakScenarios.length} weak areas identified.`
+          : 'Solid across the board.'
+      }`
+    }
+
+    return c.json({
+      assessment: { id: assessmentId, totalScore, maxScore, level },
+      score: totalScore,
       maxScore,
       level,
-      completedAt: new Date(),
+      recommendations,
+      aliciaDebrief,
     })
-    .where(eq(assessments.id, assessmentId))
-
-  // Generate mode recommendations based on weak scenarios
-  const weakScenarios = responses.filter((r) => r.score <= 1)
-  const SCENARIO_MODE_MAP: Record<string, string> = {
-    'core-1': 'validation',
-    'core-2': 'validation',
-    'core-3': 'insight-capture',
-    'core-4': 'priority-stack',
-    'core-5': 'validation',
-    'core-6': 'delivery-check',
-    'core-7': 'validation',
-    'air-1': 'async-decision',
-    'air-2': 'team-rhythm',
-    'air-3': 'information-architecture',
-    'air-4': 'package',
-    'air-5': 'contribution-tracker',
-    'air-6': 'async-decision',
-    'air-7': 'culture-at-distance',
-    'max-1': 'connection-map',
-    'max-2': 'company-priority',
-    'max-3': 'quality-matrix',
-    'max-4': 'team-blueprint',
-    'max-5': 'scaled-execution',
-    'max-6': 'relationship-health',
-    'max-7': 'dashboard',
-    'syn-1': 'ai-onboarding',
-    'syn-2': 'centaur-assessment',
-    'syn-3': 'verification-ritual',
-    'syn-4': 'knowledge-architecture',
-    'syn-5': 'trust-calibration',
-    'syn-6': 'ai-scaling',
-    'syn-7': 'decision-protocol',
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
   }
-
-  const recommendations = weakScenarios
-    .map((r) => {
-      const modeSlug = SCENARIO_MODE_MAP[r.scenarioId]
-      return modeSlug ? { modeSlug, reason: `Scenario ${r.scenarioId} scored ${r.score}/5` } : null
-    })
-    .filter((r): r is { modeSlug: string; reason: string } => r !== null)
-    .slice(0, 3)
-
-  // Generate Alicia debrief via Claude
-  let aliciaDebrief = ''
-  try {
-    const anthropic = createAnthropicClient(c.env)
-
-    const debriefResponse = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 512,
-      system: `${PERSONALITY_PROMPT}\n\nYou are delivering assessment results. This is NOT a score card — this is a coaching debrief. Be honest, specific, and end with a concrete action.`,
-      messages: [
-        {
-          role: 'user',
-          content: `Assessment results: ${totalScore}/${maxScore} — ${level}. Weak areas: ${weakScenarios.map((s) => s.scenarioId).join(', ') || 'none'}. Strong areas: ${
-            responses
-              .filter((r) => r.score >= 5)
-              .map((s) => s.scenarioId)
-              .join(', ') || 'none'
-          }. Deliver the debrief.`,
-        },
-      ],
-    })
-
-    aliciaDebrief = debriefResponse.content[0]?.type === 'text' ? debriefResponse.content[0].text : ''
-  } catch {
-    aliciaDebrief = `You scored ${totalScore}/${maxScore} — ${level.replace('-', ' ')}. ${
-      weakScenarios.length > 0
-        ? `Focus on the ${weakScenarios.length} weak areas identified.`
-        : 'Solid across the board.'
-    }`
-  }
-
-  return c.json({
-    assessment: { id: assessmentId, totalScore, maxScore, level },
-    score: totalScore,
-    maxScore,
-    level,
-    recommendations,
-    aliciaDebrief,
-  })
 })
 
 // ─── List Assessments ────────────────────────────────────────────────────────
 
 assessmentRoutes.get('/', async (c) => {
-  const userId = c.get('userId')
-  const db = createDb(c.env.DB)
+  try {
+    const userId = c.get('userId')
+    const db = createDb(c.env.DB)
 
-  const query = assessmentListQuerySchema.safeParse(Object.fromEntries(new URL(c.req.url).searchParams))
-  const params = query.success ? query.data : { limit: 10 }
+    const query = assessmentListQuerySchema.safeParse(Object.fromEntries(new URL(c.req.url).searchParams))
+    const params = query.success ? query.data : { limit: 10 }
 
-  const result = await db
-    .select()
-    .from(assessments)
-    .where(eq(assessments.userId, userId))
-    .orderBy(desc(assessments.startedAt))
-    .limit(params.limit)
+    const result = await db
+      .select()
+      .from(assessments)
+      .where(eq(assessments.userId, userId))
+      .orderBy(desc(assessments.startedAt))
+      .limit(params.limit)
 
-  return c.json({
-    assessments: result.map((a) => ({
-      id: a.id,
-      frameworkId: a.frameworkId,
-      status: a.status,
-      totalScore: a.totalScore,
-      maxScore: a.maxScore,
-      level: a.level,
-      startedAt: a.startedAt.toISOString(),
-      completedAt: a.completedAt?.toISOString() ?? null,
-    })),
-    total: result.length,
-  })
+    return c.json({
+      assessments: result.map((a) => ({
+        id: a.id,
+        frameworkId: a.frameworkId,
+        status: a.status,
+        totalScore: a.totalScore,
+        maxScore: a.maxScore,
+        level: a.level,
+        startedAt: a.startedAt.toISOString(),
+        completedAt: a.completedAt?.toISOString() ?? null,
+      })),
+      total: result.length,
+    })
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
 })
 
 // ─── Get Assessment Detail ───────────────────────────────────────────────────
 
 assessmentRoutes.get('/:id', async (c) => {
-  const userId = c.get('userId')
-  const assessmentId = c.req.param('id')
-  const db = createDb(c.env.DB)
+  try {
+    const userId = c.get('userId')
+    const assessmentId = c.req.param('id')
+    const db = createDb(c.env.DB)
 
-  const assessment = await db.query.assessments.findFirst({
-    where: and(eq(assessments.id, assessmentId), eq(assessments.userId, userId)),
-  })
-  if (!assessment) return c.json({ error: 'Assessment not found' }, 404)
+    const assessment = await db.query.assessments.findFirst({
+      where: and(eq(assessments.id, assessmentId), eq(assessments.userId, userId)),
+    })
+    if (!assessment) return c.json({ error: 'Assessment not found' }, 404)
 
-  return c.json({
-    assessment: {
-      id: assessment.id,
-      frameworkId: assessment.frameworkId,
-      status: assessment.status,
-      totalScore: assessment.totalScore,
-      maxScore: assessment.maxScore,
-      level: assessment.level,
-      responses: assessment.responses,
-      startedAt: assessment.startedAt.toISOString(),
-      completedAt: assessment.completedAt?.toISOString() ?? null,
-    },
-  })
+    return c.json({
+      assessment: {
+        id: assessment.id,
+        frameworkId: assessment.frameworkId,
+        status: assessment.status,
+        totalScore: assessment.totalScore,
+        maxScore: assessment.maxScore,
+        level: assessment.level,
+        responses: assessment.responses,
+        startedAt: assessment.startedAt.toISOString(),
+        completedAt: assessment.completedAt?.toISOString() ?? null,
+      },
+    })
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
 })
 
 // ─── Scenario Generator ──────────────────────────────────────────────────────
