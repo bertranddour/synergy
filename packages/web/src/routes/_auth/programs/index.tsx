@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/programs/')({
@@ -85,7 +86,7 @@ function ProgramCatalog() {
                       : 'shadow-neo-button'
                   }`}
                 >
-                  {day.completed ? '✓' : day.day}
+                  {day.completed ? <Icon name="check" size="xs" /> : day.day}
                 </span>
                 <span className={day.completed ? 'text-[var(--text-tertiary)] line-through' : ''}>
                   {day.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}

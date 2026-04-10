@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/assessments/$id')({
@@ -137,8 +138,9 @@ function ActiveAssessment() {
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Recommended Modes</p>
             <div className="mt-3 space-y-2">
               {result.recommendations.map((rec) => (
-                <p key={rec.modeSlug} className="text-sm text-[var(--text-secondary)]">
-                  → {rec.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}: {rec.reason}
+                <p key={rec.modeSlug} className="inline-flex items-center gap-1 text-sm text-[var(--text-secondary)]">
+                  <Icon name="arrow-right" size="sm" />{' '}
+                  {rec.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}: {rec.reason}
                 </p>
               ))}
             </div>

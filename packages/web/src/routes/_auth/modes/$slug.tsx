@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/modes/$slug')({
@@ -97,7 +98,7 @@ function ModeDetail() {
         to="/modes"
         className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
       >
-        ← Back to Mode Library
+        <Icon name="arrow-left" size="sm" /> Back to Mode Library
       </Link>
 
       {/* Header */}
@@ -165,7 +166,9 @@ function ModeDetail() {
             <div className="mt-3 space-y-2">
               {mode.composabilityHooks.map((hook, i) => (
                 <div key={i} className="text-sm">
-                  <span className="text-[var(--text-tertiary)]">{hook.direction === 'feeds_into' ? '→' : '←'}</span>{' '}
+                  <span className="text-[var(--text-tertiary)]">
+                    <Icon name={hook.direction === 'feeds_into' ? 'arrow-right' : 'arrow-left'} size="sm" />
+                  </span>{' '}
                   <Link
                     to="/modes/$slug"
                     params={{ slug: hook.modeSlug }}

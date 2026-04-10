@@ -6,10 +6,12 @@ interface HealthCardProps {
   topMetrics: Array<{ name: string; value: number; unit: string }>
 }
 
-const TREND_ICONS = {
-  improving: '↑',
-  stable: '→',
-  declining: '↓',
+import { Icon, type IconName } from '../ui/Icon'
+
+const TREND_ICONS: Record<string, IconName> = {
+  improving: 'trend-up',
+  stable: 'equals',
+  declining: 'trend-down',
 }
 
 const COLOR_MAP = {
@@ -28,13 +30,12 @@ export function HealthCard({ name, score, trend, color, topMetrics }: HealthCard
           {name.replace('-', ' ')} Health
         </span>
         <span
-          className="text-lg"
           style={{
             color:
               trend === 'improving' ? COLOR_MAP.green : trend === 'declining' ? COLOR_MAP.red : 'var(--text-tertiary)',
           }}
         >
-          {TREND_ICONS[trend]}
+          <Icon name={TREND_ICONS[trend] ?? 'equals'} size="md" />
         </span>
       </div>
 

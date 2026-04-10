@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/programs/active')({
@@ -60,7 +61,9 @@ function ActiveProgram() {
     <div className="space-y-8">
       <div className="wave-entrance-1">
         <Link to="/programs" className="text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
-          ← Programs
+          <span className="inline-flex items-center gap-1">
+            <Icon name="arrow-left" size="sm" /> Programs
+          </span>
         </Link>
         <h1 className="font-display mt-2 text-3xl tracking-tight">{program.name}</h1>
         <p className="mt-1 text-[var(--text-secondary)]">{program.description}</p>
@@ -101,7 +104,7 @@ function ActiveProgram() {
                     : 'shadow-neo-button'
                 }`}
               >
-                {day.completed ? '✓' : day.day}
+                {day.completed ? <Icon name="check" size="xs" /> : day.day}
               </span>
               <div className="flex-1">
                 <p className={day.completed ? 'text-[var(--text-tertiary)] line-through' : 'font-semibold'}>

@@ -1,15 +1,20 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { useThemeStore } from '../../hooks/use-theme'
 import { useAuthStore } from '../../stores/auth'
+import { Icon, type IconName } from '../ui/Icon'
 
-const NAV_ITEMS = [
-  { to: '/' as const, label: 'Dashboard', icon: '◉' },
-  { to: '/modes' as const, label: 'Modes', icon: '◆' },
-  { to: '/coach' as const, label: 'Alicia', icon: '◈' },
-  { to: '/assessments' as const, label: 'Assess', icon: '◇' },
-  { to: '/programs' as const, label: 'Programs', icon: '▣' },
-  { to: '/progress' as const, label: 'Progress', icon: '○' },
-  { to: '/teams' as const, label: 'Teams', icon: '⬡' },
+const NAV_ITEMS: Array<{
+  to: '/' | '/modes' | '/coach' | '/assessments' | '/programs' | '/progress' | '/teams'
+  label: string
+  icon: IconName
+}> = [
+  { to: '/', label: 'Dashboard', icon: 'house' },
+  { to: '/modes', label: 'Modes', icon: 'lightning' },
+  { to: '/coach', label: 'Alicia', icon: 'brain' },
+  { to: '/assessments', label: 'Assess', icon: 'clipboard-text' },
+  { to: '/programs', label: 'Programs', icon: 'book-open-text' },
+  { to: '/progress', label: 'Progress', icon: 'chart-line-up' },
+  { to: '/teams', label: 'Teams', icon: 'users-three' },
 ]
 
 export function Nav() {
@@ -44,9 +49,7 @@ export function Nav() {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <span className="w-5 text-center" aria-hidden="true">
-                  {item.icon}
-                </span>
+                <Icon name={item.icon} size="md" />
                 {item.label}
               </Link>
             )
@@ -76,7 +79,7 @@ export function Nav() {
             to="/settings"
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
-            <span className="w-5 text-center">⚙</span>
+            <Icon name="gear" size="md" />
             Settings
           </Link>
           <button
@@ -87,7 +90,7 @@ export function Nav() {
             }}
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
           >
-            <span className="w-5 text-center">↪</span>
+            <Icon name="sign-out" size="md" />
             Sign out
           </button>
 
@@ -118,7 +121,7 @@ export function Nav() {
                 isActive ? 'font-semibold text-[var(--text-primary)]' : 'text-[var(--text-tertiary)]'
               }`}
             >
-              <span className="text-base">{item.icon}</span>
+              <Icon name={item.icon} size="lg" />
               {item.label}
             </Link>
           )
@@ -133,7 +136,7 @@ export function Nav() {
               : 'text-[var(--text-tertiary)]'
           }`}
         >
-          <span className="text-base">⚙</span>
+          <Icon name="gear" size="lg" />
           Settings
         </Link>
       </nav>

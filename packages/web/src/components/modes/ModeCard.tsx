@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { Icon } from '../ui/Icon'
 
 interface ModeCardProps {
   slug: string
@@ -42,7 +43,9 @@ export function ModeCard({
 
       {/* Footer */}
       <div className="mt-4 flex items-center gap-4 text-xs text-[var(--text-tertiary)]">
-        <span>⏱ {timeEstimateMinutes} min</span>
+        <span className="inline-flex items-center gap-1">
+          <Icon name="timer" size="xs" /> {timeEstimateMinutes} min
+        </span>
       </div>
     </Link>
   )

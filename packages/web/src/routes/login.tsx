@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { Icon } from '../components/ui/Icon'
 import { useAuthStore } from '../stores/auth'
 
 export const Route = createFileRoute('/login')({
@@ -54,7 +55,7 @@ function LoginPage() {
         {sent ? (
           <div className="mt-8 text-center">
             <div className="shadow-neo-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full">
-              <span className="text-2xl">✉️</span>
+              <Icon name="envelope" size="xl" label="Email sent" />
             </div>
             <p className="mt-4 font-semibold">Check your email</p>
             <p className="mt-1 text-sm text-[var(--text-tertiary)]">

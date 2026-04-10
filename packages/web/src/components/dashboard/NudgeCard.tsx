@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useAuthStore } from '../../stores/auth'
+import { Icon } from '../ui/Icon'
 
 interface NudgeCardProps {
   id: string
@@ -48,7 +49,10 @@ export function NudgeCard({ id, title, message, suggestedModeSlug }: NudgeCardPr
           className="neo-btn shadow-neo-button mt-3 inline-block rounded-full px-5 py-2 text-xs font-semibold"
           style={{ color: 'var(--color-synergy)' }}
         >
-          Open {suggestedModeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())} →
+          <span className="inline-flex items-center gap-1">
+            Open {suggestedModeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+            <Icon name="arrow-right" size="sm" />
+          </span>
         </Link>
       )}
     </div>

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/teams/$id')({
@@ -53,7 +54,9 @@ function TeamDashboard() {
     <div className="space-y-8">
       <div className="wave-entrance-1">
         <Link to="/teams" className="text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
-          ← Teams
+          <span className="inline-flex items-center gap-1">
+            <Icon name="arrow-left" size="sm" /> Teams
+          </span>
         </Link>
         <h1 className="font-display mt-2 text-3xl tracking-tight">{team?.name}</h1>
         <p className="text-sm capitalize text-[var(--text-secondary)]">{team?.type.replace('-', ' ')}</p>

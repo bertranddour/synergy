@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { CoachCard } from '../../../components/coach/CoachCard'
 import { FieldStep } from '../../../components/modes/FieldStep'
+import { Icon } from '../../../components/ui/Icon'
 import { useAliciaStream } from '../../../hooks/use-sse'
 import { useAuthStore } from '../../../stores/auth'
 import { useRunnerStore } from '../../../stores/runner'
@@ -162,7 +163,7 @@ function ModeRunner() {
       <div className="flex min-h-[70vh] flex-col items-center justify-center text-center">
         <div className="wave-entrance-1">
           <div className="shadow-neo-panel mx-auto flex h-24 w-24 items-center justify-center rounded-full">
-            <span className="text-4xl">✓</span>
+            <Icon name="check" size="xl" label="Complete" className="h-12 w-12" />
           </div>
           <h1 className="font-display mt-6 text-3xl tracking-tight">{data.mode.name} Complete</h1>
           <p className="mt-3 text-[var(--text-secondary)]">{data.mode.doneSignal}</p>
@@ -173,8 +174,9 @@ function ModeRunner() {
             <div className="wave-entrance-2 mt-8 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Next suggested mode</p>
               {completeMutation.data.composabilitySuggestions.map((s) => (
-                <p key={s.modeSlug} className="mt-2 text-[var(--text-secondary)]">
-                  → {s.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}: {s.reason}
+                <p key={s.modeSlug} className="mt-2 inline-flex items-center gap-1 text-[var(--text-secondary)]">
+                  <Icon name="arrow-right" size="sm" />{' '}
+                  {s.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}: {s.reason}
                 </p>
               ))}
             </div>
