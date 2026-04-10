@@ -1,44 +1,124 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '../../stores/auth'
+import { HealthCard } from '../../components/dashboard/HealthCard'
+import { ProgressRings } from '../../components/dashboard/ProgressRings'
 
 export const Route = createFileRoute('/_auth/')({
   component: Dashboard,
 })
 
+interface HealthDashboard {
+  categories: Array<{
+    name: string
+    score: number
+    trend: 'improving' | 'stable' | 'declining'
+    trendPeriods: number
+    color: 'green' | 'yellow' | 'orange' | 'red'
+    topMetrics: Array<{ name: string; value: number; unit: string }>
+    recommendedModes: string[]
+  }>
+  overallScore: number
+  biggestRisk: string
+  lastUpdated: string
+}
+
+interface ProgressData {
+  completion: { value: number; target: number; percentage: number }
+  consistency: { streakWeeks: number; lastActiveWeek: string }
+  growth: { score: number; trend: string; improvingMetrics: string[] }
+}
+
 function Dashboard() {
-  const user = useAuthStore((s) => s.user)
+  const { user, token } = useAuthStore()
+
+  const healthQuery = useQuery({
+    queryKey: ['health'],
+    queryFn: async () => {
+      const res = await fetch('/api/health', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Failed to fetch health')
+      return res.json() as Promise<HealthDashboard>
+    },
+  })
+
+  const progressQuery = useQuery({
+    queryKey: ['progress'],
+    queryFn: async () => {
+      const res = await fetch('/api/progress', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Failed to fetch progress')
+      return res.json() as Promise<ProgressData>
+    },
+  })
 
   return (
     <div className="space-y-8">
-      <div className="wave-entrance-1">
-        <h1 className="font-display text-3xl tracking-tight md:text-4xl">
-          Welcome back, {user?.name}
-        </h1>
-        <p className="mt-2 text-[var(--text-secondary)]">
-          Your business health at a glance
-        </p>
-      </div>
-
-      {/* Health cards will be added in Phase 2 */}
-      <div className="wave-entrance-2 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-          <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-            Health Dashboard
-          </p>
-          <p className="mt-4 text-[var(--text-secondary)]">
-            Complete your first mode to start tracking health.
+      {/* Header */}
+      <div className="wave-entrance-1 flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl tracking-tight md:text-4xl">
+            Welcome back, {user?.name}
+          </h1>
+          <p className="mt-2 text-[var(--text-secondary)]">
+            {healthQuery.data?.biggestRisk ?? 'Your business health at a glance'}
           </p>
         </div>
+        <Link
+          to="/modes"
+          className="neo-btn shadow-neo-button rounded-full px-6 py-3 text-sm font-semibold"
+        >
+          Browse Modes
+        </Link>
       </div>
 
-      {/* Progress rings will be added in Phase 2 */}
-      <div className="wave-entrance-3 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-          Progress Rings
-        </p>
-        <p className="mt-4 text-[var(--text-secondary)]">
-          Your rings will appear after completing modes.
-        </p>
+      {/* Health Cards */}
+      {healthQuery.isLoading ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="wave-skeleton h-44 rounded-[1.8rem]" />
+          ))}
+        </div>
+      ) : healthQuery.data?.categories.length === 0 ? (
+        <div className="wave-entrance-2 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
+          <p className="text-lg text-[var(--text-secondary)]">
+            Activate a framework in Settings to start tracking health.
+          </p>
+          <Link
+            to="/modes"
+            className="neo-btn shadow-neo-button mt-4 inline-block rounded-full px-8 py-3 font-semibold"
+          >
+            Get Started
+          </Link>
+        </div>
+      ) : (
+        <div className="wave-entrance-2 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {healthQuery.data?.categories.map((cat) => (
+            <HealthCard
+              key={cat.name}
+              name={cat.name}
+              score={cat.score}
+              trend={cat.trend}
+              color={cat.color}
+              topMetrics={cat.topMetrics}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Progress Rings */}
+      <div className="wave-entrance-3">
+        {progressQuery.data ? (
+          <ProgressRings
+            completion={progressQuery.data.completion.percentage}
+            consistency={progressQuery.data.consistency.streakWeeks}
+            growth={progressQuery.data.growth.score}
+          />
+        ) : (
+          <div className="wave-skeleton h-64 rounded-[2rem]" />
+        )}
       </div>
     </div>
   )
