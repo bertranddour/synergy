@@ -21,12 +21,14 @@ export const updateUserSchema = z.object({
 
 export const userWithFrameworksSchema = z.object({
   user: userSchema,
-  frameworks: z.array(z.object({
-    slug: z.enum(['core', 'air', 'max', 'synergy']),
-    name: z.string(),
-    active: z.boolean(),
-    activatedAt: z.string().datetime().nullable(),
-  })),
+  frameworks: z.array(
+    z.object({
+      slug: z.enum(['core', 'air', 'max', 'synergy']),
+      name: z.string(),
+      active: z.boolean(),
+      activatedAt: z.string().datetime().nullable(),
+    }),
+  ),
 })
 
 export const activateFrameworkSchema = z.object({

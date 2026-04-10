@@ -1,18 +1,18 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
+  COACH_SURFACES,
   FRAMEWORK_COLORS,
   FRAMEWORK_NAMES,
-  HEALTH_COLORS,
-  HEALTH_CATEGORIES,
   FRAMEWORK_SLUGS,
-  USER_STAGES,
-  SESSION_STATUSES,
-  SESSION_DECISIONS,
-  MATURITY_LEVELS,
-  TEAM_TYPES,
-  PROACTIVE_TRIGGERS,
-  COACH_SURFACES,
   getHealthColor,
+  HEALTH_CATEGORIES,
+  HEALTH_COLORS,
+  MATURITY_LEVELS,
+  PROACTIVE_TRIGGERS,
+  SESSION_DECISIONS,
+  SESSION_STATUSES,
+  TEAM_TYPES,
+  USER_STAGES,
 } from './index'
 
 describe('constants', () => {

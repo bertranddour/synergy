@@ -1,6 +1,6 @@
-import { eq, and, desc, gte } from 'drizzle-orm'
+import { and, desc, eq, gte } from 'drizzle-orm'
+import { frameworks, metrics, userFrameworks } from '../db/schema.js'
 import type { Database } from '../lib/db.js'
-import { metrics, userFrameworks, frameworks } from '../db/schema.js'
 
 export interface HealthCategory {
   name: string
@@ -14,19 +14,19 @@ export interface HealthCategory {
 
 /** Map health categories to the frameworks that feed them */
 const CATEGORY_FRAMEWORK_MAP: Record<string, string[]> = {
-  'validation': ['core'],
-  'operational': ['core', 'max'],
-  'team': ['air'],
-  'scaling': ['max'],
+  validation: ['core'],
+  operational: ['core', 'max'],
+  team: ['air'],
+  scaling: ['max'],
   'ai-collaboration': ['synergy'],
 }
 
 /** Mode recommendations per health category */
 const CATEGORY_MODE_RECOMMENDATIONS: Record<string, string[]> = {
-  'validation': ['validation', 'insight-capture', 'business-engine'],
-  'operational': ['execution-tracker', 'delivery-check', 'priority-stack'],
-  'team': ['team-rhythm', 'package', 'async-decision'],
-  'scaling': ['connection-map', 'company-priority', 'org-map'],
+  validation: ['validation', 'insight-capture', 'business-engine'],
+  operational: ['execution-tracker', 'delivery-check', 'priority-stack'],
+  team: ['team-rhythm', 'package', 'async-decision'],
+  scaling: ['connection-map', 'company-priority', 'org-map'],
   'ai-collaboration': ['ai-onboarding', 'centaur-assessment', 'trust-calibration'],
 }
 
@@ -78,10 +78,7 @@ export async function calculateHealth(
   const recentMetrics = await db
     .select()
     .from(metrics)
-    .where(and(
-      eq(metrics.userId, userId),
-      gte(metrics.recordedAt, ninetyDaysAgo),
-    ))
+    .where(and(eq(metrics.userId, userId), gte(metrics.recordedAt, ninetyDaysAgo)))
     .orderBy(desc(metrics.recordedAt))
 
   // Build category scores
@@ -94,7 +91,7 @@ export async function calculateHealth(
 
     if (categoryMetrics.length > 0) {
       // Group by metric name, take latest value
-      const latestByName = new Map<string, typeof categoryMetrics[0]>()
+      const latestByName = new Map<string, (typeof categoryMetrics)[0]>()
       for (const m of categoryMetrics) {
         if (!latestByName.has(m.name)) {
           latestByName.set(m.name, m)
@@ -102,15 +99,15 @@ export async function calculateHealth(
       }
 
       const values = Array.from(latestByName.values())
-      score = Math.min(100, Math.round(
-        values.reduce((sum, m) => sum + Math.min(100, m.value), 0) / values.length,
-      ))
+      score = Math.min(100, Math.round(values.reduce((sum, m) => sum + Math.min(100, m.value), 0) / values.length))
 
-      topMetrics.push(...values.slice(0, 5).map((m) => ({
-        name: m.name,
-        value: m.value,
-        unit: m.unit,
-      })))
+      topMetrics.push(
+        ...values.slice(0, 5).map((m) => ({
+          name: m.name,
+          value: m.value,
+          unit: m.unit,
+        })),
+      )
     }
 
     return {
@@ -124,21 +121,18 @@ export async function calculateHealth(
     }
   })
 
-  const overallScore = categories.length > 0
-    ? Math.round(categories.reduce((sum, c) => sum + c.score, 0) / categories.length)
-    : 0
+  const overallScore =
+    categories.length > 0 ? Math.round(categories.reduce((sum, c) => sum + c.score, 0) / categories.length) : 0
 
-  const lowestCategory = categories.reduce(
-    (lowest, c) => (c.score < lowest.score ? c : lowest),
-    categories[0]!,
-  )
+  const lowestCategory = categories.reduce((lowest, c) => (c.score < lowest.score ? c : lowest), categories[0]!)
 
   return {
     categories,
     overallScore,
-    biggestRisk: categories.length > 0
-      ? `${lowestCategory.name} health is your weakest area at ${lowestCategory.score}/100.`
-      : 'Complete some modes to start tracking health.',
+    biggestRisk:
+      categories.length > 0
+        ? `${lowestCategory.name} health is your weakest area at ${lowestCategory.score}/100.`
+        : 'Complete some modes to start tracking health.',
     lastUpdated: new Date().toISOString(),
   }
 }

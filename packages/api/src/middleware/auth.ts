@@ -16,19 +16,12 @@ async function verifyJWT(token: string, secret: string): Promise<JWTPayload | nu
     if (!headerB64 || !payloadB64 || !signatureB64) return null
 
     const encoder = new TextEncoder()
-    const key = await crypto.subtle.importKey(
-      'raw',
-      encoder.encode(secret),
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['verify'],
-    )
+    const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, [
+      'verify',
+    ])
 
     const data = encoder.encode(`${headerB64}.${payloadB64}`)
-    const signature = Uint8Array.from(
-      atob(signatureB64.replace(/-/g, '+').replace(/_/g, '/')),
-      (c) => c.charCodeAt(0),
-    )
+    const signature = Uint8Array.from(atob(signatureB64.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))
 
     const valid = await crypto.subtle.verify('HMAC', key, signature, data)
     if (!valid) return null
@@ -44,15 +37,15 @@ async function verifyJWT(token: string, secret: string): Promise<JWTPayload | nu
 }
 
 /** Generate a JWT token */
-export async function signJWT(payload: Omit<JWTPayload, 'iat' | 'exp'>, secret: string, expiresInDays = 7): Promise<string> {
+export async function signJWT(
+  payload: Omit<JWTPayload, 'iat' | 'exp'>,
+  secret: string,
+  expiresInDays = 7,
+): Promise<string> {
   const encoder = new TextEncoder()
-  const key = await crypto.subtle.importKey(
-    'raw',
-    encoder.encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  )
+  const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, [
+    'sign',
+  ])
 
   const now = Math.floor(Date.now() / 1000)
   const fullPayload: JWTPayload = {
@@ -62,14 +55,17 @@ export async function signJWT(payload: Omit<JWTPayload, 'iat' | 'exp'>, secret: 
   }
 
   const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-  const body = btoa(JSON.stringify(fullPayload))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+  const body = btoa(JSON.stringify(fullPayload)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 
   const data = encoder.encode(`${header}.${body}`)
   const signature = await crypto.subtle.sign('HMAC', key, data)
   const sig = btoa(String.fromCharCode(...new Uint8Array(signature)))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
 
   return `${header}.${body}.${sig}`
 }

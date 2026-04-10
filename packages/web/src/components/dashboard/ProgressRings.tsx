@@ -59,13 +59,18 @@ export function ProgressRings({ completion, consistency, growth }: ProgressRings
 
   return (
     <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-      <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-        Progress Rings
-      </p>
+      <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Progress Rings</p>
 
       <div className="mt-6 flex items-center justify-center gap-8">
         {/* Rings SVG */}
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          role="img"
+          aria-label="Progress rings showing completion, consistency, and growth"
+        >
+          <title>Progress Rings</title>
           {/* Outer ring: Completion (blue) */}
           <TrackRing radius={95} strokeWidth={12} />
           <Ring radius={95} strokeWidth={12} progress={completion} color="var(--color-core)" />

@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/teams/$id')({
@@ -39,7 +39,11 @@ function TeamDashboard() {
   })
 
   if (teamQuery.isLoading) {
-    return <div className="flex min-h-[50vh] items-center justify-center"><div className="wave-spinner" /></div>
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="wave-spinner" />
+      </div>
+    )
   }
 
   const team = teamQuery.data?.team
@@ -71,9 +75,7 @@ function TeamDashboard() {
 
       {/* Members */}
       <div className="wave-entrance-3 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-          Members ({members.length})
-        </h2>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Members ({members.length})</h2>
         <div className="mt-4 space-y-3">
           {members.map((m) => (
             <div key={m.userId} className="flex items-center justify-between shadow-neo-embossed rounded-xl p-4">

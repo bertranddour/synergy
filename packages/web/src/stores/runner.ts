@@ -19,12 +19,7 @@ interface RunnerState {
   coachingVisible: boolean
   coachingMessage: string | null
 
-  startSession: (params: {
-    sessionId: string
-    modeSlug: string
-    modeName: string
-    fields: FieldSchema[]
-  }) => void
+  startSession: (params: { sessionId: string; modeSlug: string; modeName: string; fields: FieldSchema[] }) => void
   setFieldData: (index: number, data: unknown) => void
   advanceField: () => void
   goToField: (index: number) => void
@@ -74,11 +69,9 @@ export const useRunnerStore = create<RunnerState>((set) => ({
       coachingMessage: null,
     }),
 
-  showCoaching: (message) =>
-    set({ coachingVisible: true, coachingMessage: message }),
+  showCoaching: (message) => set({ coachingVisible: true, coachingMessage: message }),
 
-  hideCoaching: () =>
-    set({ coachingVisible: false, coachingMessage: null }),
+  hideCoaching: () => set({ coachingVisible: false, coachingMessage: null }),
 
   reset: () =>
     set({

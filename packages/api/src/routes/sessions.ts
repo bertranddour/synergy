@@ -1,10 +1,15 @@
+import {
+  completeSessionSchema,
+  createSessionSchema,
+  sessionListQuerySchema,
+  updateSessionFieldSchema,
+} from '@synergy/shared'
+import { and, desc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { eq, and, desc } from 'drizzle-orm'
-import { createSessionSchema, updateSessionFieldSchema, completeSessionSchema, sessionListQuerySchema } from '@synergy/shared'
+import { modes, sessions } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
-import { sessions, modes } from '../db/schema.js'
 
 const sessionRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
@@ -43,18 +48,21 @@ sessionRoutes.post('/', async (c) => {
 
   const session = await db.query.sessions.findFirst({ where: eq(sessions.id, id) })
 
-  return c.json({
-    session: formatSession(session!),
-    mode: {
-      id: mode.id,
-      slug: mode.slug,
-      name: mode.name,
-      fieldsSchema: mode.fieldsSchema,
-      aiCoachPrompts: mode.aiCoachPrompts,
-      doneSignal: mode.doneSignal,
-      timeEstimateMinutes: mode.timeEstimateMinutes,
+  return c.json(
+    {
+      session: formatSession(session!),
+      mode: {
+        id: mode.id,
+        slug: mode.slug,
+        name: mode.name,
+        fieldsSchema: mode.fieldsSchema,
+        aiCoachPrompts: mode.aiCoachPrompts,
+        doneSignal: mode.doneSignal,
+        timeEstimateMinutes: mode.timeEstimateMinutes,
+      },
     },
-  }, 201)
+    201,
+  )
 })
 
 // ─── Update Session Field (Progressive Save) ────────────────────────────────
@@ -160,7 +168,7 @@ sessionRoutes.get('/', async (c) => {
   const query = sessionListQuerySchema.safeParse(Object.fromEntries(new URL(c.req.url).searchParams))
   const params = query.success ? query.data : { limit: 20, offset: 0 }
 
-  let conditions = [eq(sessions.userId, userId)]
+  const conditions = [eq(sessions.userId, userId)]
 
   if (params.status) {
     conditions.push(eq(sessions.status, params.status))
@@ -198,13 +206,15 @@ sessionRoutes.get('/:id', async (c) => {
 
   return c.json({
     session: formatSession(session),
-    mode: mode ? {
-      id: mode.id,
-      slug: mode.slug,
-      name: mode.name,
-      fieldsSchema: mode.fieldsSchema,
-      doneSignal: mode.doneSignal,
-    } : null,
+    mode: mode
+      ? {
+          id: mode.id,
+          slug: mode.slug,
+          name: mode.name,
+          fieldsSchema: mode.fieldsSchema,
+          doneSignal: mode.doneSignal,
+        }
+      : null,
   })
 })
 

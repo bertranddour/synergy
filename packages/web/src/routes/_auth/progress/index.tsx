@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { useAuthStore } from '../../../stores/auth'
+import { createFileRoute } from '@tanstack/react-router'
 import { ProgressRings } from '../../../components/dashboard/ProgressRings'
+import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/progress/')({
   component: ProgressPage,
@@ -35,8 +35,12 @@ function ProgressPage() {
       if (!res.ok) throw new Error('Failed to fetch')
       return res.json() as Promise<{
         history: Array<{
-          periodStart: string; periodEnd: string
-          completion: number; consistency: number; growth: number; modesCompleted: number
+          periodStart: string
+          periodEnd: string
+          completion: number
+          consistency: number
+          growth: number
+          modesCompleted: number
         }>
       }>
     },
@@ -109,9 +113,7 @@ function ProgressPage() {
                     />
                   </div>
                 </div>
-                <span className="w-16 text-right text-[var(--text-tertiary)]">
-                  {entry.modesCompleted} modes
-                </span>
+                <span className="w-16 text-right text-[var(--text-tertiary)]">{entry.modesCompleted} modes</span>
               </div>
             ))}
           </div>

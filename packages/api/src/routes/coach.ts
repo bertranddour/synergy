@@ -1,17 +1,17 @@
-import { Hono } from 'hono'
 import Anthropic from '@anthropic-ai/sdk'
 import { coachMessageSchema } from '@synergy/shared'
+import { and, eq } from 'drizzle-orm'
+import { Hono } from 'hono'
+import type { AliciaAgent } from '../agents/alicia/agent.js'
+// buildModeCoachPrompt will be used in Step 3.6 for in-mode coaching
+import { runAliciaLoop } from '../agents/alicia/loop.js'
+import { CROSS_FRAMEWORK_PROMPT } from '../agents/alicia/prompts/cross-fw.js'
+import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
+import { getSurfacePrompt } from '../agents/alicia/prompts/surfaces.js'
+import { proactiveObservations } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
-import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
-import { CROSS_FRAMEWORK_PROMPT } from '../agents/alicia/prompts/cross-fw.js'
-import { getSurfacePrompt } from '../agents/alicia/prompts/surfaces.js'
-// buildModeCoachPrompt will be used in Step 3.6 for in-mode coaching
-import { runAliciaLoop } from '../agents/alicia/loop.js'
-import { AliciaAgent } from '../agents/alicia/agent.js'
-import { eq, and } from 'drizzle-orm'
-import { proactiveObservations } from '../db/schema.js'
 
 const coachRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
@@ -33,24 +33,28 @@ coachRoutes.post('/stream', async (c) => {
   const aliciaDO = c.env.ALICIA.get(aliciaId) as unknown as AliciaAgent
 
   // Initialize DO if needed
-  await aliciaDO.fetch(new Request('http://internal/init', {
-    method: 'POST',
-    body: JSON.stringify({ userId }),
-  }))
+  await aliciaDO.fetch(
+    new Request('http://internal/init', {
+      method: 'POST',
+      body: JSON.stringify({ userId }),
+    }),
+  )
 
   // Load existing conversation if provided
   if (conversationId) {
-    await aliciaDO.fetch(new Request(`http://internal/load?id=${conversationId}`, {
-      method: 'POST',
-    }))
+    await aliciaDO.fetch(
+      new Request(`http://internal/load?id=${conversationId}`, {
+        method: 'POST',
+      }),
+    )
   }
 
   // Build system prompt from layers
-  let systemPrompt = PERSONALITY_PROMPT + '\n\n' + CROSS_FRAMEWORK_PROMPT + '\n\n' + getSurfacePrompt(surface)
+  const systemPrompt = `${PERSONALITY_PROMPT}\n\n${CROSS_FRAMEWORK_PROMPT}\n\n${getSurfacePrompt(surface)}`
 
   // Get conversation history from DO
   const historyRes = await aliciaDO.fetch(new Request('http://internal/history'))
-  const history = await historyRes.json() as {
+  const history = (await historyRes.json()) as {
     messages: Array<{ role: 'user' | 'assistant'; content: string }>
   }
 
@@ -85,14 +89,10 @@ coachRoutes.post('/stream', async (c) => {
           systemPrompt,
           messages: anthropicMessages,
           onTextChunk: (text) => {
-            controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ type: 'text', content: text })}\n\n`),
-            )
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'text', content: text })}\n\n`))
           },
           onToolCall: (name) => {
-            controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ type: 'tool_call', name })}\n\n`),
-            )
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'tool_call', name })}\n\n`))
           },
         })
 
@@ -104,9 +104,7 @@ coachRoutes.post('/stream', async (c) => {
         controller.close()
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-        controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({ type: 'error', message: errorMessage })}\n\n`),
-        )
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'error', message: errorMessage })}\n\n`))
         controller.close()
       }
     },
@@ -130,10 +128,7 @@ coachRoutes.get('/proactive', async (c) => {
   const observations = await db
     .select()
     .from(proactiveObservations)
-    .where(and(
-      eq(proactiveObservations.userId, userId),
-      eq(proactiveObservations.dismissed, false),
-    ))
+    .where(and(eq(proactiveObservations.userId, userId), eq(proactiveObservations.dismissed, false)))
     .orderBy(proactiveObservations.createdAt)
 
   return c.json({
@@ -158,10 +153,7 @@ coachRoutes.post('/proactive/:id/dismiss', async (c) => {
   await db
     .update(proactiveObservations)
     .set({ dismissed: true })
-    .where(and(
-      eq(proactiveObservations.id, observationId),
-      eq(proactiveObservations.userId, userId),
-    ))
+    .where(and(eq(proactiveObservations.id, observationId), eq(proactiveObservations.userId, userId)))
 
   return c.json({ dismissed: true })
 })
@@ -176,10 +168,7 @@ coachRoutes.post('/proactive/:id/act', async (c) => {
   await db
     .update(proactiveObservations)
     .set({ actedOn: true })
-    .where(and(
-      eq(proactiveObservations.id, observationId),
-      eq(proactiveObservations.userId, userId),
-    ))
+    .where(and(eq(proactiveObservations.id, observationId), eq(proactiveObservations.userId, userId)))
 
   return c.json({ actedOn: true })
 })

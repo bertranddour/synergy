@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core'
+import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 // ─── Users ───────────────────────────────────────────────────────────────────
 
@@ -9,7 +9,9 @@ export const users = sqliteTable('users', {
   avatarUrl: text('avatar_url'),
   stage: text('stage', {
     enum: ['solo', 'small-team', 'growing', 'scaling'],
-  }).notNull().default('solo'),
+  })
+    .notNull()
+    .default('solo'),
   teamSize: integer('team_size').notNull().default(1),
   onboardingCompleted: integer('onboarding_completed', { mode: 'boolean' }).notNull().default(false),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
@@ -24,20 +26,30 @@ export const teams = sqliteTable('teams', {
   type: text('type', {
     enum: ['mission', 'platform', 'leadership-circle'],
   }).notNull(),
-  ownerId: text('owner_id').notNull().references(() => users.id),
+  ownerId: text('owner_id')
+    .notNull()
+    .references(() => users.id),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })
 
-export const teamMembers = sqliteTable('team_members', {
-  teamId: text('team_id').notNull().references(() => teams.id),
-  userId: text('user_id').notNull().references(() => users.id),
-  role: text('role', {
-    enum: ['lead', 'member'],
-  }).notNull().default('member'),
-  joinedAt: integer('joined_at', { mode: 'timestamp' }).notNull(),
-}, (table) => [
-  primaryKey({ columns: [table.teamId, table.userId] }),
-])
+export const teamMembers = sqliteTable(
+  'team_members',
+  {
+    teamId: text('team_id')
+      .notNull()
+      .references(() => teams.id),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id),
+    role: text('role', {
+      enum: ['lead', 'member'],
+    })
+      .notNull()
+      .default('member'),
+    joinedAt: integer('joined_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.teamId, table.userId] })],
+)
 
 // ─── Frameworks ──────────────────────────────────────────────────────────────
 
@@ -45,27 +57,37 @@ export const frameworks = sqliteTable('frameworks', {
   id: text('id').primaryKey(),
   slug: text('slug', {
     enum: ['core', 'air', 'max', 'synergy'],
-  }).notNull().unique(),
+  })
+    .notNull()
+    .unique(),
   name: text('name').notNull(),
   description: text('description').notNull(),
   color: text('color').notNull(),
   modeCount: integer('mode_count').notNull(),
 })
 
-export const userFrameworks = sqliteTable('user_frameworks', {
-  userId: text('user_id').notNull().references(() => users.id),
-  frameworkId: text('framework_id').notNull().references(() => frameworks.id),
-  active: integer('active', { mode: 'boolean' }).notNull().default(true),
-  activatedAt: integer('activated_at', { mode: 'timestamp' }).notNull(),
-}, (table) => [
-  primaryKey({ columns: [table.userId, table.frameworkId] }),
-])
+export const userFrameworks = sqliteTable(
+  'user_frameworks',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id),
+    frameworkId: text('framework_id')
+      .notNull()
+      .references(() => frameworks.id),
+    active: integer('active', { mode: 'boolean' }).notNull().default(true),
+    activatedAt: integer('activated_at', { mode: 'timestamp' }).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.frameworkId] })],
+)
 
 // ─── Modes ───────────────────────────────────────────────────────────────────
 
 export const modes = sqliteTable('modes', {
   id: text('id').primaryKey(),
-  frameworkId: text('framework_id').notNull().references(() => frameworks.id),
+  frameworkId: text('framework_id')
+    .notNull()
+    .references(() => frameworks.id),
   slug: text('slug').notNull().unique(),
   name: text('name').notNull(),
   purpose: text('purpose').notNull(),
@@ -84,12 +106,18 @@ export const modes = sqliteTable('modes', {
 
 export const sessions = sqliteTable('sessions', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id),
   teamId: text('team_id').references(() => teams.id),
-  modeId: text('mode_id').notNull().references(() => modes.id),
+  modeId: text('mode_id')
+    .notNull()
+    .references(() => modes.id),
   status: text('status', {
     enum: ['in_progress', 'completed', 'abandoned'],
-  }).notNull().default('in_progress'),
+  })
+    .notNull()
+    .default('in_progress'),
   fieldsData: text('fields_data', { mode: 'json' }).notNull().default('{}').$type<Record<string, unknown>>(),
   currentFieldIndex: integer('current_field_index').notNull().default(0),
   decision: text('decision', {
@@ -103,7 +131,9 @@ export const sessions = sqliteTable('sessions', {
 
 export const metrics = sqliteTable('metrics', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id),
   teamId: text('team_id').references(() => teams.id),
   sessionId: text('session_id').references(() => sessions.id),
   category: text('category', {
@@ -119,11 +149,17 @@ export const metrics = sqliteTable('metrics', {
 
 export const assessments = sqliteTable('assessments', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
-  frameworkId: text('framework_id').notNull().references(() => frameworks.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id),
+  frameworkId: text('framework_id')
+    .notNull()
+    .references(() => frameworks.id),
   status: text('status', {
     enum: ['in_progress', 'completed'],
-  }).notNull().default('in_progress'),
+  })
+    .notNull()
+    .default('in_progress'),
   responses: text('responses', { mode: 'json' }).notNull().default('[]').$type<AssessmentResponseJson[]>(),
   totalScore: integer('total_score'),
   maxScore: integer('max_score'),
@@ -139,7 +175,9 @@ export const assessments = sqliteTable('assessments', {
 
 export const progress = sqliteTable('progress', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id),
   completionRing: integer('completion_ring', { mode: 'number' }).notNull().default(0),
   consistencyStreak: integer('consistency_streak').notNull().default(0),
   growthScore: integer('growth_score', { mode: 'number' }).notNull().default(0),
@@ -153,7 +191,9 @@ export const progress = sqliteTable('progress', {
 
 export const coachConversations = sqliteTable('coach_conversations', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id),
   sessionId: text('session_id').references(() => sessions.id),
   messages: text('messages', { mode: 'json' }).notNull().default('[]').$type<CoachMessageJson[]>(),
   context: text('context', { mode: 'json' }).notNull().default('{}').$type<Record<string, unknown>>(),
@@ -165,7 +205,9 @@ export const coachConversations = sqliteTable('coach_conversations', {
 
 export const proactiveObservations = sqliteTable('proactive_observations', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id),
   triggerType: text('trigger_type', {
     enum: ['stale-assumption', 'procrastination', 'health-decline', 'framework-readiness', 'missing-context'],
   }).notNull(),
@@ -194,11 +236,17 @@ export const trainingPrograms = sqliteTable('training_programs', {
 
 export const userPrograms = sqliteTable('user_programs', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
-  programId: text('program_id').notNull().references(() => trainingPrograms.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id),
+  programId: text('program_id')
+    .notNull()
+    .references(() => trainingPrograms.id),
   status: text('status', {
     enum: ['active', 'completed', 'paused', 'abandoned'],
-  }).notNull().default('active'),
+  })
+    .notNull()
+    .default('active'),
   startDate: integer('start_date', { mode: 'timestamp' }).notNull(),
   currentDay: integer('current_day').notNull().default(1),
   completedModes: text('completed_modes', { mode: 'json' }).notNull().default('[]').$type<string[]>(),

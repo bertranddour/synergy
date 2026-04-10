@@ -38,15 +38,19 @@ export const sessionListQuerySchema = z.object({
 
 export const sessionCompletionResponseSchema = z.object({
   session: sessionSchema,
-  metricsUpdated: z.array(z.object({
-    name: z.string(),
-    value: z.number(),
-    unit: z.string(),
-  })),
-  composabilitySuggestions: z.array(z.object({
-    modeSlug: z.string(),
-    reason: z.string(),
-  })),
+  metricsUpdated: z.array(
+    z.object({
+      name: z.string(),
+      value: z.number(),
+      unit: z.string(),
+    }),
+  ),
+  composabilitySuggestions: z.array(
+    z.object({
+      modeSlug: z.string(),
+      reason: z.string(),
+    }),
+  ),
 })
 
 export type Session = z.infer<typeof sessionSchema>

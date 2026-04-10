@@ -2,32 +2,35 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import type { Env } from './env.js'
 import { auth } from './middleware/auth.js'
-import { rateLimit, coachRateLimit } from './middleware/rate-limit.js'
-import { authRoutes } from './routes/auth.js'
-import { userRoutes } from './routes/users.js'
-import { modeRoutes } from './routes/modes.js'
-import { sessionRoutes } from './routes/sessions.js'
-import { healthRoutes } from './routes/health.js'
-import { coachRoutes } from './routes/coach.js'
+import { coachRateLimit, rateLimit } from './middleware/rate-limit.js'
 import { assessmentRoutes } from './routes/assessments.js'
-import { progressRoutes } from './routes/progress.js'
+import { authRoutes } from './routes/auth.js'
+import { coachRoutes } from './routes/coach.js'
+import { healthRoutes } from './routes/health.js'
+import { modeRoutes } from './routes/modes.js'
 import { programRoutes } from './routes/programs.js'
+import { progressRoutes } from './routes/progress.js'
+import { sessionRoutes } from './routes/sessions.js'
 import { teamRoutes } from './routes/teams.js'
+import { userRoutes } from './routes/users.js'
 
 const app = new Hono<{ Bindings: Env }>()
 
 // Global middleware
-app.use('/api/*', cors({
-  origin: (origin) => {
-    // Allow localhost in dev, restrict in production
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) return origin
-    if (origin === 'https://synergy.7flows.com') return origin
-    return ''
-  },
-  allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization'],
-  maxAge: 86400,
-}))
+app.use(
+  '/api/*',
+  cors({
+    origin: (origin) => {
+      // Allow localhost in dev, restrict in production
+      if (origin.includes('localhost') || origin.includes('127.0.0.1')) return origin
+      if (origin === 'https://synergy.7flows.com') return origin
+      return ''
+    },
+    allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+    maxAge: 86400,
+  }),
+)
 
 // Rate limiting
 app.use('/api/*', rateLimit())

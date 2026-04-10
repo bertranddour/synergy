@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, useRef, useEffect } from 'react'
-import { useAliciaStream } from '../../../hooks/use-sse'
+import { useEffect, useRef, useState } from 'react'
 import { ChatBubble } from '../../../components/coach/ChatBubble'
+import { useAliciaStream } from '../../../hooks/use-sse'
 
 export const Route = createFileRoute('/_auth/coach/')({
   component: CoachChat,
@@ -25,15 +25,12 @@ function CoachChat() {
       top: scrollRef.current.scrollHeight,
       behavior: 'smooth',
     })
-  }, [messages, text])
+  }, [])
 
   // When streaming completes, add Alicia's message to history
   useEffect(() => {
     if (!isStreaming && text) {
-      setMessages((prev) => [
-        ...prev,
-        { id: `alicia-${Date.now()}`, role: 'alicia', content: text },
-      ])
+      setMessages((prev) => [...prev, { id: `alicia-${Date.now()}`, role: 'alicia', content: text }])
     }
   }, [isStreaming, text])
 
@@ -45,10 +42,7 @@ function CoachChat() {
     setInput('')
 
     // Add user message to history
-    setMessages((prev) => [
-      ...prev,
-      { id: `user-${Date.now()}`, role: 'user', content: userMessage },
-    ])
+    setMessages((prev) => [...prev, { id: `user-${Date.now()}`, role: 'user', content: userMessage }])
 
     // Stream Alicia's response
     send({
@@ -63,9 +57,7 @@ function CoachChat() {
       {/* Header */}
       <div className="wave-entrance-1 mb-4">
         <h1 className="font-display text-2xl tracking-tight">Talk to Alicia</h1>
-        <p className="text-sm text-[var(--text-tertiary)]">
-          Your business coaching colleague
-        </p>
+        <p className="text-sm text-[var(--text-tertiary)]">Your business coaching colleague</p>
       </div>
 
       {/* Chat area */}
@@ -91,17 +83,11 @@ function CoachChat() {
         )}
 
         {messages.map((msg) => (
-          <ChatBubble
-            key={msg.id}
-            role={msg.role}
-            content={msg.content}
-          />
+          <ChatBubble key={msg.id} sender={msg.role} content={msg.content} />
         ))}
 
         {/* Streaming response */}
-        {isStreaming && text && (
-          <ChatBubble role="alicia" content={text} isStreaming />
-        )}
+        {isStreaming && text && <ChatBubble sender="alicia" content={text} isStreaming />}
 
         {/* Error */}
         {error && (

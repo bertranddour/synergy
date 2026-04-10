@@ -4,7 +4,7 @@ import { useAuthStore } from '../stores/auth'
 
 export const Route = createFileRoute('/verify')({
   validateSearch: (search: Record<string, unknown>) => ({
-    token: (search['token'] as string) ?? '',
+    token: (search.token as string) ?? '',
   }),
   component: VerifyPage,
 })
@@ -25,11 +25,11 @@ function VerifyPage() {
       try {
         const res = await fetch(`/api/auth/verify?token=${encodeURIComponent(token)}`)
         if (!res.ok) {
-          const data = await res.json() as { error: string }
+          const data = (await res.json()) as { error: string }
           throw new Error(data.error)
         }
 
-        const data = await res.json() as {
+        const data = (await res.json()) as {
           token: string
           user: {
             id: string

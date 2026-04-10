@@ -1,5 +1,5 @@
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { useQuery, useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/programs/')({
@@ -73,16 +73,18 @@ function ProgramCatalog() {
               <span className="text-xs uppercase tracking-[0.3em] text-[var(--color-synergy)]">Active Program</span>
               <h2 className="font-display mt-1 text-xl">{activeQuery.data.program.name}</h2>
             </div>
-            <span className="text-sm text-[var(--text-tertiary)]">
-              Day {activeQuery.data.userProgram.currentDay}
-            </span>
+            <span className="text-sm text-[var(--text-tertiary)]">Day {activeQuery.data.userProgram.currentDay}</span>
           </div>
           <div className="mt-4 space-y-2">
             {activeQuery.data.schedule.map((day) => (
               <div key={day.day} className="flex items-center gap-3 text-sm">
-                <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${
-                  day.completed ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'shadow-neo-button'
-                }`}>
+                <span
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs ${
+                    day.completed
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      : 'shadow-neo-button'
+                  }`}
+                >
                   {day.completed ? '✓' : day.day}
                 </span>
                 <span className={day.completed ? 'text-[var(--text-tertiary)] line-through' : ''}>
@@ -98,9 +100,7 @@ function ProgramCatalog() {
       {/* Program catalog */}
       <div className="wave-entrance-3 grid gap-6 md:grid-cols-2">
         {programsQuery.isLoading ? (
-          Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="wave-skeleton h-48 rounded-[1.8rem]" />
-          ))
+          Array.from({ length: 4 }).map((_, i) => <div key={i} className="wave-skeleton h-48 rounded-[1.8rem]" />)
         ) : programsQuery.data?.programs.length === 0 ? (
           <div className="col-span-2 shadow-neo-inset rounded-[2rem] p-12 text-center">
             <p className="text-[var(--text-secondary)]">No training programs available yet.</p>

@@ -29,7 +29,10 @@ export function HealthCard({ name, score, trend, color, topMetrics }: HealthCard
         </span>
         <span
           className="text-lg"
-          style={{ color: trend === 'improving' ? COLOR_MAP.green : trend === 'declining' ? COLOR_MAP.red : 'var(--text-tertiary)' }}
+          style={{
+            color:
+              trend === 'improving' ? COLOR_MAP.green : trend === 'declining' ? COLOR_MAP.red : 'var(--text-tertiary)',
+          }}
         >
           {TREND_ICONS[trend]}
         </span>
@@ -37,10 +40,7 @@ export function HealthCard({ name, score, trend, color, topMetrics }: HealthCard
 
       {/* Score */}
       <div className="mt-4 flex items-baseline gap-2">
-        <span
-          className="font-body text-4xl font-bold"
-          style={{ color: COLOR_MAP[color] }}
-        >
+        <span className="font-body text-4xl font-bold" style={{ color: COLOR_MAP[color] }}>
           {score}
         </span>
         <span className="text-sm text-[var(--text-tertiary)]">/100</span>
@@ -64,7 +64,9 @@ export function HealthCard({ name, score, trend, color, topMetrics }: HealthCard
           {topMetrics.slice(0, 3).map((m) => (
             <div key={m.name} className="flex justify-between text-xs text-[var(--text-secondary)]">
               <span>{m.name.replace(/_/g, ' ')}</span>
-              <span>{m.value} {m.unit}</span>
+              <span>
+                {m.value} {m.unit}
+              </span>
             </div>
           ))}
         </div>

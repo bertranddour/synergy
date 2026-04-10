@@ -1,8 +1,8 @@
+import { and, desc, eq, inArray } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { eq, and, inArray, desc } from 'drizzle-orm'
+import { frameworks, modes, sessions, userFrameworks } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
-import { modes, frameworks, userFrameworks, sessions } from '../db/schema.js'
 
 const modeRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
@@ -19,10 +19,7 @@ modeRoutes.get('/', async (c) => {
   const activeFrameworks = await db
     .select({ frameworkId: userFrameworks.frameworkId })
     .from(userFrameworks)
-    .where(and(
-      eq(userFrameworks.userId, userId),
-      eq(userFrameworks.active, true),
-    ))
+    .where(and(eq(userFrameworks.userId, userId), eq(userFrameworks.active, true)))
 
   if (activeFrameworks.length === 0) {
     return c.json({ modes: [], total: 0 })
@@ -66,10 +63,7 @@ modeRoutes.get('/', async (c) => {
   let filtered = result
   if (search) {
     const term = search.toLowerCase()
-    filtered = result.filter((m) =>
-      m.name.toLowerCase().includes(term) ||
-      m.purpose.toLowerCase().includes(term)
-    )
+    filtered = result.filter((m) => m.name.toLowerCase().includes(term) || m.purpose.toLowerCase().includes(term))
   }
 
   return c.json({
@@ -107,10 +101,7 @@ modeRoutes.get('/:slug', async (c) => {
       completedAt: sessions.completedAt,
     })
     .from(sessions)
-    .where(and(
-      eq(sessions.userId, userId),
-      eq(sessions.modeId, mode.id),
-    ))
+    .where(and(eq(sessions.userId, userId), eq(sessions.modeId, mode.id)))
     .orderBy(desc(sessions.startedAt))
     .limit(3)
 
@@ -128,11 +119,13 @@ modeRoutes.get('/:slug', async (c) => {
       metricsSchema: mode.metricsSchema,
       composabilityHooks: mode.composabilityHooks,
       timeEstimateMinutes: mode.timeEstimateMinutes,
-      framework: framework ? {
-        slug: framework.slug,
-        name: framework.name,
-        color: framework.color,
-      } : null,
+      framework: framework
+        ? {
+            slug: framework.slug,
+            name: framework.name,
+            color: framework.color,
+          }
+        : null,
     },
     recentSessions: recentSessions.map((s) => ({
       id: s.id,

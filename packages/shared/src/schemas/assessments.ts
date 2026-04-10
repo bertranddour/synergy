@@ -25,11 +25,13 @@ export const assessmentSchema = z.object({
   userId: z.string(),
   frameworkId: z.string(),
   status: z.enum(['in_progress', 'completed']),
-  responses: z.array(z.object({
-    scenarioId: z.string(),
-    answer: z.enum(['a', 'b', 'c', 'd']),
-    score: z.number().int().min(0).max(5),
-  })),
+  responses: z.array(
+    z.object({
+      scenarioId: z.string(),
+      answer: z.enum(['a', 'b', 'c', 'd']),
+      score: z.number().int().min(0).max(5),
+    }),
+  ),
   totalScore: z.number().int().nullable(),
   maxScore: z.number().int().nullable(),
   level: z.enum(['standing-still', 'crawling', 'walking', 'running', 'flying']).nullable(),
@@ -43,10 +45,12 @@ export const assessmentCompletionSchema = z.object({
   score: z.number().int(),
   maxScore: z.number().int(),
   level: z.enum(['standing-still', 'crawling', 'walking', 'running', 'flying']),
-  recommendations: z.array(z.object({
-    modeSlug: z.string(),
-    reason: z.string(),
-  })),
+  recommendations: z.array(
+    z.object({
+      modeSlug: z.string(),
+      reason: z.string(),
+    }),
+  ),
   aliciaDebrief: z.string(),
 })
 

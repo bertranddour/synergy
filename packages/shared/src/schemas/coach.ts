@@ -10,11 +10,13 @@ export const coachMessageSchema = z.object({
 export const coachResponseSchema = z.object({
   reply: z.string(),
   conversationId: z.string(),
-  suggestedActions: z.array(z.object({
-    type: z.enum(['mode', 'assess', 'review']),
-    slug: z.string(),
-    reason: z.string(),
-  })),
+  suggestedActions: z.array(
+    z.object({
+      type: z.enum(['mode', 'assess', 'review']),
+      slug: z.string(),
+      reason: z.string(),
+    }),
+  ),
 })
 
 export const proactiveObservationSchema = z.object({

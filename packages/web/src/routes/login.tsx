@@ -33,7 +33,7 @@ function LoginPage() {
       })
 
       if (!res.ok) {
-        const data = await res.json() as { error: string }
+        const data = (await res.json()) as { error: string }
         throw new Error(data.error)
       }
 
@@ -48,12 +48,8 @@ function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="shadow-neo-panel w-full max-w-md rounded-[2rem] bg-[var(--surface)] p-10">
-        <h1 className="font-display text-center text-3xl tracking-tight">
-          7 Flows Synergy
-        </h1>
-        <p className="mt-2 text-center text-[var(--text-secondary)]">
-          Your business fitness system
-        </p>
+        <h1 className="font-display text-center text-3xl tracking-tight">7 Flows Synergy</h1>
+        <p className="mt-2 text-center text-[var(--text-secondary)]">Your business fitness system</p>
 
         {sent ? (
           <div className="mt-8 text-center">
@@ -92,9 +88,7 @@ function LoginPage() {
               />
             </div>
 
-            {error && (
-              <p className="text-sm text-red-500">{error}</p>
-            )}
+            {error && <p className="text-sm text-red-500">{error}</p>}
 
             <button
               type="submit"

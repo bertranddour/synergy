@@ -1,8 +1,8 @@
+import { TEAM_TYPES } from '@synergy/shared'
+import { useMutation } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '../../../stores/auth'
-import { TEAM_TYPES } from '@synergy/shared'
 
 export const Route = createFileRoute('/_auth/teams/')({
   component: TeamsPage,
@@ -35,9 +35,7 @@ function TeamsPage() {
       <div className="wave-entrance-1 flex items-center justify-between">
         <div>
           <h1 className="font-display text-3xl tracking-tight">Teams</h1>
-          <p className="mt-2 text-[var(--text-secondary)]">
-            Collective health, shared progress, team-level coaching.
-          </p>
+          <p className="mt-2 text-[var(--text-secondary)]">Collective health, shared progress, team-level coaching.</p>
         </div>
         <button
           type="button"
@@ -97,9 +95,7 @@ function TeamsPage() {
 
       {/* Placeholder for team list */}
       <div className="wave-entrance-3 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-        <p className="text-[var(--text-secondary)]">
-          Create a team to start tracking collective health and progress.
-        </p>
+        <p className="text-[var(--text-secondary)]">Create a team to start tracking collective health and progress.</p>
       </div>
     </div>
   )

@@ -11,7 +11,8 @@ export function buildModeCoachPrompt(params: {
   doneSignal: string
   totalFields: number
 }): string {
-  const { modeName, fieldName, fieldIndex, fieldDescription, userResponse, aiCoachPrompts, doneSignal, totalFields } = params
+  const { modeName, fieldName, fieldIndex, fieldDescription, userResponse, aiCoachPrompts, doneSignal, totalFields } =
+    params
 
   const coachPrompt = aiCoachPrompts.find((p) => p.fieldIndex === fieldIndex)
 

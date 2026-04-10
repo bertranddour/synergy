@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { magicLinkRequestSchema, oauthCallbackSchema, authResponseSchema } from './auth'
+import { describe, expect, it } from 'vitest'
+import { authResponseSchema, magicLinkRequestSchema, oauthCallbackSchema } from './auth'
 
 describe('auth schemas', () => {
   describe('magicLinkRequestSchema', () => {

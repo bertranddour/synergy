@@ -1,9 +1,9 @@
+import { and, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { eq, and } from 'drizzle-orm'
+import { trainingPrograms, userPrograms } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
-import { trainingPrograms, userPrograms } from '../db/schema.js'
 
 const programRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
@@ -56,10 +56,13 @@ programRoutes.post('/:slug/enroll', async (c) => {
     completedModes: [],
   })
 
-  return c.json({
-    userProgram: { id, programSlug: slug, status: 'active', currentDay: 1 },
-    firstMode: program.modeSequence[0] ?? null,
-  }, 201)
+  return c.json(
+    {
+      userProgram: { id, programSlug: slug, status: 'active', currentDay: 1 },
+      firstMode: program.modeSequence[0] ?? null,
+    },
+    201,
+  )
 })
 
 // ─── Get Active Program ──────────────────────────────────────────────────────
@@ -120,10 +123,13 @@ programRoutes.post('/active/complete', async (c) => {
   })
   if (!userProgram) return c.json({ error: 'No active program' }, 404)
 
-  await db.update(userPrograms).set({
-    status: 'completed',
-    completedAt: new Date(),
-  }).where(eq(userPrograms.id, userProgram.id))
+  await db
+    .update(userPrograms)
+    .set({
+      status: 'completed',
+      completedAt: new Date(),
+    })
+    .where(eq(userPrograms.id, userProgram.id))
 
   return c.json({
     completed: true,

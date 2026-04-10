@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { useAuthStore } from '../../stores/auth'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { HealthCard } from '../../components/dashboard/HealthCard'
-import { ProgressRings } from '../../components/dashboard/ProgressRings'
 import { NudgeCard } from '../../components/dashboard/NudgeCard'
+import { ProgressRings } from '../../components/dashboard/ProgressRings'
+import { useAuthStore } from '../../stores/auth'
 
 export const Route = createFileRoute('/_auth/')({
   component: Dashboard,
@@ -53,8 +53,11 @@ function Dashboard() {
       if (!res.ok) throw new Error('Failed to fetch')
       return res.json() as Promise<{
         observations: Array<{
-          id: string; triggerType: string; title: string
-          message: string; suggestedModeSlug: string | null
+          id: string
+          triggerType: string
+          title: string
+          message: string
+          suggestedModeSlug: string | null
         }>
       }>
     },
@@ -76,17 +79,12 @@ function Dashboard() {
       {/* Header */}
       <div className="wave-entrance-1 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl tracking-tight md:text-4xl">
-            Welcome back, {user?.name}
-          </h1>
+          <h1 className="font-display text-3xl tracking-tight md:text-4xl">Welcome back, {user?.name}</h1>
           <p className="mt-2 text-[var(--text-secondary)]">
             {healthQuery.data?.biggestRisk ?? 'Your business health at a glance'}
           </p>
         </div>
-        <Link
-          to="/modes"
-          className="neo-btn shadow-neo-button rounded-full px-6 py-3 text-sm font-semibold"
-        >
+        <Link to="/modes" className="neo-btn shadow-neo-button rounded-full px-6 py-3 text-sm font-semibold">
           Browse Modes
         </Link>
       </div>
@@ -128,9 +126,7 @@ function Dashboard() {
       {/* Alicia's Nudges */}
       {nudgesQuery.data && nudgesQuery.data.observations.length > 0 && (
         <div className="wave-entrance-3 space-y-3">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-            From Alicia
-          </h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">From Alicia</h2>
           {nudgesQuery.data.observations.map((obs) => (
             <NudgeCard
               key={obs.id}

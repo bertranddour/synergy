@@ -1,12 +1,12 @@
-import { Hono } from 'hono'
-import { eq } from 'drizzle-orm'
 import { magicLinkRequestSchema, oauthCallbackSchema } from '@synergy/shared'
+import { eq } from 'drizzle-orm'
+import { Hono } from 'hono'
+import { users } from '../db/schema.js'
 import type { Env } from '../env.js'
+import { signToken, verifyToken } from '../lib/crypto.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
-import { signToken, verifyToken } from '../lib/crypto.js'
 import { signJWT } from '../middleware/auth.js'
-import { users } from '../db/schema.js'
 
 const authRoutes = new Hono<{ Bindings: Env }>()
 
@@ -95,11 +95,15 @@ authRoutes.get('/verify', async (c) => {
   const jwt = await signJWT({ sub: user.id, email: user.email }, c.env.JWT_SECRET)
 
   // Store session in KV (7-day TTL)
-  await c.env.KV.put(`session:${user.id}`, JSON.stringify({
-    userId: user.id,
-    email: user.email,
-    createdAt: Date.now(),
-  }), { expirationTtl: 7 * 24 * 60 * 60 })
+  await c.env.KV.put(
+    `session:${user.id}`,
+    JSON.stringify({
+      userId: user.id,
+      email: user.email,
+      createdAt: Date.now(),
+    }),
+    { expirationTtl: 7 * 24 * 60 * 60 },
+  )
 
   return c.json({
     token: jwt,
@@ -168,10 +172,7 @@ authRoutes.get('/me', async (c) => {
     ['verify'],
   )
   const data = encoder.encode(`${headerB64}.${payloadB64}`)
-  const signature = Uint8Array.from(
-    atob(signatureB64.replace(/-/g, '+').replace(/_/g, '/')),
-    (c) => c.charCodeAt(0),
-  )
+  const signature = Uint8Array.from(atob(signatureB64.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))
   const valid = await crypto.subtle.verify('HMAC', key, signature, data)
   if (!valid) {
     return c.json({ error: 'Invalid token' }, 401)
@@ -210,11 +211,15 @@ authRoutes.get('/me', async (c) => {
   if (hoursUntilExpiry < 24) {
     newToken = await signJWT({ sub: user.id, email: user.email }, c.env.JWT_SECRET)
     // Refresh session TTL
-    await c.env.KV.put(`session:${user.id}`, JSON.stringify({
-      userId: user.id,
-      email: user.email,
-      createdAt: Date.now(),
-    }), { expirationTtl: 7 * 24 * 60 * 60 })
+    await c.env.KV.put(
+      `session:${user.id}`,
+      JSON.stringify({
+        userId: user.id,
+        email: user.email,
+        createdAt: Date.now(),
+      }),
+      { expirationTtl: 7 * 24 * 60 * 60 },
+    )
   }
 
   return c.json({

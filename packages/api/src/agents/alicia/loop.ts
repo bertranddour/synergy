@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+import type Anthropic from '@anthropic-ai/sdk'
 import type { Database } from '../../lib/db.js'
 import { ALICIA_TOOLS, executeTool } from './tools/index.js'
 
@@ -25,16 +25,7 @@ interface AliciaLoopResult {
  * feed results back, and continue until Claude produces a final text response.
  */
 export async function runAliciaLoop(params: AliciaLoopParams): Promise<AliciaLoopResult> {
-  const {
-    anthropic,
-    db,
-    userId,
-    systemPrompt,
-    messages,
-    onTextChunk,
-    onToolCall,
-    maxTurns = 5,
-  } = params
+  const { anthropic, db, userId, systemPrompt, messages, onTextChunk, onToolCall, maxTurns = 5 } = params
 
   const conversationMessages = [...messages]
   let fullResponse = ''
@@ -89,12 +80,7 @@ export async function runAliciaLoop(params: AliciaLoopParams): Promise<AliciaLoo
       onToolCall?.(toolUse.name)
       toolsUsed.push(toolUse.name)
 
-      const result = await executeTool(
-        db,
-        userId,
-        toolUse.name,
-        toolUse.input as Record<string, unknown>,
-      )
+      const result = await executeTool(db, userId, toolUse.name, toolUse.input as Record<string, unknown>)
 
       toolResults.push({
         type: 'tool_result',

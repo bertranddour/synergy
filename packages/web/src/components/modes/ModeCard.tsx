@@ -28,13 +28,8 @@ export function ModeCard({
     >
       {/* Framework badge */}
       <div className="flex items-center gap-2">
-        <span
-          className="h-2 w-2 rounded-full"
-          style={{ backgroundColor: frameworkColor }}
-        />
-        <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">
-          {frameworkName}
-        </span>
+        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: frameworkColor }} />
+        <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">{frameworkName}</span>
         <span className="text-xs text-[var(--text-tertiary)]">·</span>
         <span className="text-xs text-[var(--text-tertiary)]">{flowName}</span>
       </div>
@@ -43,9 +38,7 @@ export function ModeCard({
       <h3 className="font-display mt-3 text-xl">{name}</h3>
 
       {/* Purpose */}
-      <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
-        {purpose}
-      </p>
+      <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">{purpose}</p>
 
       {/* Footer */}
       <div className="mt-4 flex items-center gap-4 text-xs text-[var(--text-tertiary)]">

@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useAuthStore } from '../../../stores/auth'
-import { useThemeStore } from '../../../hooks/use-theme'
 import { FRAMEWORK_COLORS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
+import { useThemeStore } from '../../../hooks/use-theme'
+import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/settings/')({
   component: SettingsPage,
@@ -59,14 +59,12 @@ function SettingsPage() {
       return res.json() as Promise<Record<string, unknown>>
     },
     onSuccess: (data: Record<string, unknown>) => {
-      updateUser({ name: data['name'] as string, stage: data['stage'] as string })
+      updateUser({ name: data.name as string, stage: data.stage as string })
     },
   })
 
   const allFrameworks = Object.keys(FRAMEWORK_COLORS) as FrameworkSlug[]
-  const activeSet = new Set(
-    frameworksQuery.data?.frameworks.filter((f) => f.active).map((f) => f.slug) ?? [],
-  )
+  const activeSet = new Set(frameworksQuery.data?.frameworks.filter((f) => f.active).map((f) => f.slug) ?? [])
 
   return (
     <div className="space-y-8">
@@ -136,14 +134,15 @@ function SettingsPage() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span
-                    className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: FRAMEWORK_COLORS[slug] }}
-                  />
+                  <span className="h-3 w-3 rounded-full" style={{ backgroundColor: FRAMEWORK_COLORS[slug] }} />
                   <span className="font-semibold">{FRAMEWORK_NAMES[slug]}</span>
-                  <span className={`ml-auto rounded-full px-3 py-0.5 text-xs ${
-                    isActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'text-[var(--text-tertiary)]'
-                  }`}>
+                  <span
+                    className={`ml-auto rounded-full px-3 py-0.5 text-xs ${
+                      isActive
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                        : 'text-[var(--text-tertiary)]'
+                    }`}
+                  >
                     {isActive ? 'Active' : 'Inactive'}
                   </span>
                 </div>
@@ -178,7 +177,10 @@ function SettingsPage() {
         <div className="mt-4 flex gap-3">
           <button
             type="button"
-            onClick={() => { clearAuth(); window.location.href = '/login' }}
+            onClick={() => {
+              clearAuth()
+              window.location.href = '/login'
+            }}
             className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-[var(--text-secondary)]"
           >
             Sign out
@@ -189,10 +191,7 @@ function SettingsPage() {
           >
             Export data
           </button>
-          <button
-            type="button"
-            className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-red-500"
-          >
+          <button type="button" className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-red-500">
             Delete account
           </button>
         </div>

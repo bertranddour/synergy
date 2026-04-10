@@ -7,11 +7,13 @@ export const trainingProgramSchema = z.object({
   description: z.string(),
   durationDays: z.number().int().positive(),
   frameworksRequired: z.array(z.enum(['core', 'air', 'max', 'synergy'])),
-  modeSequence: z.array(z.object({
-    day: z.number().int().positive(),
-    modeSlug: z.string(),
-    description: z.string(),
-  })),
+  modeSequence: z.array(
+    z.object({
+      day: z.number().int().positive(),
+      modeSlug: z.string(),
+      description: z.string(),
+    }),
+  ),
   targetStage: z.enum(['solo', 'small-team', 'growing', 'scaling']).nullable(),
 })
 
@@ -39,12 +41,14 @@ export const enrollProgramSchema = z.object({
 export const activeProgramSchema = z.object({
   program: trainingProgramSchema,
   userProgram: userProgramSchema,
-  schedule: z.array(z.object({
-    day: z.number().int().positive(),
-    date: z.string(),
-    modeSlug: z.string(),
-    completed: z.boolean(),
-  })),
+  schedule: z.array(
+    z.object({
+      day: z.number().int().positive(),
+      date: z.string(),
+      modeSlug: z.string(),
+      completed: z.boolean(),
+    }),
+  ),
   metricsBaseline: z.record(z.string(), z.number()),
 })
 
@@ -52,12 +56,14 @@ export const programCompletionSchema = z.object({
   program: trainingProgramSchema,
   metricsBaseline: z.record(z.string(), z.number()),
   metricsFinal: z.record(z.string(), z.number()),
-  improvements: z.array(z.object({
-    metric: z.string(),
-    before: z.number(),
-    after: z.number(),
-    change: z.string(),
-  })),
+  improvements: z.array(
+    z.object({
+      metric: z.string(),
+      before: z.number(),
+      after: z.number(),
+      change: z.string(),
+    }),
+  ),
   aliciaSummary: z.string(),
 })
 

@@ -1,9 +1,9 @@
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useQuery, useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
+import { FieldStep } from '../../../components/modes/FieldStep'
 import { useAuthStore } from '../../../stores/auth'
 import { useRunnerStore } from '../../../stores/runner'
-import { FieldStep } from '../../../components/modes/FieldStep'
 
 export const Route = createFileRoute('/_auth/runner/$sessionId')({
   component: ModeRunner,
@@ -40,14 +40,7 @@ function ModeRunner() {
   const { sessionId } = Route.useParams()
   const token = useAuthStore((s) => s.token)
   const navigate = useNavigate()
-  const {
-    currentFieldIndex,
-    fieldsData,
-    startSession,
-    setFieldData,
-    advanceField,
-    reset,
-  } = useRunnerStore()
+  const { currentFieldIndex, fieldsData, startSession, setFieldData, advanceField, reset } = useRunnerStore()
 
   const [completed, setCompleted] = useState(false)
 
@@ -59,7 +52,7 @@ function ModeRunner() {
         headers: { Authorization: `Bearer ${token}` },
       })
       if (!res.ok) throw new Error('Failed to load session')
-      const data = await res.json() as SessionData
+      const data = (await res.json()) as SessionData
 
       // Initialize runner store
       if (data.mode) {
@@ -143,27 +136,21 @@ function ModeRunner() {
           <div className="shadow-neo-panel mx-auto flex h-24 w-24 items-center justify-center rounded-full">
             <span className="text-4xl">✓</span>
           </div>
-          <h1 className="font-display mt-6 text-3xl tracking-tight">
-            {data.mode.name} Complete
-          </h1>
-          <p className="mt-3 text-[var(--text-secondary)]">
-            {data.mode.doneSignal}
-          </p>
+          <h1 className="font-display mt-6 text-3xl tracking-tight">{data.mode.name} Complete</h1>
+          <p className="mt-3 text-[var(--text-secondary)]">{data.mode.doneSignal}</p>
         </div>
 
         {completeMutation.data?.composabilitySuggestions &&
           completeMutation.data.composabilitySuggestions.length > 0 && (
-          <div className="wave-entrance-2 mt-8 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-            <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-              Next suggested mode
-            </p>
-            {completeMutation.data.composabilitySuggestions.map((s) => (
-              <p key={s.modeSlug} className="mt-2 text-[var(--text-secondary)]">
-                → {s.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}: {s.reason}
-              </p>
-            ))}
-          </div>
-        )}
+            <div className="wave-entrance-2 mt-8 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Next suggested mode</p>
+              {completeMutation.data.composabilitySuggestions.map((s) => (
+                <p key={s.modeSlug} className="mt-2 text-[var(--text-secondary)]">
+                  → {s.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}: {s.reason}
+                </p>
+              ))}
+            </div>
+          )}
 
         <div className="wave-entrance-3 mt-8 flex gap-4">
           <button
@@ -196,14 +183,12 @@ function ModeRunner() {
     <div className="mx-auto max-w-2xl px-6 py-8">
       {/* Mode name header */}
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="font-display text-lg text-[var(--text-secondary)]">
-          {data.mode.name}
-        </h1>
+        <h1 className="font-display text-lg text-[var(--text-secondary)]">{data.mode.name}</h1>
         <button
           type="button"
           onClick={() => {
             reset()
-            void navigate({ to: '/modes/$slug', params: { slug: data.mode!.slug } })
+            void navigate({ to: '/modes/$slug', params: { slug: data.mode?.slug ?? '' } })
           }}
           className="text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
         >
@@ -233,13 +218,13 @@ function ModeRunner() {
           <button
             key={i}
             type="button"
-            onClick={() => i < currentFieldIndex ? useRunnerStore.getState().goToField(i) : undefined}
+            onClick={() => (i < currentFieldIndex ? useRunnerStore.getState().goToField(i) : undefined)}
             className={`h-2 w-2 rounded-full transition-all ${
               i === currentFieldIndex
                 ? 'w-6 bg-[var(--text-primary)]'
                 : i < currentFieldIndex
-                ? 'bg-[var(--text-tertiary)] cursor-pointer'
-                : 'bg-[var(--zinc-300)]'
+                  ? 'bg-[var(--text-tertiary)] cursor-pointer'
+                  : 'bg-[var(--zinc-300)]'
             }`}
           />
         ))}

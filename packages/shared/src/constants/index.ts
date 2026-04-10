@@ -23,13 +23,7 @@ export const HEALTH_COLORS = {
 } as const
 
 /** Health categories */
-export const HEALTH_CATEGORIES = [
-  'validation',
-  'operational',
-  'team',
-  'scaling',
-  'ai-collaboration',
-] as const
+export const HEALTH_CATEGORIES = ['validation', 'operational', 'team', 'scaling', 'ai-collaboration'] as const
 
 /** Framework slugs */
 export type FrameworkSlug = keyof typeof FRAMEWORK_COLORS
@@ -70,13 +64,7 @@ export const PROACTIVE_TRIGGERS = [
 export type ProactiveTrigger = (typeof PROACTIVE_TRIGGERS)[number]
 
 /** Alicia coaching surfaces */
-export const COACH_SURFACES = [
-  'dashboard',
-  'mode-runner',
-  'chat',
-  'assessment',
-  'composability',
-] as const
+export const COACH_SURFACES = ['dashboard', 'mode-runner', 'chat', 'assessment', 'composability'] as const
 export type CoachSurface = (typeof COACH_SURFACES)[number]
 
 /** Health score color for a given score */

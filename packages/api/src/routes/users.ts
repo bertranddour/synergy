@@ -1,9 +1,21 @@
+import { activateFrameworkSchema, updateUserSchema } from '@synergy/shared'
+import { and, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { eq, and } from 'drizzle-orm'
-import { updateUserSchema, activateFrameworkSchema } from '@synergy/shared'
+import {
+  assessments,
+  coachConversations,
+  frameworks,
+  metrics,
+  proactiveObservations,
+  progress,
+  sessions,
+  teamMembers,
+  userFrameworks,
+  userPrograms,
+  users,
+} from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
-import { users, userFrameworks, frameworks, sessions, metrics, assessments, progress, coachConversations, proactiveObservations, teamMembers, userPrograms } from '../db/schema.js'
 
 const userRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
@@ -135,10 +147,7 @@ userRoutes.post('/me/frameworks', async (c) => {
 
   // Check if already activated
   const existing = await db.query.userFrameworks.findFirst({
-    where: and(
-      eq(userFrameworks.userId, userId),
-      eq(userFrameworks.frameworkId, framework.id),
-    ),
+    where: and(eq(userFrameworks.userId, userId), eq(userFrameworks.frameworkId, framework.id)),
   })
 
   if (existing) {
@@ -147,10 +156,7 @@ userRoutes.post('/me/frameworks', async (c) => {
       await db
         .update(userFrameworks)
         .set({ active: true, activatedAt: new Date() })
-        .where(and(
-          eq(userFrameworks.userId, userId),
-          eq(userFrameworks.frameworkId, framework.id),
-        ))
+        .where(and(eq(userFrameworks.userId, userId), eq(userFrameworks.frameworkId, framework.id)))
     }
   } else {
     await db.insert(userFrameworks).values({
@@ -187,10 +193,7 @@ userRoutes.delete('/me/frameworks/:slug', async (c) => {
   await db
     .update(userFrameworks)
     .set({ active: false })
-    .where(and(
-      eq(userFrameworks.userId, userId),
-      eq(userFrameworks.frameworkId, framework.id),
-    ))
+    .where(and(eq(userFrameworks.userId, userId), eq(userFrameworks.frameworkId, framework.id)))
 
   return c.json({ deactivated: true })
 })
@@ -244,7 +247,18 @@ userRoutes.delete('/me', async (c) => {
 
   return c.json({
     deleted: true,
-    dataRemoved: ['user', 'sessions', 'metrics', 'assessments', 'progress', 'conversations', 'observations', 'frameworks', 'team_memberships', 'programs'],
+    dataRemoved: [
+      'user',
+      'sessions',
+      'metrics',
+      'assessments',
+      'progress',
+      'conversations',
+      'observations',
+      'frameworks',
+      'team_memberships',
+      'programs',
+    ],
   })
 })
 

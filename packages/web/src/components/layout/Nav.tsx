@@ -1,6 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { useAuthStore } from '../../stores/auth'
 import { useThemeStore } from '../../hooks/use-theme'
+import { useAuthStore } from '../../stores/auth'
 
 const NAV_ITEMS = [
   { to: '/' as const, label: 'Dashboard', icon: '◉' },
@@ -31,9 +31,7 @@ export function Nav() {
 
           {/* Nav items */}
           {NAV_ITEMS.map((item) => {
-            const isActive = item.to === '/'
-              ? location.pathname === '/'
-              : location.pathname.startsWith(item.to)
+            const isActive = item.to === '/' ? location.pathname === '/' : location.pathname.startsWith(item.to)
 
             return (
               <Link
@@ -62,9 +60,7 @@ export function Nav() {
                 type="button"
                 onClick={() => setTheme(t)}
                 className={`flex-1 rounded-full px-2 py-1.5 text-xs capitalize transition-all ${
-                  theme === t
-                    ? 'shadow-neo-embossed font-semibold'
-                    : 'text-[var(--text-tertiary)]'
+                  theme === t ? 'shadow-neo-embossed font-semibold' : 'text-[var(--text-tertiary)]'
                 }`}
               >
                 {t}
@@ -105,18 +101,14 @@ export function Nav() {
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-50 flex border-t border-[var(--zinc-300)] bg-[var(--surface)] md:hidden">
         {NAV_ITEMS.slice(0, 5).map((item) => {
-          const isActive = item.to === '/'
-            ? location.pathname === '/'
-            : location.pathname.startsWith(item.to)
+          const isActive = item.to === '/' ? location.pathname === '/' : location.pathname.startsWith(item.to)
 
           return (
             <Link
               key={item.to}
               to={item.to}
               className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] ${
-                isActive
-                  ? 'font-semibold text-[var(--text-primary)]'
-                  : 'text-[var(--text-tertiary)]'
+                isActive ? 'font-semibold text-[var(--text-primary)]' : 'text-[var(--text-tertiary)]'
               }`}
             >
               <span className="text-lg">{item.icon}</span>

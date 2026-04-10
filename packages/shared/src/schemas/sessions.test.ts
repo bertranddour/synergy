@@ -1,5 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import { createSessionSchema, updateSessionFieldSchema, completeSessionSchema, sessionListQuerySchema } from './sessions'
+import { describe, expect, it } from 'vitest'
+import {
+  completeSessionSchema,
+  createSessionSchema,
+  sessionListQuerySchema,
+  updateSessionFieldSchema,
+} from './sessions'
 
 describe('session schemas', () => {
   describe('createSessionSchema', () => {

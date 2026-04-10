@@ -1,4 +1,4 @@
-import { createRootRoute, Outlet, useNavigate, useLocation } from '@tanstack/react-router'
+import { createRootRoute, Outlet, useLocation, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import '../styles/global.css'
 import { useAuthStore } from '../stores/auth'

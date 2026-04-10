@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { signToken, verifyToken } from './crypto'
 
 describe('crypto', () => {
@@ -28,7 +28,7 @@ describe('crypto', () => {
       const payload = 'test-payload'
       const token = await signToken(payload, SECRET)
 
-      const tampered = token.slice(0, -1) + 'x'
+      const tampered = `${token.slice(0, -1)}x`
       const verified = await verifyToken(tampered, SECRET)
       expect(verified).toBeNull()
     })

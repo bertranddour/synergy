@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { frameworkSeeds, modeSeeds, programSeeds } from './seed'
 
 describe('seed data', () => {
@@ -87,7 +87,7 @@ describe('seed data', () => {
         for (const field of mode.fieldsSchema) {
           if (field.type === 'select') {
             expect(field.options).toBeDefined()
-            expect(field.options!.length).toBeGreaterThan(0)
+            expect(field.options?.length).toBeGreaterThan(0)
           }
         }
       }

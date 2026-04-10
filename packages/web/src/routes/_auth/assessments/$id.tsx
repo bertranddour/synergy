@@ -1,6 +1,6 @@
+import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/assessments/$id')({
@@ -63,10 +63,10 @@ function ActiveAssessment() {
       <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
         <div className="wave-entrance-1 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-10">
           <h1 className="font-display text-3xl">Assessment Complete</h1>
-          <p className="mt-4 text-5xl font-bold">{result.score}/{result.maxScore}</p>
-          <p className="mt-2 text-lg capitalize text-[var(--text-secondary)]">
-            {result.level.replace('-', ' ')}
+          <p className="mt-4 text-5xl font-bold">
+            {result.score}/{result.maxScore}
           </p>
+          <p className="mt-2 text-lg capitalize text-[var(--text-secondary)]">{result.level.replace('-', ' ')}</p>
           <button
             type="button"
             onClick={() => void navigate({ to: '/assessments' })}
@@ -98,7 +98,9 @@ function ActiveAssessment() {
       {/* Progress */}
       <div className="mb-8">
         <div className="flex justify-between text-xs text-[var(--text-tertiary)]">
-          <span>Scenario {currentIndex + 1} of {scenarios.length}</span>
+          <span>
+            Scenario {currentIndex + 1} of {scenarios.length}
+          </span>
           <span>{Math.round(((currentIndex + 1) / scenarios.length) * 100)}%</span>
         </div>
         <div className="shadow-neo-inset mt-2 h-2 overflow-hidden rounded-full">
@@ -122,18 +124,14 @@ function ActiveAssessment() {
             type="button"
             onClick={() => handleSelect(scenario.id, key)}
             className={`neo-btn w-full rounded-[1.2rem] p-5 text-left transition-all ${
-              answers[scenario.id] === key
-                ? 'shadow-neo-embossed'
-                : 'shadow-neo-well'
+              answers[scenario.id] === key ? 'shadow-neo-embossed' : 'shadow-neo-well'
             }`}
           >
             <div className="flex gap-3">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold uppercase shadow-neo-button">
                 {key}
               </span>
-              <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
-                {scenario.options[key]}
-              </p>
+              <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{scenario.options[key]}</p>
             </div>
           </button>
         ))}

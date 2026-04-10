@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import { useAuthStore } from '../../../stores/auth'
-import { ModeCard } from '../../../components/modes/ModeCard'
 import { FRAMEWORK_COLORS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
+import { useQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
+import { ModeCard } from '../../../components/modes/ModeCard'
+import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/modes/')({
   component: ModeLibrary,
@@ -46,9 +46,7 @@ function ModeLibrary() {
   return (
     <div className="space-y-8">
       <div className="wave-entrance-1">
-        <h1 className="font-display text-3xl tracking-tight md:text-4xl">
-          Mode Library
-        </h1>
+        <h1 className="font-display text-3xl tracking-tight md:text-4xl">Mode Library</h1>
         <p className="mt-2 text-[var(--text-secondary)]">
           29 modes across 4 frameworks. Find the right workout for your business.
         </p>
@@ -84,9 +82,7 @@ function ModeLibrary() {
               type="button"
               onClick={() => setActiveFilter(activeFilter === slug ? null : slug)}
               className={`neo-btn rounded-full px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors ${
-                activeFilter === slug
-                  ? 'shadow-neo-button font-semibold'
-                  : 'text-[var(--text-tertiary)]'
+                activeFilter === slug ? 'shadow-neo-button font-semibold' : 'text-[var(--text-tertiary)]'
               }`}
               style={activeFilter === slug ? { color: FRAMEWORK_COLORS[slug] } : undefined}
             >
@@ -106,9 +102,7 @@ function ModeLibrary() {
       ) : data?.modes.length === 0 ? (
         <div className="shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
           <p className="text-[var(--text-secondary)]">
-            {search
-              ? `No modes match "${search}"`
-              : 'Activate a framework in Settings to see modes.'}
+            {search ? `No modes match "${search}"` : 'Activate a framework in Settings to see modes.'}
           </p>
         </div>
       ) : (

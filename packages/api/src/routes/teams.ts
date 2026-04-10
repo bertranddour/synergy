@@ -1,10 +1,10 @@
+import { addMemberSchema, createTeamSchema } from '@synergy/shared'
+import { and, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { eq, and } from 'drizzle-orm'
-import { createTeamSchema, addMemberSchema } from '@synergy/shared'
+import { teamMembers, teams, users } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
-import { teams, teamMembers, users } from '../db/schema.js'
 import { calculateHealth } from '../services/health.js'
 
 const teamRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
@@ -39,9 +39,12 @@ teamRoutes.post('/', async (c) => {
     joinedAt: now,
   })
 
-  return c.json({
-    team: { id, name: parsed.data.name, type: parsed.data.type },
-  }, 201)
+  return c.json(
+    {
+      team: { id, name: parsed.data.name, type: parsed.data.type },
+    },
+    201,
+  )
 })
 
 // ─── Get Team ────────────────────────────────────────────────────────────────
@@ -173,12 +176,7 @@ teamRoutes.delete('/:id/members/:userId', async (c) => {
   const memberUserId = c.req.param('userId')
   const db = createDb(c.env.DB)
 
-  await db
-    .delete(teamMembers)
-    .where(and(
-      eq(teamMembers.teamId, teamId),
-      eq(teamMembers.userId, memberUserId),
-    ))
+  await db.delete(teamMembers).where(and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, memberUserId)))
 
   return c.json({ removed: true })
 })

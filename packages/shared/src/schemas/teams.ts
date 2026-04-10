@@ -32,23 +32,29 @@ export const addMemberSchema = z.object({
 })
 
 export const teamHealthSchema = z.object({
-  teamHealth: z.array(z.object({
-    name: z.string(),
-    score: z.number().min(0).max(100),
-    trend: z.enum(['improving', 'stable', 'declining']),
-  })),
-  memberProgress: z.array(z.object({
-    userId: z.string(),
-    name: z.string(),
-    completion: z.number().min(0).max(100),
-    consistency: z.number().int().min(0),
-    growth: z.number().min(0).max(100),
-  })),
-  teamMetrics: z.array(z.object({
-    name: z.string(),
-    value: z.number(),
-    unit: z.string(),
-  })),
+  teamHealth: z.array(
+    z.object({
+      name: z.string(),
+      score: z.number().min(0).max(100),
+      trend: z.enum(['improving', 'stable', 'declining']),
+    }),
+  ),
+  memberProgress: z.array(
+    z.object({
+      userId: z.string(),
+      name: z.string(),
+      completion: z.number().min(0).max(100),
+      consistency: z.number().int().min(0),
+      growth: z.number().min(0).max(100),
+    }),
+  ),
+  teamMetrics: z.array(
+    z.object({
+      name: z.string(),
+      value: z.number(),
+      unit: z.string(),
+    }),
+  ),
 })
 
 export type Team = z.infer<typeof teamSchema>

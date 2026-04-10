@@ -50,12 +50,14 @@ export const modeListQuerySchema = z.object({
 })
 
 export const modeDetailSchema = modeSchema.extend({
-  recentSessions: z.array(z.object({
-    id: z.string(),
-    status: z.enum(['in_progress', 'completed', 'abandoned']),
-    startedAt: z.string().datetime(),
-    completedAt: z.string().datetime().nullable(),
-  })),
+  recentSessions: z.array(
+    z.object({
+      id: z.string(),
+      status: z.enum(['in_progress', 'completed', 'abandoned']),
+      startedAt: z.string().datetime(),
+      completedAt: z.string().datetime().nullable(),
+    }),
+  ),
 })
 
 export type Mode = z.infer<typeof modeSchema>

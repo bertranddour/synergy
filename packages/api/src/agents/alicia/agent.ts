@@ -121,16 +121,13 @@ export class AliciaAgent extends DurableObject<Env> {
 
   /** Load a conversation from SQLite */
   async loadConversation(conversationId: string): Promise<boolean> {
-    const cursor = this.ctx.storage.sql.exec(
-      `SELECT messages, context FROM conversations WHERE id = ?`,
-      conversationId,
-    )
+    const cursor = this.ctx.storage.sql.exec(`SELECT messages, context FROM conversations WHERE id = ?`, conversationId)
     const rows = cursor.toArray()
     if (rows.length === 0) return false
 
     const row = rows[0]!
-    this.state.messages = JSON.parse(row['messages'] as string) as ConversationMessage[]
-    this.state.contextSnapshot = JSON.parse(row['context'] as string) as Record<string, unknown>
+    this.state.messages = JSON.parse(row.messages as string) as ConversationMessage[]
+    this.state.contextSnapshot = JSON.parse(row.context as string) as Record<string, unknown>
     this.state.conversationId = conversationId
     await this.persist()
     return true
@@ -149,7 +146,7 @@ export class AliciaAgent extends DurableObject<Env> {
     const url = new URL(request.url)
 
     if (url.pathname === '/init' && request.method === 'POST') {
-      const body = await request.json() as { userId: string }
+      const body = (await request.json()) as { userId: string }
       await this.init(body.userId)
       return Response.json({ ok: true })
     }

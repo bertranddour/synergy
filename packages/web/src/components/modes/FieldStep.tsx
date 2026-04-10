@@ -26,9 +26,7 @@ export function FieldStep({
   onSubmit,
   isLast,
 }: FieldStepProps) {
-  const [inputValue, setInputValue] = useState<string>(
-    typeof value === 'string' ? value : '',
-  )
+  const [inputValue, setInputValue] = useState<string>(typeof value === 'string' ? value : '')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,11 +57,7 @@ export function FieldStep({
       {/* Field header */}
       <h2 className="font-display text-2xl md:text-3xl">{name}</h2>
       <p className="mt-3 text-[var(--text-secondary)]">{description}</p>
-      {example && (
-        <p className="mt-2 text-sm italic text-[var(--text-tertiary)]">
-          Example: {example}
-        </p>
-      )}
+      {example && <p className="mt-2 text-sm italic text-[var(--text-tertiary)]">Example: {example}</p>}
 
       {/* Input */}
       <div className="mt-8">
@@ -75,9 +69,7 @@ export function FieldStep({
                 type="button"
                 onClick={() => setInputValue(option)}
                 className={`neo-btn block w-full rounded-[1.2rem] p-4 text-left transition-all ${
-                  inputValue === option
-                    ? 'shadow-neo-inset font-semibold'
-                    : 'shadow-neo-button'
+                  inputValue === option ? 'shadow-neo-inset font-semibold' : 'shadow-neo-button'
                 }`}
               >
                 {option}

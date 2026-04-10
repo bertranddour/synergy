@@ -1,8 +1,8 @@
+import { and, eq, gte } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { eq, and, gte } from 'drizzle-orm'
+import { sessions } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
-import { sessions } from '../db/schema.js'
 
 const progressRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
@@ -28,11 +28,7 @@ progressRoutes.get('/', async (c) => {
   const completedThisPeriod = await db
     .select()
     .from(sessions)
-    .where(and(
-      eq(sessions.userId, userId),
-      eq(sessions.status, 'completed'),
-      gte(sessions.completedAt, periodStart),
-    ))
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.completedAt, periodStart)))
 
   const modesCompleted = completedThisPeriod.length
   const modesTarget = 5 // default recommendation
@@ -40,7 +36,7 @@ progressRoutes.get('/', async (c) => {
 
   // Consistency streak: count consecutive weeks with at least 1 completion
   let streakWeeks = 0
-  let checkDate = new Date(periodStart)
+  const checkDate = new Date(periodStart)
   checkDate.setDate(checkDate.getDate() - 7) // start from previous week
 
   for (let i = 0; i < 52; i++) {
@@ -48,11 +44,7 @@ progressRoutes.get('/', async (c) => {
     const weekSessions = await db
       .select()
       .from(sessions)
-      .where(and(
-        eq(sessions.userId, userId),
-        eq(sessions.status, 'completed'),
-        gte(sessions.completedAt, weekStart),
-      ))
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.completedAt, weekStart)))
       .limit(1)
 
     if (weekSessions.length > 0) {

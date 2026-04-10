@@ -1,14 +1,15 @@
-import Anthropic from '@anthropic-ai/sdk'
-import { eq, and, desc } from 'drizzle-orm'
+import type Anthropic from '@anthropic-ai/sdk'
+import { and, desc, eq } from 'drizzle-orm'
+import { assessments, frameworks, modes, progress, sessions, userFrameworks, users } from '../../../db/schema.js'
 import type { Database } from '../../../lib/db.js'
-import { users, sessions, modes, frameworks, userFrameworks, assessments, progress } from '../../../db/schema.js'
 import { calculateHealth } from '../../../services/health.js'
 
 /** Tool definitions for the Anthropic SDK */
 export const ALICIA_TOOLS: Anthropic.Messages.Tool[] = [
   {
     name: 'get_health_scores',
-    description: 'Get the user\'s current business health scores across all active categories (validation, operational, team, scaling, ai-collaboration). Returns scores 0-100, trends, and top metrics per category.',
+    description:
+      "Get the user's current business health scores across all active categories (validation, operational, team, scaling, ai-collaboration). Returns scores 0-100, trends, and top metrics per category.",
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -17,7 +18,7 @@ export const ALICIA_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'get_recent_sessions',
-    description: 'Get the user\'s recent mode sessions. Shows which modes they ran, when, and decisions made.',
+    description: "Get the user's recent mode sessions. Shows which modes they ran, when, and decisions made.",
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -28,7 +29,7 @@ export const ALICIA_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'get_business_context',
-    description: 'Get the user\'s business context: stage, team size, active frameworks, onboarding status.',
+    description: "Get the user's business context: stage, team size, active frameworks, onboarding status.",
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -48,7 +49,7 @@ export const ALICIA_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'get_assessment_history',
-    description: 'Get the user\'s assessment history for a specific framework. Shows scores, levels, and progression.',
+    description: "Get the user's assessment history for a specific framework. Shows scores, levels, and progression.",
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -59,7 +60,8 @@ export const ALICIA_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'get_progress_rings',
-    description: 'Get the user\'s current progress ring values: completion percentage, consistency streak, and growth score.',
+    description:
+      "Get the user's current progress ring values: completion percentage, consistency streak, and growth score.",
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -82,7 +84,7 @@ export async function executeTool(
     }
 
     case 'get_recent_sessions': {
-      const limit = (toolInput['limit'] as number) ?? 5
+      const limit = (toolInput.limit as number) ?? 5
       const recentSessions = await db
         .select({
           id: sessions.id,
@@ -101,15 +103,17 @@ export async function executeTool(
         .orderBy(desc(sessions.startedAt))
         .limit(limit)
 
-      return JSON.stringify(recentSessions.map((s) => ({
-        mode: s.modeName,
-        modeSlug: s.modeSlug,
-        framework: s.frameworkSlug,
-        status: s.status,
-        decision: s.decision,
-        startedAt: s.startedAt.toISOString(),
-        completedAt: s.completedAt?.toISOString() ?? null,
-      })))
+      return JSON.stringify(
+        recentSessions.map((s) => ({
+          mode: s.modeName,
+          modeSlug: s.modeSlug,
+          framework: s.frameworkSlug,
+          status: s.status,
+          decision: s.decision,
+          startedAt: s.startedAt.toISOString(),
+          completedAt: s.completedAt?.toISOString() ?? null,
+        })),
+      )
     }
 
     case 'get_business_context': {
@@ -131,7 +135,7 @@ export async function executeTool(
     }
 
     case 'suggest_mode': {
-      const weakness = toolInput['weakness'] as string
+      const weakness = toolInput.weakness as string
       const RECOMMENDATIONS: Record<string, string[]> = {
         validation: ['validation', 'insight-capture', 'business-engine'],
         operational: ['execution-tracker', 'delivery-check', 'priority-stack'],
@@ -141,7 +145,12 @@ export async function executeTool(
       }
       const suggested = RECOMMENDATIONS[weakness] ?? ['validation']
       const modeDetails = await db
-        .select({ slug: modes.slug, name: modes.name, purpose: modes.purpose, timeEstimateMinutes: modes.timeEstimateMinutes })
+        .select({
+          slug: modes.slug,
+          name: modes.name,
+          purpose: modes.purpose,
+          timeEstimateMinutes: modes.timeEstimateMinutes,
+        })
         .from(modes)
         .where(eq(modes.slug, suggested[0]!))
 
@@ -149,7 +158,7 @@ export async function executeTool(
     }
 
     case 'get_assessment_history': {
-      const fwSlug = toolInput['framework'] as 'core' | 'air' | 'max' | 'synergy'
+      const fwSlug = toolInput.framework as 'core' | 'air' | 'max' | 'synergy'
       const fw = await db.query.frameworks.findFirst({ where: eq(frameworks.slug, fwSlug) })
       if (!fw) return JSON.stringify({ error: 'Framework not found' })
 
@@ -160,13 +169,15 @@ export async function executeTool(
         .orderBy(desc(assessments.completedAt))
         .limit(5)
 
-      return JSON.stringify(history.map((a) => ({
-        status: a.status,
-        totalScore: a.totalScore,
-        maxScore: a.maxScore,
-        level: a.level,
-        completedAt: a.completedAt?.toISOString() ?? null,
-      })))
+      return JSON.stringify(
+        history.map((a) => ({
+          status: a.status,
+          totalScore: a.totalScore,
+          maxScore: a.maxScore,
+          level: a.level,
+          completedAt: a.completedAt?.toISOString() ?? null,
+        })),
+      )
     }
 
     case 'get_progress_rings': {
