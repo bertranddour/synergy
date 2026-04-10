@@ -37,13 +37,16 @@ export function Nav() {
               <Link
                 key={item.to}
                 to={item.to}
+                aria-current={isActive ? 'page' : undefined}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
                   isActive
                     ? 'shadow-neo-embossed font-semibold text-[var(--text-primary)]'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <span className="w-5 text-center">{item.icon}</span>
+                <span className="w-5 text-center" aria-hidden="true">
+                  {item.icon}
+                </span>
                 {item.label}
               </Link>
             )
@@ -98,27 +101,41 @@ export function Nav() {
         </div>
       </nav>
 
-      {/* Mobile bottom nav */}
+      {/* Mobile bottom nav — all items visible, horizontally scrollable */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-50 flex border-t border-[var(--zinc-300)] bg-[var(--surface)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 flex overflow-x-auto scrollbar-hide border-t border-[var(--zinc-300)] bg-[var(--surface)] md:hidden"
         aria-label="Mobile navigation"
       >
-        {NAV_ITEMS.slice(0, 5).map((item) => {
+        {NAV_ITEMS.map((item) => {
           const isActive = item.to === '/' ? location.pathname === '/' : location.pathname.startsWith(item.to)
 
           return (
             <Link
               key={item.to}
               to={item.to}
-              className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] ${
+              aria-current={isActive ? 'page' : undefined}
+              className={`flex min-w-[4.5rem] flex-col items-center gap-0.5 py-3 text-[10px] ${
                 isActive ? 'font-semibold text-[var(--text-primary)]' : 'text-[var(--text-tertiary)]'
               }`}
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="text-base">{item.icon}</span>
               {item.label}
             </Link>
           )
         })}
+        {/* Settings as last mobile nav item */}
+        <Link
+          to="/settings"
+          aria-current={location.pathname.startsWith('/settings') ? 'page' : undefined}
+          className={`flex min-w-[4.5rem] flex-col items-center gap-0.5 py-3 text-[10px] ${
+            location.pathname.startsWith('/settings')
+              ? 'font-semibold text-[var(--text-primary)]'
+              : 'text-[var(--text-tertiary)]'
+          }`}
+        >
+          <span className="text-base">⚙</span>
+          Settings
+        </Link>
       </nav>
     </>
   )

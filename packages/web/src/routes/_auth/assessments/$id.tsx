@@ -102,7 +102,7 @@ function ActiveAssessment() {
   if (assessmentQuery.isError) {
     return (
       <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-10 text-center">
-        <p className="text-red-500">Failed to load assessment</p>
+        <p className="text-[var(--color-error)]">Failed to load assessment</p>
         <button
           type="button"
           onClick={() => void navigate({ to: '/assessments' })}

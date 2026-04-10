@@ -54,6 +54,12 @@
   --color-health-orange: #F97316;
   --color-health-red: #EF4444;
 
+  /* Semantic colors */
+  --color-error: #EF4444;
+  --color-success: #22C55E;
+  --color-badge-neutral-bg: #F3F4F6;
+  --color-badge-neutral-text: #6B7280;
+
   /* Wave Motion System */
   --wave-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --wave-ease-out: cubic-bezier(0.33, 1, 0.68, 1);
@@ -84,6 +90,11 @@
   --zinc-600: oklch(0.552 0.014 286);
   --zinc-800: oklch(0.92 0.004 286);
   --zinc-900: oklch(0.967 0.001 286);
+
+  --color-error: #F87171;
+  --color-success: #4ADE80;
+  --color-badge-neutral-bg: rgba(55, 65, 81, 0.5);
+  --color-badge-neutral-text: #9CA3AF;
 }
 
 /* ─── Base Layer ──────────────────────────────────────────────────────────── */

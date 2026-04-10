@@ -218,7 +218,7 @@ function SettingsPage() {
                 window.location.href = '/login'
               }
             }}
-            className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-red-500"
+            className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-[var(--color-error)]"
           >
             Delete account
           </button>

@@ -18,7 +18,7 @@ export function ChatBubble({ sender, content, isStreaming }: ChatBubbleProps) {
 
         {/* Message */}
         <div className="max-w-[80%] rounded-[1.2rem] rounded-tl-sm border-l-3 border-[var(--color-synergy)] bg-[var(--surface)] px-5 py-3 shadow-neo-well">
-          <p className="whitespace-pre-wrap leading-relaxed text-[var(--text-primary)]">
+          <p className="whitespace-pre-wrap leading-relaxed text-[var(--text-primary)]" aria-live="polite">
             {content}
             {isStreaming && <span className="ml-1 inline-block h-4 w-0.5 animate-pulse bg-[var(--color-synergy)]" />}
           </p>

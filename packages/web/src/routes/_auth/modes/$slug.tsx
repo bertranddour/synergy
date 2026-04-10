@@ -194,7 +194,7 @@ function ModeDetail() {
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                       : session.status === 'in_progress'
                         ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                        : 'bg-gray-100 text-gray-500'
+                        : 'bg-[var(--color-badge-neutral-bg)] text-[var(--color-badge-neutral-text)]'
                   }`}
                 >
                   {session.status.replace('_', ' ')}

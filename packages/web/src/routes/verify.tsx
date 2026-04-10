@@ -57,7 +57,7 @@ function VerifyPage() {
       <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-10 text-center">
         {error ? (
           <>
-            <p className="text-lg font-semibold text-red-500">Verification failed</p>
+            <p className="text-lg font-semibold text-[var(--color-error)]">Verification failed</p>
             <p className="mt-2 text-sm text-[var(--text-secondary)]">{error}</p>
             <button
               type="button"

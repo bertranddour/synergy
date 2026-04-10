@@ -245,21 +245,26 @@ function ModeRunner() {
         <CoachCard message={coachText} isStreaming={coachStreaming} onDismiss={handleCoachDismiss} />
       )}
 
-      {/* Field navigator dots */}
-      <div className="mt-8 flex justify-center gap-2">
+      {/* Field navigator dots — min 44px touch targets */}
+      <div className="mt-8 flex justify-center gap-1">
         {fields.map((_, i) => (
           <button
-            key={i}
+            key={`field-dot-${i}`}
             type="button"
+            aria-label={`Go to field ${i + 1}${i === currentFieldIndex ? ' (current)' : ''}`}
             onClick={() => (i < currentFieldIndex ? useRunnerStore.getState().goToField(i) : undefined)}
-            className={`h-2 w-2 rounded-full transition-all ${
-              i === currentFieldIndex
-                ? 'w-6 bg-[var(--text-primary)]'
-                : i < currentFieldIndex
-                  ? 'bg-[var(--text-tertiary)] cursor-pointer'
-                  : 'bg-[var(--zinc-300)]'
-            }`}
-          />
+            className="flex h-11 w-11 items-center justify-center"
+          >
+            <span
+              className={`block rounded-full transition-all ${
+                i === currentFieldIndex
+                  ? 'h-3 w-6 bg-[var(--text-primary)]'
+                  : i < currentFieldIndex
+                    ? 'h-3 w-3 bg-[var(--text-tertiary)]'
+                    : 'h-3 w-3 bg-[var(--zinc-300)]'
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>

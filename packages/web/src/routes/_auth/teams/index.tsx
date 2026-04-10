@@ -121,7 +121,7 @@ function TeamsPage() {
         </div>
       ) : teamsQuery.isError ? (
         <div className="shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-8 text-center">
-          <p className="text-red-500">Failed to load teams</p>
+          <p className="text-[var(--color-error)]">Failed to load teams</p>
           <button
             type="button"
             onClick={() => void teamsQuery.refetch()}
