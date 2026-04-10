@@ -34,7 +34,8 @@ export async function runAliciaLoop(params: AliciaLoopParams): Promise<AliciaLoo
   for (let turn = 0; turn < maxTurns; turn++) {
     const stream = anthropic.messages.stream({
       model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
+      max_tokens: 16000,
+      thinking: { type: 'enabled', budget_tokens: 8000 },
       system: systemPrompt,
       tools: ALICIA_TOOLS,
       messages: conversationMessages,

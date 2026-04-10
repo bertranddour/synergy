@@ -68,6 +68,16 @@ export const ALICIA_TOOLS: Anthropic.Messages.Tool[] = [
       required: [],
     },
   },
+  {
+    name: 'check_stale_assumptions',
+    description:
+      'Check for assumptions that have not been tested recently (>90 days since last Validation Mode session). Returns stale items with age in days.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {},
+      required: [],
+    },
+  },
 ]
 
 /** Execute a tool call and return the result */
@@ -192,6 +202,54 @@ export async function executeTool(
         growth: latest.growthScore,
         modesCompletedThisPeriod: latest.modesCompletedThisPeriod,
         modesRecommendedThisPeriod: latest.modesRecommendedThisPeriod,
+      })
+    }
+
+    case 'check_stale_assumptions': {
+      // Find the most recent Validation Mode completion
+      const validationMode = await db.query.modes.findFirst({
+        where: eq(modes.slug, 'validation'),
+      })
+
+      if (!validationMode) {
+        return JSON.stringify({ stale: true, message: 'No Validation Mode found in database.' })
+      }
+
+      const recentValidation = await db
+        .select({
+          id: sessions.id,
+          completedAt: sessions.completedAt,
+          fieldsData: sessions.fieldsData,
+        })
+        .from(sessions)
+        .where(
+          and(eq(sessions.userId, userId), eq(sessions.modeId, validationMode.id), eq(sessions.status, 'completed')),
+        )
+        .orderBy(desc(sessions.completedAt))
+        .limit(5)
+
+      if (recentValidation.length === 0) {
+        return JSON.stringify({
+          stale: true,
+          daysSinceLastValidation: null,
+          message: 'No Validation Mode sessions completed ever. Assumptions are untested.',
+        })
+      }
+
+      const lastValidation = recentValidation[0]!
+      const daysSince = lastValidation.completedAt
+        ? Math.round((Date.now() - lastValidation.completedAt.getTime()) / (1000 * 60 * 60 * 24))
+        : null
+
+      const isStale = daysSince === null || daysSince > 90
+
+      return JSON.stringify({
+        stale: isStale,
+        daysSinceLastValidation: daysSince,
+        recentValidations: recentValidation.length,
+        message: isStale
+          ? `Last validation was ${daysSince ?? 'never'} days ago. Assumptions may be outdated.`
+          : `Last validation was ${daysSince} days ago. Looking good.`,
       })
     }
 
