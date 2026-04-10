@@ -9,6 +9,20 @@ import { calculateHealth } from '../services/health.js'
 
 const teamRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
+/** Verify the authenticated user is a member of the team. Returns the membership or null. */
+async function verifyTeamMembership(db: ReturnType<typeof createDb>, teamId: string, userId: string) {
+  return db.query.teamMembers.findFirst({
+    where: and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, userId)),
+  })
+}
+
+/** Verify the authenticated user is a team lead. Returns the membership or null. */
+async function verifyTeamLead(db: ReturnType<typeof createDb>, teamId: string, userId: string) {
+  const membership = await verifyTeamMembership(db, teamId, userId)
+  if (!membership || membership.role !== 'lead') return null
+  return membership
+}
+
 // ─── List User's Teams ───────────────────────────────────────────────────────
 
 teamRoutes.get('/', async (c) => {
@@ -92,8 +106,12 @@ teamRoutes.post('/', async (c) => {
 
 teamRoutes.get('/:id', async (c) => {
   try {
+    const userId = c.get('userId')
     const teamId = c.req.param('id')
     const db = createDb(c.env.DB)
+
+    const membership = await verifyTeamMembership(db, teamId, userId)
+    if (!membership) return c.json({ error: 'Not a team member' }, 403)
 
     const team = await db.query.teams.findFirst({ where: eq(teams.id, teamId) })
     if (!team) return c.json({ error: 'Team not found' }, 404)
@@ -136,8 +154,12 @@ teamRoutes.get('/:id', async (c) => {
 
 teamRoutes.get('/:id/health', async (c) => {
   try {
+    const userId = c.get('userId')
     const teamId = c.req.param('id')
     const db = createDb(c.env.DB)
+
+    const membership = await verifyTeamMembership(db, teamId, userId)
+    if (!membership) return c.json({ error: 'Not a team member' }, 403)
 
     const members = await db
       .select({ userId: teamMembers.userId, name: users.name })
@@ -190,14 +212,18 @@ teamRoutes.get('/:id/health', async (c) => {
 
 teamRoutes.post('/:id/members', async (c) => {
   try {
+    const userId = c.get('userId')
     const teamId = c.req.param('id')
+    const db = createDb(c.env.DB)
+
+    const leadCheck = await verifyTeamLead(db, teamId, userId)
+    if (!leadCheck) return c.json({ error: 'Only team leads can add members' }, 403)
+
     const body = await c.req.json()
     const parsed = addMemberSchema.safeParse(body)
     if (!parsed.success) {
       return c.json({ error: 'Invalid data', details: parsed.error.flatten() }, 400)
     }
-
-    const db = createDb(c.env.DB)
 
     // Find user by email
     const user = await db.query.users.findFirst({
@@ -229,9 +255,13 @@ teamRoutes.post('/:id/members', async (c) => {
 
 teamRoutes.delete('/:id/members/:userId', async (c) => {
   try {
+    const userId = c.get('userId')
     const teamId = c.req.param('id')
     const memberUserId = c.req.param('userId')
     const db = createDb(c.env.DB)
+
+    const leadCheck = await verifyTeamLead(db, teamId, userId)
+    if (!leadCheck) return c.json({ error: 'Only team leads can remove members' }, 403)
 
     await db.delete(teamMembers).where(and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, memberUserId)))
 

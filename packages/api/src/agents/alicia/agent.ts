@@ -164,6 +164,18 @@ export class AliciaAgent extends DurableObject<Env> {
       return Response.json({ ok: true })
     }
 
+    if (url.pathname === '/add-user-message' && request.method === 'POST') {
+      const body = (await request.json()) as { content: string }
+      await this.addUserMessage(body.content)
+      return Response.json({ ok: true })
+    }
+
+    if (url.pathname === '/add-assistant-message' && request.method === 'POST') {
+      const body = (await request.json()) as { content: string }
+      await this.addAssistantMessage(body.content)
+      return Response.json({ ok: true })
+    }
+
     return Response.json({ error: 'Not found' }, { status: 404 })
   }
 

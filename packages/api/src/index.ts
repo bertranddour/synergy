@@ -21,9 +21,10 @@ app.use(
   '/api/*',
   cors({
     origin: (origin) => {
-      // Allow localhost in dev, restrict in production
-      if (origin.includes('localhost') || origin.includes('127.0.0.1')) return origin
+      // Production origin
       if (origin === 'https://synergy.7flows.com') return origin
+      // Development origins (exact match only — no substring matching)
+      if (origin === 'http://localhost:5173' || origin === 'http://127.0.0.1:5173') return origin
       return ''
     },
     allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],

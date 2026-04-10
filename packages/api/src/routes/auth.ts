@@ -6,7 +6,7 @@ import type { Env } from '../env.js'
 import { signToken, verifyToken } from '../lib/crypto.js'
 import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
-import { signJWT } from '../middleware/auth.js'
+import { signJWT, verifyJWT } from '../middleware/auth.js'
 
 const authRoutes = new Hono<{ Bindings: Env }>()
 
@@ -27,7 +27,10 @@ authRoutes.post('/magic-link', async (c) => {
     await c.env.KV.put(`magic:${token}`, email, { expirationTtl: 900 })
 
     const verifyUrl = `${c.req.url.replace('/magic-link', '/verify')}?token=${encodeURIComponent(token)}`
-    console.log(`[Magic Link] ${email}: ${verifyUrl}`)
+    // Only log magic link URL in development — in production, send via email service
+    if (c.env.ENVIRONMENT === 'development') {
+      console.log(`[Magic Link] ${email}: ${verifyUrl}`)
+    }
 
     return c.json({ sent: true })
   } catch (err) {
@@ -60,11 +63,16 @@ authRoutes.get('/verify', async (c) => {
     // Delete token to prevent reuse
     await c.env.KV.delete(`magic:${token}`)
 
-    // Parse payload
+    // Parse payload and validate cryptographic TTL (defense in depth beyond KV TTL)
     let email: string
     try {
       const data = JSON.parse(payload) as { email: string; ts: number }
       email = data.email
+
+      // Reject tokens older than 15 minutes regardless of KV state
+      if (Date.now() - data.ts > 15 * 60 * 1000) {
+        return c.json({ error: 'Token expired' }, 401)
+      }
     } catch {
       return c.json({ error: 'Malformed token payload' }, 400)
     }
@@ -231,13 +239,10 @@ authRoutes.post('/logout', async (c) => {
 
     const token = authorization.replace('Bearer ', '')
 
-    try {
-      const payloadB64 = token.split('.')[1]
-      if (!payloadB64) return c.json({ logged_out: true })
-      const payload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/'))) as { sub: string }
-      await c.env.KV.delete(`session:${payload.sub}`)
-    } catch {
-      // Ignore decode errors — logout is best-effort
+    // Verify JWT signature before extracting claims (prevents arbitrary session deletion)
+    const jwtPayload = await verifyJWT(token, c.env.JWT_SECRET)
+    if (jwtPayload) {
+      await c.env.KV.delete(`session:${jwtPayload.sub}`)
     }
 
     return c.json({ logged_out: true })

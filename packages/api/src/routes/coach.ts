@@ -78,7 +78,7 @@ coachRoutes.post('/stream', async (c) => {
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          await runAliciaLoop({
+          const result = await runAliciaLoop({
             anthropic,
             db,
             userId,
@@ -91,6 +91,22 @@ coachRoutes.post('/stream', async (c) => {
               controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'tool_call', name })}\n\n`))
             },
           })
+
+          // Persist conversation to Durable Object
+          await aliciaDO.fetch(
+            new Request('http://internal/add-user-message', {
+              method: 'POST',
+              body: JSON.stringify({ content: message }),
+            }),
+          )
+          if (result.fullResponse) {
+            await aliciaDO.fetch(
+              new Request('http://internal/add-assistant-message', {
+                method: 'POST',
+                body: JSON.stringify({ content: result.fullResponse }),
+              }),
+            )
+          }
 
           // Send done event
           controller.enqueue(

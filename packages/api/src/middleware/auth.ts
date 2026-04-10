@@ -10,7 +10,7 @@ interface JWTPayload {
 }
 
 /** Decode and verify a JWT token using Web Crypto API */
-async function verifyJWT(token: string, secret: string): Promise<JWTPayload | null> {
+export async function verifyJWT(token: string, secret: string): Promise<JWTPayload | null> {
   try {
     const [headerB64, payloadB64, signatureB64] = token.split('.')
     if (!headerB64 || !payloadB64 || !signatureB64) return null
