@@ -85,9 +85,19 @@ modeRoutes.get('/:slug', async (c) => {
     const slug = c.req.param('slug')
     const db = createDb(c.env.DB)
 
-    const mode = await db.query.modes.findFirst({
-      where: eq(modes.slug, slug),
-    })
+    // Check KV cache first (1-hour TTL for mode specs — read-heavy, write-rare)
+    const cacheKey = `mode:${slug}`
+    const cachedMode = await c.env.KV.get(cacheKey)
+
+    let mode: typeof modes.$inferSelect | null = null
+    if (cachedMode) {
+      mode = JSON.parse(cachedMode) as typeof modes.$inferSelect
+    } else {
+      mode = (await db.query.modes.findFirst({ where: eq(modes.slug, slug) })) ?? null
+      if (mode) {
+        await c.env.KV.put(cacheKey, JSON.stringify(mode), { expirationTtl: 3600 })
+      }
+    }
 
     if (!mode) {
       return c.json({ error: 'Mode not found' }, 404)

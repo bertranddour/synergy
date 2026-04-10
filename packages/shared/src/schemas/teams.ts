@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const createTeamSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1).max(100),
   type: z.enum(['mission', 'platform', 'leadership-circle']),
 })
 

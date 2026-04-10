@@ -15,6 +15,9 @@ export interface Env {
   // Durable Objects
   ALICIA: DurableObjectNamespace
 
+  // Static Assets
+  ASSETS: Fetcher
+
   // Workers AI
   AI: Ai
 

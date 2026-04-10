@@ -56,7 +56,20 @@ async function checkTriggers(db: Database, userId: string): Promise<TriggerResul
     })
   }
 
-  // 3. Missing context: no sessions at all
+  // 3. Health decline: any category dropped >15 points in 30 days
+  const { calculateHealth } = await import('./health.js')
+  const health = await calculateHealth(db, userId)
+  for (const category of health.categories) {
+    if (category.trend === 'declining' && category.trendPeriods >= 1) {
+      triggers.push({
+        triggerType: 'health-decline',
+        context: `${category.name} health is declining — score dropped to ${category.score}/100.`,
+      })
+      break // Only report one declining category per check
+    }
+  }
+
+  // 4. Missing context: no sessions at all
   const anySessions = await db.select().from(sessions).where(eq(sessions.userId, userId)).limit(1)
   if (anySessions.length === 0) {
     triggers.push({

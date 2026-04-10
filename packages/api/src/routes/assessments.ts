@@ -11,6 +11,7 @@ import { newId } from '../lib/id.js'
 const SCORING: Record<string, number> = { a: 5, b: 3, c: 1, d: 0 }
 
 const LEVELS: Array<{ min: number; level: string }> = [
+  { min: 35, level: 'flying' },
   { min: 30, level: 'running' },
   { min: 21, level: 'walking' },
   { min: 12, level: 'crawling' },
