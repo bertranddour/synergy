@@ -1,7 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { CoachCard } from '../../../components/coach/CoachCard'
 import { FieldStep } from '../../../components/modes/FieldStep'
+import { useAliciaStream } from '../../../hooks/use-sse'
 import { useAuthStore } from '../../../stores/auth'
 import { useRunnerStore } from '../../../stores/runner'
 
@@ -40,7 +42,18 @@ function ModeRunner() {
   const { sessionId } = Route.useParams()
   const token = useAuthStore((s) => s.token)
   const navigate = useNavigate()
-  const { currentFieldIndex, fieldsData, startSession, setFieldData, advanceField, reset } = useRunnerStore()
+  const {
+    currentFieldIndex,
+    fieldsData,
+    startSession,
+    setFieldData,
+    advanceField,
+    reset,
+    coachingVisible,
+    showCoaching,
+    hideCoaching,
+  } = useRunnerStore()
+  const { text: coachText, isStreaming: coachStreaming, send: sendCoach, reset: resetCoach } = useAliciaStream()
 
   const [completed, setCompleted] = useState(false)
 
@@ -113,12 +126,27 @@ function ModeRunner() {
     saveMutation.mutate({ fieldIndex: currentFieldIndex, fieldData: value })
 
     const fields = data?.mode?.fieldsSchema ?? []
+    const currentField = fields[currentFieldIndex]
+
     if (currentFieldIndex >= fields.length - 1) {
       // Last field — complete the session
       completeMutation.mutate()
     } else {
-      advanceField()
+      // Trigger Alicia coaching for this field
+      showCoaching('')
+      resetCoach()
+      sendCoach({
+        message: `Mode: ${data?.mode?.name}. Field: ${currentField?.name} (${currentFieldIndex + 1}/${fields.length}). My response: "${String(value)}"`,
+        surface: 'mode-runner',
+        sessionId,
+      })
     }
+  }
+
+  const handleCoachDismiss = () => {
+    hideCoaching()
+    resetCoach()
+    advanceField()
   }
 
   if (isLoading || !data?.mode) {
@@ -211,6 +239,11 @@ function ModeRunner() {
         onSubmit={handleFieldSubmit}
         isLast={currentFieldIndex >= fields.length - 1}
       />
+
+      {/* Alicia inline coaching */}
+      {(coachingVisible || coachStreaming) && (coachText || coachStreaming) && (
+        <CoachCard message={coachText} isStreaming={coachStreaming} onDismiss={handleCoachDismiss} />
+      )}
 
       {/* Field navigator dots */}
       <div className="mt-8 flex justify-center gap-2">

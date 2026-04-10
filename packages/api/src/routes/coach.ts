@@ -3,7 +3,6 @@ import { coachMessageSchema } from '@synergy/shared'
 import { and, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import type { AliciaAgent } from '../agents/alicia/agent.js'
-// buildModeCoachPrompt will be used in Step 3.6 for in-mode coaching
 import { runAliciaLoop } from '../agents/alicia/loop.js'
 import { CROSS_FRAMEWORK_PROMPT } from '../agents/alicia/prompts/cross-fw.js'
 import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'

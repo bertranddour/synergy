@@ -1,6 +1,6 @@
 import { TEAM_TYPES } from '@synergy/shared'
-import { useMutation } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useAuthStore } from '../../../stores/auth'
 
@@ -10,9 +10,29 @@ export const Route = createFileRoute('/_auth/teams/')({
 
 function TeamsPage() {
   const token = useAuthStore((s) => s.token)
+  const queryClient = useQueryClient()
   const [showCreate, setShowCreate] = useState(false)
   const [name, setName] = useState('')
   const [type, setType] = useState<string>('mission')
+
+  const teamsQuery = useQuery({
+    queryKey: ['teams'],
+    queryFn: async () => {
+      const res = await fetch('/api/teams', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Failed to fetch teams')
+      return res.json() as Promise<{
+        teams: Array<{
+          id: string
+          name: string
+          type: string
+          role: string
+          createdAt: string
+        }>
+      }>
+    },
+  })
 
   const createTeam = useMutation({
     mutationFn: async () => {
@@ -27,6 +47,7 @@ function TeamsPage() {
     onSuccess: () => {
       setShowCreate(false)
       setName('')
+      void queryClient.invalidateQueries({ queryKey: ['teams'] })
     },
   })
 
@@ -46,7 +67,6 @@ function TeamsPage() {
         </button>
       </div>
 
-      {/* Create team form */}
       {showCreate && (
         <div className="wave-entrance-2 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
           <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">New Team</h2>
@@ -93,10 +113,49 @@ function TeamsPage() {
         </div>
       )}
 
-      {/* Placeholder for team list */}
-      <div className="wave-entrance-3 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-        <p className="text-[var(--text-secondary)]">Create a team to start tracking collective health and progress.</p>
-      </div>
+      {teamsQuery.isLoading ? (
+        <div className="space-y-4">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={`skeleton-${i}`} className="wave-skeleton h-20 rounded-[1.5rem]" />
+          ))}
+        </div>
+      ) : teamsQuery.isError ? (
+        <div className="shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-8 text-center">
+          <p className="text-red-500">Failed to load teams</p>
+          <button
+            type="button"
+            onClick={() => void teamsQuery.refetch()}
+            className="neo-btn shadow-neo-button mt-4 rounded-full px-6 py-2 text-sm"
+          >
+            Retry
+          </button>
+        </div>
+      ) : teamsQuery.data?.teams.length === 0 ? (
+        <div className="wave-entrance-3 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
+          <p className="text-[var(--text-secondary)]">
+            Create a team to start tracking collective health and progress.
+          </p>
+        </div>
+      ) : (
+        <div className="wave-entrance-3 space-y-4">
+          {teamsQuery.data?.teams.map((team) => (
+            <Link
+              key={team.id}
+              to="/teams/$id"
+              params={{ id: team.id }}
+              className="shadow-neo-well wave-card-hover block rounded-[1.5rem] bg-[var(--surface)] p-5"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold">{team.name}</h3>
+                  <p className="text-xs capitalize text-[var(--text-tertiary)]">{team.type.replace('-', ' ')}</p>
+                </div>
+                <span className="text-xs capitalize text-[var(--text-tertiary)]">{team.role}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

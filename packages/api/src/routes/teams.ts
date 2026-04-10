@@ -9,6 +9,37 @@ import { calculateHealth } from '../services/health.js'
 
 const teamRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
+// ─── List User's Teams ───────────────────────────────────────────────────────
+
+teamRoutes.get('/', async (c) => {
+  const userId = c.get('userId')
+  const db = createDb(c.env.DB)
+
+  const userTeams = await db
+    .select({
+      teamId: teamMembers.teamId,
+      role: teamMembers.role,
+      teamName: teams.name,
+      teamType: teams.type,
+      ownerId: teams.ownerId,
+      createdAt: teams.createdAt,
+    })
+    .from(teamMembers)
+    .innerJoin(teams, eq(teamMembers.teamId, teams.id))
+    .where(eq(teamMembers.userId, userId))
+
+  return c.json({
+    teams: userTeams.map((t) => ({
+      id: t.teamId,
+      name: t.teamName,
+      type: t.teamType,
+      role: t.role,
+      ownerId: t.ownerId,
+      createdAt: t.createdAt.toISOString(),
+    })),
+  })
+})
+
 // ─── Create Team ─────────────────────────────────────────────────────────────
 
 teamRoutes.post('/', async (c) => {

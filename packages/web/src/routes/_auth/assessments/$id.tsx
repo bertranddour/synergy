@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useAuthStore } from '../../../stores/auth'
@@ -17,11 +17,36 @@ function ActiveAssessment() {
   const { id } = Route.useParams()
   const token = useAuthStore((s) => s.token)
   const navigate = useNavigate()
-  const [scenarios] = useState<Scenario[]>([]) // Loaded on start
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [completed, setCompleted] = useState(false)
-  const [result, setResult] = useState<{ score: number; maxScore: number; level: string } | null>(null)
+  const [result, setResult] = useState<{
+    score: number
+    maxScore: number
+    level: string
+    aliciaDebrief: string
+    recommendations: Array<{ modeSlug: string; reason: string }>
+  } | null>(null)
+
+  // Load assessment detail with scenarios
+  const assessmentQuery = useQuery({
+    queryKey: ['assessment', id],
+    queryFn: async () => {
+      const res = await fetch(`/api/assessments/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Failed to load assessment')
+      return res.json() as Promise<{
+        assessment: {
+          id: string
+          frameworkId: string
+          status: string
+          responses: Array<{ scenarioId: string; answer: string; score: number }>
+        }
+        scenarios: Scenario[]
+      }>
+    },
+  })
 
   const submitAnswer = useMutation({
     mutationFn: async (params: { scenarioId: string; answer: string }) => {
@@ -39,13 +64,21 @@ function ActiveAssessment() {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       })
-      return res.json() as Promise<{ score: number; maxScore: number; level: string }>
+      return res.json() as Promise<{
+        score: number
+        maxScore: number
+        level: string
+        aliciaDebrief: string
+        recommendations: Array<{ modeSlug: string; reason: string }>
+      }>
     },
     onSuccess: (data) => {
       setResult(data)
       setCompleted(true)
     },
   })
+
+  const scenarios = assessmentQuery.data?.scenarios ?? []
 
   const handleSelect = (scenarioId: string, answer: string) => {
     setAnswers((prev) => ({ ...prev, [scenarioId]: answer }))
@@ -58,19 +91,65 @@ function ActiveAssessment() {
     }
   }
 
+  if (assessmentQuery.isLoading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="wave-spinner" />
+      </div>
+    )
+  }
+
+  if (assessmentQuery.isError) {
+    return (
+      <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-10 text-center">
+        <p className="text-red-500">Failed to load assessment</p>
+        <button
+          type="button"
+          onClick={() => void navigate({ to: '/assessments' })}
+          className="neo-btn shadow-neo-button mt-4 rounded-full px-8 py-3"
+        >
+          Back
+        </button>
+      </div>
+    )
+  }
+
   if (completed && result) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
-        <div className="wave-entrance-1 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-10">
+      <div className="mx-auto max-w-2xl space-y-8">
+        <div className="wave-entrance-1 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-10 text-center">
           <h1 className="font-display text-3xl">Assessment Complete</h1>
           <p className="mt-4 text-5xl font-bold">
             {result.score}/{result.maxScore}
           </p>
           <p className="mt-2 text-lg capitalize text-[var(--text-secondary)]">{result.level.replace('-', ' ')}</p>
+        </div>
+
+        {result.aliciaDebrief && (
+          <div className="wave-entrance-2 shadow-neo-well rounded-[1.8rem] border-l-4 border-[var(--color-synergy)] bg-[var(--surface)] p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-synergy)]">Alicia&apos;s Debrief</p>
+            <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">{result.aliciaDebrief}</p>
+          </div>
+        )}
+
+        {result.recommendations.length > 0 && (
+          <div className="wave-entrance-3 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Recommended Modes</p>
+            <div className="mt-3 space-y-2">
+              {result.recommendations.map((rec) => (
+                <p key={rec.modeSlug} className="text-sm text-[var(--text-secondary)]">
+                  → {rec.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}: {rec.reason}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="text-center">
           <button
             type="button"
             onClick={() => void navigate({ to: '/assessments' })}
-            className="neo-btn shadow-neo-button mt-6 rounded-full px-8 py-3 font-semibold"
+            className="neo-btn shadow-neo-button rounded-full px-8 py-3 font-semibold"
           >
             Back to Assessments
           </button>
@@ -79,23 +158,30 @@ function ActiveAssessment() {
     )
   }
 
-  const scenario = scenarios[currentIndex]
-  if (!scenario) {
+  if (scenarios.length === 0) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
-          <div className="wave-spinner mx-auto" />
-          <p className="mt-4 text-[var(--text-secondary)]">Loading scenarios...</p>
+          <p className="text-[var(--text-secondary)]">No scenarios available for this assessment.</p>
+          <button
+            type="button"
+            onClick={() => void navigate({ to: '/assessments' })}
+            className="neo-btn shadow-neo-button mt-4 rounded-full px-8 py-3"
+          >
+            Back
+          </button>
         </div>
       </div>
     )
   }
 
+  const scenario = scenarios[currentIndex]
+  if (!scenario) return null
+
   const optionKeys = ['a', 'b', 'c', 'd'] as const
 
   return (
     <div className="mx-auto max-w-2xl">
-      {/* Progress */}
       <div className="mb-8">
         <div className="flex justify-between text-xs text-[var(--text-tertiary)]">
           <span>
@@ -111,12 +197,10 @@ function ActiveAssessment() {
         </div>
       </div>
 
-      {/* Scenario */}
       <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
         <p className="text-lg leading-relaxed">{scenario.description}</p>
       </div>
 
-      {/* Options */}
       <div className="mt-6 space-y-3">
         {optionKeys.map((key) => (
           <button

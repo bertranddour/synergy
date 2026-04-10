@@ -187,11 +187,39 @@ function SettingsPage() {
           </button>
           <button
             type="button"
+            onClick={async () => {
+              const res = await fetch('/api/users/me/export', {
+                headers: { Authorization: `Bearer ${token}` },
+              })
+              if (!res.ok) return
+              const data = await res.json()
+              const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+              const url = URL.createObjectURL(blob)
+              const a = document.createElement('a')
+              a.href = url
+              a.download = 'synergy-data-export.json'
+              a.click()
+              URL.revokeObjectURL(url)
+            }}
             className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-[var(--text-tertiary)]"
           >
             Export data
           </button>
-          <button type="button" className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-red-500">
+          <button
+            type="button"
+            onClick={async () => {
+              if (!window.confirm('This will permanently delete your account and all data. Are you sure?')) return
+              const res = await fetch('/api/users/me', {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+              })
+              if (res.ok) {
+                clearAuth()
+                window.location.href = '/login'
+              }
+            }}
+            className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-red-500"
+          >
             Delete account
           </button>
         </div>
