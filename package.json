@@ -10,7 +10,11 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "turbo run typecheck",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean",
+    "deploy": "cd packages/web && bunx vite build && cd ../.. && bunx wrangler deploy",
+    "deploy:migrations": "bunx wrangler d1 migrations apply synergy-db --remote",
+    "deploy:seed": "bunx wrangler d1 execute synergy-db --remote --file=packages/api/src/db/seed.sql",
+    "deploy:secrets": "grep -v '^#' .dev.vars | grep -v '^$' > /tmp/.synergy-secrets && bunx wrangler secret bulk /tmp/.synergy-secrets && rm /tmp/.synergy-secrets"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.11",

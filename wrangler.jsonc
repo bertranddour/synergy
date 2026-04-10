@@ -4,6 +4,15 @@
   "main": "packages/api/src/index.ts",
   "compatibility_date": "2026-04-01",
   "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+
+  // Custom domain
+  "routes": [
+    {
+      "pattern": "synergy.7flows.com",
+      "custom_domain": true
+    }
+  ],
 
   // Workers Static Assets — serves React SPA + API from one Worker
   "assets": {
@@ -18,7 +27,8 @@
     {
       "binding": "DB",
       "database_name": "synergy-db",
-      "database_id": "placeholder-generate-with-wrangler-d1-create"
+      "database_id": "2c87522d-517b-4e9d-bd90-88772cd89c07",
+      "migrations_dir": "packages/api/src/db/migrations"
     }
   ],
 
@@ -26,7 +36,7 @@
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "placeholder-generate-with-wrangler-kv-create"
+      "id": "357e1e3cf9b54ebbab931a887cd0d22a"
     }
   ],
 
@@ -88,10 +98,8 @@
     "ENVIRONMENT": "production"
   }
 
-  // Secrets (set via `wrangler secret put`):
-  // ANTHROPIC_API_KEY
-  // JWT_SECRET
-  // MAGIC_LINK_SECRET
-  // CF_ACCOUNT_ID
-  // AI_GATEWAY_ID
+  // Secrets (set via `wrangler secret bulk .dev.vars`):
+  // JWT_SECRET, MAGIC_LINK_SECRET, AI_GATEWAY_TOKEN
+  // CF_ACCOUNT_ID, AI_GATEWAY_ID
+  // Note: Anthropic API key is on AI Gateway dashboard (BYOK), NOT a Worker secret
 }
