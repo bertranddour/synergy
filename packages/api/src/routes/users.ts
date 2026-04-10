@@ -3,7 +3,7 @@ import { eq, and } from 'drizzle-orm'
 import { updateUserSchema, activateFrameworkSchema } from '@synergy/shared'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
-import { users, userFrameworks, frameworks } from '../db/schema.js'
+import { users, userFrameworks, frameworks, sessions, metrics, assessments, progress, coachConversations, proactiveObservations, teamMembers, userPrograms } from '../db/schema.js'
 
 const userRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
 
@@ -198,13 +198,54 @@ userRoutes.delete('/me/frameworks/:slug', async (c) => {
 // ─── Export User Data (GDPR) ─────────────────────────────────────────────────
 
 userRoutes.get('/me/export', async (c) => {
-  return c.json({ error: 'Not implemented' }, 501)
+  const userId = c.get('userId')
+  const db = createDb(c.env.DB)
+
+  const user = await db.query.users.findFirst({ where: eq(users.id, userId) })
+  const userSessions = await db.select().from(sessions).where(eq(sessions.userId, userId))
+  const userMetrics = await db.select().from(metrics).where(eq(metrics.userId, userId))
+  const userAssessments = await db.select().from(assessments).where(eq(assessments.userId, userId))
+  const userProgress = await db.select().from(progress).where(eq(progress.userId, userId))
+  const userConversations = await db.select().from(coachConversations).where(eq(coachConversations.userId, userId))
+  const userObservations = await db.select().from(proactiveObservations).where(eq(proactiveObservations.userId, userId))
+
+  return c.json({
+    user,
+    sessions: userSessions,
+    metrics: userMetrics,
+    assessments: userAssessments,
+    progress: userProgress,
+    conversations: userConversations,
+    observations: userObservations,
+    exportedAt: new Date().toISOString(),
+  })
 })
 
 // ─── Delete Account (GDPR) ──────────────────────────────────────────────────
 
 userRoutes.delete('/me', async (c) => {
-  return c.json({ error: 'Not implemented' }, 501)
+  const userId = c.get('userId')
+  const db = createDb(c.env.DB)
+
+  // Cascade delete all user data
+  await db.delete(proactiveObservations).where(eq(proactiveObservations.userId, userId))
+  await db.delete(coachConversations).where(eq(coachConversations.userId, userId))
+  await db.delete(progress).where(eq(progress.userId, userId))
+  await db.delete(metrics).where(eq(metrics.userId, userId))
+  await db.delete(sessions).where(eq(sessions.userId, userId))
+  await db.delete(assessments).where(eq(assessments.userId, userId))
+  await db.delete(userFrameworks).where(eq(userFrameworks.userId, userId))
+  await db.delete(teamMembers).where(eq(teamMembers.userId, userId))
+  await db.delete(userPrograms).where(eq(userPrograms.userId, userId))
+  await db.delete(users).where(eq(users.id, userId))
+
+  // Delete KV session
+  await c.env.KV.delete(`session:${userId}`)
+
+  return c.json({
+    deleted: true,
+    dataRemoved: ['user', 'sessions', 'metrics', 'assessments', 'progress', 'conversations', 'observations', 'frameworks', 'team_memberships', 'programs'],
+  })
 })
 
 export { userRoutes }

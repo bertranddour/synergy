@@ -7,7 +7,7 @@
  */
 
 import type { InferInsertModel } from 'drizzle-orm'
-import { frameworks, modes } from './schema.js'
+import { frameworks, modes, trainingPrograms } from './schema.js'
 
 type FrameworkInsert = InferInsertModel<typeof frameworks>
 type ModeInsert = InferInsertModel<typeof modes>
@@ -808,6 +808,115 @@ const synergyModes: ModeInsert[] = [
     metricsSchema: [{ name: 'decision_accuracy_by_source', unit: 'score', extraction: 'Comparative outcomes: human vs AI vs centaur' }],
     composabilityHooks: [],
     timeEstimateMinutes: 25, sortOrder: 7,
+  },
+]
+
+// ─── Training Programs (5) ────────────────────────────────────────────────────
+
+type ProgramInsert = InferInsertModel<typeof trainingPrograms>
+
+export const programSeeds: ProgramInsert[] = [
+  {
+    id: 'prog-validation-week',
+    slug: 'your-first-validation-week',
+    name: 'Your First Validation Week',
+    description: 'Test your riskiest assumption in 5 days. Five modes, one evidence-based decision.',
+    durationDays: 5,
+    frameworksRequired: ['core'],
+    modeSequence: [
+      { day: 1, modeSlug: 'business-engine', description: 'Map your business model. Identify 3 key assumptions.' },
+      { day: 2, modeSlug: 'priority-stack', description: 'Rank your assumptions by risk. Pick the riskiest one.' },
+      { day: 3, modeSlug: 'validation', description: 'Design and launch a test for your riskiest assumption.' },
+      { day: 4, modeSlug: 'insight-capture', description: 'While waiting for results, capture signals from your market.' },
+      { day: 5, modeSlug: 'validation', description: 'Review results. Make your Persevere/Pivot/Experiment Again decision.' },
+    ],
+    targetStage: 'solo',
+  },
+  {
+    id: 'prog-async-sprint',
+    slug: 'async-maturity-sprint',
+    name: 'Async Maturity Sprint',
+    description: 'Cut meeting hours, build async decision-making muscle, and package work for your distributed team.',
+    durationDays: 10,
+    frameworksRequired: ['air'],
+    modeSequence: [
+      { day: 1, modeSlug: 'team-rhythm', description: 'Map your current meeting cadence. Identify meeting bloat.' },
+      { day: 2, modeSlug: 'information-architecture', description: 'Define what information goes where.' },
+      { day: 3, modeSlug: 'package', description: 'Package your next team update using the format.' },
+      { day: 4, modeSlug: 'async-decision', description: 'Convert one upcoming meeting-based decision to async.' },
+      { day: 5, modeSlug: 'package', description: 'Package the async decision result. Measure clarity.' },
+      { day: 8, modeSlug: 'contribution-tracker', description: 'Make invisible work visible.' },
+      { day: 9, modeSlug: 'flex-work-design', description: 'Set async-first defaults for your team.' },
+      { day: 10, modeSlug: 'culture-at-distance', description: 'Address the cultural gaps in your distributed setup.' },
+    ],
+    targetStage: 'small-team',
+  },
+  {
+    id: 'prog-scaling-readiness',
+    slug: 'scaling-readiness-check',
+    name: 'Scaling Readiness Check',
+    description: 'Prepare your organization for 50+ people. Structure, connections, priorities, execution.',
+    durationDays: 28,
+    frameworksRequired: ['max', 'core'],
+    modeSequence: [
+      { day: 1, modeSlug: 'org-map', description: 'Map your current org structure.' },
+      { day: 3, modeSlug: 'team-blueprint', description: 'Define blueprints for your key teams.' },
+      { day: 5, modeSlug: 'connection-map', description: 'Map team-to-team interactions.' },
+      { day: 7, modeSlug: 'relationship-health', description: 'Fix your worst team friction.' },
+      { day: 10, modeSlug: 'company-priority', description: 'Align 3-5 company priorities.' },
+      { day: 12, modeSlug: 'priority-stack', description: 'Translate company priorities to team level.' },
+      { day: 14, modeSlug: 'scaled-execution', description: 'Set up cross-team execution tracking.' },
+      { day: 17, modeSlug: 'dashboard', description: 'Build your dual metrics dashboard.' },
+      { day: 19, modeSlug: 'quality-matrix', description: 'Define quality standards.' },
+      { day: 21, modeSlug: 'execution-tracker', description: 'Track execution at team level.' },
+      { day: 24, modeSlug: 'delivery-check', description: 'Quality-gate a cross-team deliverable.' },
+      { day: 28, modeSlug: 'connection-map', description: 'Re-map connections. Measure improvement.' },
+    ],
+    targetStage: 'growing',
+  },
+  {
+    id: 'prog-ai-bootcamp',
+    slug: 'ai-colleague-bootcamp',
+    name: 'AI Colleague Bootcamp',
+    description: 'Set up human-AI collaboration properly. Context, delegation, verification, trust.',
+    durationDays: 10,
+    frameworksRequired: ['synergy'],
+    modeSequence: [
+      { day: 1, modeSlug: 'ai-onboarding', description: 'Load your business context into your AI colleague.' },
+      { day: 2, modeSlug: 'centaur-assessment', description: 'Map your tasks: human-led, AI-led, centaur.' },
+      { day: 3, modeSlug: 'decision-protocol', description: 'Define which decisions AI can make alone.' },
+      { day: 5, modeSlug: 'verification-ritual', description: 'Build a protocol for checking AI output quality.' },
+      { day: 8, modeSlug: 'knowledge-architecture', description: 'Structure what AI needs to know.' },
+      { day: 9, modeSlug: 'trust-calibration', description: 'Set trust levels based on evidence, not feeling.' },
+      { day: 10, modeSlug: 'ai-scaling', description: 'Plan how to scale what is working.' },
+    ],
+    targetStage: null,
+  },
+  {
+    id: 'prog-full-fitness',
+    slug: 'full-business-fitness',
+    name: 'Full Business Fitness',
+    description: 'The complete 7 Flows experience. 15 modes across all four frameworks in 6 weeks.',
+    durationDays: 42,
+    frameworksRequired: ['core', 'air', 'max', 'synergy'],
+    modeSequence: [
+      { day: 1, modeSlug: 'business-engine', description: 'Map your business model.' },
+      { day: 3, modeSlug: 'validation', description: 'Test your riskiest assumption.' },
+      { day: 5, modeSlug: 'priority-stack', description: 'Rank and commit to priorities.' },
+      { day: 8, modeSlug: 'team-rhythm', description: 'Design your weekly cadence.' },
+      { day: 10, modeSlug: 'information-architecture', description: 'Fix information findability.' },
+      { day: 12, modeSlug: 'package', description: 'Practice async communication.' },
+      { day: 15, modeSlug: 'async-decision', description: 'Make your first structured async decision.' },
+      { day: 18, modeSlug: 'ai-onboarding', description: 'Set up AI collaboration.' },
+      { day: 20, modeSlug: 'centaur-assessment', description: 'Map human vs AI tasks.' },
+      { day: 22, modeSlug: 'execution-tracker', description: 'Track execution with visibility.' },
+      { day: 25, modeSlug: 'delivery-check', description: 'Quality-gate your work.' },
+      { day: 28, modeSlug: 'insight-capture', description: 'Capture market signals.' },
+      { day: 32, modeSlug: 'trust-calibration', description: 'Calibrate AI trust levels.' },
+      { day: 36, modeSlug: 'contribution-tracker', description: 'Make invisible work visible.' },
+      { day: 42, modeSlug: 'validation', description: 'Final validation review.' },
+    ],
+    targetStage: null,
   },
 ]
 

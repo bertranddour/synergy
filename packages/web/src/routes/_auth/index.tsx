@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '../../stores/auth'
 import { HealthCard } from '../../components/dashboard/HealthCard'
 import { ProgressRings } from '../../components/dashboard/ProgressRings'
+import { NudgeCard } from '../../components/dashboard/NudgeCard'
 
 export const Route = createFileRoute('/_auth/')({
   component: Dashboard,
@@ -40,6 +41,22 @@ function Dashboard() {
       })
       if (!res.ok) throw new Error('Failed to fetch health')
       return res.json() as Promise<HealthDashboard>
+    },
+  })
+
+  const nudgesQuery = useQuery({
+    queryKey: ['proactive'],
+    queryFn: async () => {
+      const res = await fetch('/api/coach/proactive', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Failed to fetch')
+      return res.json() as Promise<{
+        observations: Array<{
+          id: string; triggerType: string; title: string
+          message: string; suggestedModeSlug: string | null
+        }>
+      }>
     },
   })
 
@@ -103,6 +120,25 @@ function Dashboard() {
               trend={cat.trend}
               color={cat.color}
               topMetrics={cat.topMetrics}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Alicia's Nudges */}
+      {nudgesQuery.data && nudgesQuery.data.observations.length > 0 && (
+        <div className="wave-entrance-3 space-y-3">
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            From Alicia
+          </h2>
+          {nudgesQuery.data.observations.map((obs) => (
+            <NudgeCard
+              key={obs.id}
+              id={obs.id}
+              triggerType={obs.triggerType}
+              title={obs.title}
+              message={obs.message}
+              suggestedModeSlug={obs.suggestedModeSlug}
             />
           ))}
         </div>

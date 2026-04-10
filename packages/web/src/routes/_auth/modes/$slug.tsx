@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/modes/$slug')({
@@ -44,6 +44,22 @@ interface ModeDetailData {
 function ModeDetail() {
   const { slug } = Route.useParams()
   const token = useAuthStore((s) => s.token)
+  const navigate = useNavigate()
+
+  const startSession = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/sessions', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ modeSlug: slug }),
+      })
+      if (!res.ok) throw new Error('Failed to start session')
+      return res.json() as Promise<{ session: { id: string } }>
+    },
+    onSuccess: (data) => {
+      void navigate({ to: '/runner/$sessionId', params: { sessionId: data.session.id } })
+    },
+  })
 
   const { data, isLoading } = useQuery({
     queryKey: ['mode', slug],
@@ -215,10 +231,12 @@ function ModeDetail() {
       <div className="text-center">
         <button
           type="button"
-          className="neo-btn shadow-neo-button rounded-full px-12 py-4 text-lg font-semibold"
+          onClick={() => startSession.mutate()}
+          disabled={startSession.isPending}
+          className="neo-btn shadow-neo-button rounded-full px-12 py-4 text-lg font-semibold disabled:opacity-50"
           style={mode.framework ? { color: mode.framework.color } : undefined}
         >
-          Start {mode.name}
+          {startSession.isPending ? 'Starting...' : `Start ${mode.name}`}
         </button>
       </div>
     </div>
