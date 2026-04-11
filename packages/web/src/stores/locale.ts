@@ -2,6 +2,15 @@ import i18n from 'i18next'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { SupportedLocale } from '../i18n/languages'
+import { mapBrowserLocale } from '../i18n/languages'
+
+/** Detect browser language on first visit (no stored preference) */
+function detectInitialLocale(): SupportedLocale {
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    return mapBrowserLocale(navigator.language)
+  }
+  return 'en'
+}
 
 interface LocaleState {
   locale: SupportedLocale
@@ -11,7 +20,7 @@ interface LocaleState {
 export const useLocaleStore = create<LocaleState>()(
   persist(
     (set) => ({
-      locale: 'en',
+      locale: detectInitialLocale(),
       setLocale: (locale) => {
         set({ locale })
         applyLocale(locale)
