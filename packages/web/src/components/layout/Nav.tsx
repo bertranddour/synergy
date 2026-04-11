@@ -1,6 +1,4 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { useThemeStore } from '../../hooks/use-theme'
-import { useAuthStore } from '../../stores/auth'
 import { Icon, type IconName } from '../ui/Icon'
 
 const NAV_ITEMS: Array<{
@@ -20,9 +18,6 @@ const NAV_ITEMS: Array<{
 
 export function Nav() {
   const location = useLocation()
-  const user = useAuthStore((s) => s.user)
-  const clearAuth = useAuthStore((s) => s.clearAuth)
-  const { theme, setTheme } = useThemeStore()
 
   return (
     <>
@@ -59,49 +54,19 @@ export function Nav() {
           {/* Spacer */}
           <div className="flex-1" />
 
-          {/* Theme toggle */}
-          <div className="flex gap-1 rounded-full p-1">
-            {(['light', 'dark', 'system'] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTheme(t)}
-                className={`flex-1 rounded-full px-2 py-1.5 text-xs capitalize transition-all ${
-                  theme === t ? 'shadow-neo-embossed font-semibold' : 'text-[var(--text-tertiary)]'
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {/* Settings + logout */}
+          {/* Settings */}
           <Link
             to="/settings"
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            aria-current={location.pathname.startsWith('/settings') ? 'page' : undefined}
+            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
+              location.pathname.startsWith('/settings')
+                ? 'shadow-neo-embossed font-semibold text-[var(--text-primary)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+            }`}
           >
             <Icon name="gear" size="md" />
             Settings
           </Link>
-          <button
-            type="button"
-            onClick={() => {
-              clearAuth()
-              window.location.href = '/login'
-            }}
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
-          >
-            <Icon name="sign-out" size="md" />
-            Sign out
-          </button>
-
-          {/* User */}
-          {user && (
-            <div className="mt-2 border-t border-[var(--zinc-300)] pt-3 px-3">
-              <p className="text-sm font-semibold">{user.name}</p>
-              <p className="text-xs text-[var(--text-tertiary)]">{user.email}</p>
-            </div>
-          )}
         </div>
       </nav>
 
