@@ -17,8 +17,9 @@ import {
 } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
+import { resolveContent } from '../lib/i18n.js'
 
-const userRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const userRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 // ─── Get Profile ─────────────────────────────────────────────────────────────
 
@@ -34,10 +35,13 @@ userRoutes.get('/me', async (c) => {
       return c.json({ error: 'User not found' }, 404)
     }
 
+    const locale = c.get('locale')
+
     const activeFrameworks = await db
       .select({
         slug: frameworks.slug,
         name: frameworks.name,
+        translations: frameworks.translations,
         active: userFrameworks.active,
         activatedAt: userFrameworks.activatedAt,
       })
@@ -58,12 +62,15 @@ userRoutes.get('/me', async (c) => {
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
       },
-      frameworks: activeFrameworks.map((f) => ({
-        slug: f.slug,
-        name: f.name,
-        active: f.active,
-        activatedAt: f.activatedAt?.toISOString() ?? null,
-      })),
+      frameworks: activeFrameworks.map((f) => {
+        const resolved = resolveContent(f, locale)
+        return {
+          slug: resolved.slug,
+          name: resolved.name,
+          active: resolved.active,
+          activatedAt: f.activatedAt?.toISOString() ?? null,
+        }
+      }),
     })
   } catch (err) {
     console.error('Route error:', err)
@@ -93,6 +100,22 @@ userRoutes.patch('/me', async (c) => {
       return c.json({ error: 'User not found' }, 404)
     }
 
+    // Sync locale to KV session so middleware picks it up immediately
+    if (parsed.data.locale) {
+      const session = await c.env.KV.get(`session:${userId}`)
+      if (session) {
+        try {
+          const sessionData = JSON.parse(session) as Record<string, unknown>
+          sessionData.locale = parsed.data.locale
+          await c.env.KV.put(`session:${userId}`, JSON.stringify(sessionData), {
+            expirationTtl: 7 * 24 * 60 * 60,
+          })
+        } catch {
+          // Ignore KV sync errors
+        }
+      }
+    }
+
     return c.json({
       id: updated.id,
       email: updated.email,
@@ -118,10 +141,13 @@ userRoutes.get('/me/frameworks', async (c) => {
     const userId = c.get('userId')
     const db = createDb(c.env.DB)
 
+    const locale = c.get('locale')
+
     const result = await db
       .select({
         slug: frameworks.slug,
         name: frameworks.name,
+        translations: frameworks.translations,
         active: userFrameworks.active,
         activatedAt: userFrameworks.activatedAt,
       })
@@ -130,12 +156,15 @@ userRoutes.get('/me/frameworks', async (c) => {
       .where(eq(userFrameworks.userId, userId))
 
     return c.json({
-      frameworks: result.map((f) => ({
-        slug: f.slug,
-        name: f.name,
-        active: f.active,
-        activatedAt: f.activatedAt?.toISOString() ?? null,
-      })),
+      frameworks: result.map((f) => {
+        const resolved = resolveContent(f, locale)
+        return {
+          slug: resolved.slug,
+          name: resolved.name,
+          active: resolved.active,
+          activatedAt: f.activatedAt?.toISOString() ?? null,
+        }
+      }),
     })
   } catch (err) {
     console.error('Route error:', err)

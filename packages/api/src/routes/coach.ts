@@ -1,18 +1,19 @@
 import type Anthropic from '@anthropic-ai/sdk'
 import { coachMessageSchema } from '@synergy/shared'
-import { and, desc, eq } from 'drizzle-orm'
+import { and, desc, eq, inArray } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { runAliciaLoop } from '../agents/alicia/loop.js'
 import { CROSS_FRAMEWORK_PROMPT } from '../agents/alicia/prompts/cross-fw.js'
 import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
 import { getSurfacePrompt } from '../agents/alicia/prompts/surfaces.js'
-import { coachConversations, proactiveObservations } from '../db/schema.js'
+import { coachConversations, modes, proactiveObservations } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createAnthropicClient } from '../lib/anthropic.js'
 import { createDb } from '../lib/db.js'
+import { resolveContent } from '../lib/i18n.js'
 import { newId } from '../lib/id.js'
 
-const coachRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const coachRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 // ─── SSE Stream (all surfaces) ───────────────────────────────────────────────
 
@@ -233,6 +234,18 @@ coachRoutes.get('/proactive', async (c) => {
       .where(and(eq(proactiveObservations.userId, userId), eq(proactiveObservations.dismissed, false)))
       .orderBy(proactiveObservations.createdAt)
 
+    // Resolve mode names for observations with suggestedModeSlug
+    const locale = c.get('locale')
+    const slugs = observations.map((o) => o.suggestedModeSlug).filter((s): s is string => !!s)
+    const uniqueSlugs = [...new Set(slugs)]
+    const modeRows = uniqueSlugs.length > 0 ? await db.select().from(modes).where(inArray(modes.slug, uniqueSlugs)) : []
+    const modeNameBySlug = new Map(
+      modeRows.map((m) => {
+        const resolved = resolveContent(m, locale)
+        return [resolved.slug, resolved.name]
+      }),
+    )
+
     return c.json({
       observations: observations.map((o) => ({
         id: o.id,
@@ -240,6 +253,9 @@ coachRoutes.get('/proactive', async (c) => {
         title: o.title,
         message: o.message,
         suggestedModeSlug: o.suggestedModeSlug,
+        suggestedModeName: o.suggestedModeSlug
+          ? (modeNameBySlug.get(o.suggestedModeSlug) ?? o.suggestedModeSlug)
+          : null,
         createdAt: o.createdAt.toISOString(),
       })),
     })

@@ -116,7 +116,7 @@ function ModeRunner() {
       if (!res.ok) throw new Error('Failed to complete')
       return res.json() as Promise<{
         session: SessionData['session']
-        composabilitySuggestions: Array<{ modeSlug: string; reason: string }>
+        composabilitySuggestions: Array<{ modeSlug: string; modeName?: string; reason: string }>
       }>
     },
     onSuccess: () => {
@@ -170,9 +170,9 @@ function ModeRunner() {
             <Icon name="check" size="xl" label="Complete" className="h-12 w-12" />
           </div>
           <h1 className="font-display mt-6 text-3xl tracking-tight">
-            {t('runner.modeComplete', { name: t(`modeContent.${data.mode.slug}.name`) })}
+            {t('runner.modeComplete', { name: data.mode.name })}
           </h1>
-          <p className="mt-3 text-[var(--text-secondary)]">{t(`modeContent.${data.mode.slug}.doneSignal`)}</p>
+          <p className="mt-3 text-[var(--text-secondary)]">{data.mode.doneSignal}</p>
         </div>
 
         {completeMutation.data?.composabilitySuggestions &&
@@ -183,7 +183,7 @@ function ModeRunner() {
               </p>
               {completeMutation.data.composabilitySuggestions.map((s) => (
                 <p key={s.modeSlug} className="mt-2 inline-flex items-center gap-1 text-[var(--text-secondary)]">
-                  <Icon name="arrow-right" size="sm" /> {t(`modeContent.${s.modeSlug}.name`)}: {s.reason}
+                  <Icon name="arrow-right" size="sm" /> {s.modeName ?? s.modeSlug}: {s.reason}
                 </p>
               ))}
             </div>
@@ -237,7 +237,7 @@ function ModeRunner() {
     <div className="mx-auto max-w-2xl px-6 py-8">
       {/* Mode name header */}
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="font-display text-lg text-[var(--text-secondary)]">{t(`modeContent.${data.mode.slug}.name`)}</h1>
+        <h1 className="font-display text-lg text-[var(--text-secondary)]">{data.mode.name}</h1>
         <button
           type="button"
           onClick={() => {
@@ -264,8 +264,6 @@ function ModeRunner() {
         value={fieldsData[String(currentFieldIndex)]}
         onSubmit={handleFieldSubmit}
         isLast={currentFieldIndex >= fields.length - 1}
-        modeSlug={data.mode.slug}
-        fieldIndex={currentFieldIndex}
       />
 
       {/* Alicia inline coaching */}

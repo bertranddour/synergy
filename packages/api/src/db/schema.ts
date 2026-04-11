@@ -65,6 +65,7 @@ export const frameworks = sqliteTable('frameworks', {
   description: text('description').notNull(),
   color: text('color').notNull(),
   modeCount: integer('mode_count').notNull(),
+  translations: text('translations', { mode: 'json' }).$type<Record<string, FrameworkTranslation> | null>(),
 })
 
 export const userFrameworks = sqliteTable(
@@ -101,6 +102,7 @@ export const modes = sqliteTable('modes', {
   composabilityHooks: text('composability_hooks', { mode: 'json' }).notNull().$type<ComposabilityHookJson[]>(),
   timeEstimateMinutes: integer('time_estimate_minutes').notNull().default(15),
   sortOrder: integer('sort_order').notNull().default(0),
+  translations: text('translations', { mode: 'json' }).$type<Record<string, ModeTranslation> | null>(),
 })
 
 // ─── Sessions ────────────────────────────────────────────────────────────────
@@ -252,6 +254,7 @@ export const trainingPrograms = sqliteTable('training_programs', {
   targetStage: text('target_stage', {
     enum: ['solo', 'small-team', 'growing', 'scaling'],
   }),
+  translations: text('translations', { mode: 'json' }).$type<Record<string, ProgramTranslation> | null>(),
 })
 
 export const userPrograms = sqliteTable('user_programs', {
@@ -353,4 +356,27 @@ interface ModeSequenceJson {
   day: number
   modeSlug: string
   description: string
+}
+
+// ─── Translation Types ──────────────────────────────────────────────────────
+
+export interface ModeTranslation {
+  name: string
+  purpose: string
+  trigger: string
+  flowName: string
+  doneSignal: string
+  fieldsSchema: FieldDefinitionJson[]
+  composabilityHooks: ComposabilityHookJson[]
+}
+
+export interface FrameworkTranslation {
+  name: string
+  description: string
+}
+
+export interface ProgramTranslation {
+  name: string
+  description: string
+  modeSequence: ModeSequenceJson[]
 }

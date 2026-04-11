@@ -3,14 +3,16 @@ import { Hono } from 'hono'
 import { frameworks, modes, sessions, userFrameworks } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
+import { resolveContent } from '../lib/i18n.js'
 
-const modeRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const modeRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 // ─── List Modes ──────────────────────────────────────────────────────────────
 
 modeRoutes.get('/', async (c) => {
   try {
     const userId = c.get('userId')
+    const locale = c.get('locale')
     const db = createDb(c.env.DB)
 
     const frameworkFilter = c.req.query('framework') as 'core' | 'air' | 'max' | 'synergy' | undefined
@@ -38,9 +40,11 @@ modeRoutes.get('/', async (c) => {
         flowName: modes.flowName,
         timeEstimateMinutes: modes.timeEstimateMinutes,
         sortOrder: modes.sortOrder,
+        translations: modes.translations,
         frameworkSlug: frameworks.slug,
         frameworkName: frameworks.name,
         frameworkColor: frameworks.color,
+        frameworkTranslations: frameworks.translations,
       })
       .from(modes)
       .innerJoin(frameworks, eq(modes.frameworkId, frameworks.id))
@@ -60,11 +64,28 @@ modeRoutes.get('/', async (c) => {
 
     const result = await query
 
-    // Apply search filter (client-side for simplicity with D1)
-    let filtered = result
+    // Resolve translations before filtering
+    const resolved = result.map((row) => {
+      const { translations: _mt, frameworkTranslations: _ft, ...rest } = row
+      const modeResolved = resolveContent(
+        { name: row.name, purpose: row.purpose, flowName: row.flowName, translations: row.translations },
+        locale,
+      )
+      const fwResolved = resolveContent({ name: row.frameworkName, translations: row.frameworkTranslations }, locale)
+      return {
+        ...rest,
+        name: modeResolved.name,
+        purpose: modeResolved.purpose,
+        flowName: modeResolved.flowName,
+        frameworkName: fwResolved.name,
+      }
+    })
+
+    // Apply search filter on translated values
+    let filtered = resolved
     if (search) {
       const term = search.toLowerCase()
-      filtered = result.filter((m) => m.name.toLowerCase().includes(term) || m.purpose.toLowerCase().includes(term))
+      filtered = resolved.filter((m) => m.name.toLowerCase().includes(term) || m.purpose.toLowerCase().includes(term))
     }
 
     return c.json({
@@ -82,11 +103,12 @@ modeRoutes.get('/', async (c) => {
 modeRoutes.get('/:slug', async (c) => {
   try {
     const userId = c.get('userId')
+    const locale = c.get('locale')
     const slug = c.req.param('slug')
     const db = createDb(c.env.DB)
 
     // Check KV cache first (1-hour TTL for mode specs — read-heavy, write-rare)
-    const cacheKey = `mode:${slug}`
+    const cacheKey = `mode:${slug}:${locale}`
     const cachedMode = await c.env.KV.get(cacheKey)
 
     let mode: typeof modes.$inferSelect | null = null
@@ -103,10 +125,30 @@ modeRoutes.get('/:slug', async (c) => {
       return c.json({ error: 'Mode not found' }, 404)
     }
 
+    // Resolve translations
+    const resolvedMode = resolveContent(mode, locale)
+
     // Get framework info
     const framework = await db.query.frameworks.findFirst({
       where: eq(frameworks.id, mode.frameworkId),
     })
+    const resolvedFramework = framework ? resolveContent(framework, locale) : null
+
+    // Resolve mode names for composability hooks
+    const hookSlugs = (resolvedMode.composabilityHooks ?? []).map((h) => h.modeSlug)
+    let hookNameMap: Record<string, string> = {}
+    if (hookSlugs.length > 0) {
+      const hookModes = await db
+        .select({ slug: modes.slug, name: modes.name, translations: modes.translations })
+        .from(modes)
+        .where(inArray(modes.slug, hookSlugs))
+      hookNameMap = Object.fromEntries(
+        hookModes.map((m) => {
+          const resolved = resolveContent(m, locale)
+          return [resolved.slug, resolved.name]
+        }),
+      )
+    }
 
     // Get recent sessions for this mode
     const recentSessions = await db
@@ -123,23 +165,26 @@ modeRoutes.get('/:slug', async (c) => {
 
     return c.json({
       mode: {
-        id: mode.id,
-        slug: mode.slug,
-        name: mode.name,
-        purpose: mode.purpose,
-        trigger: mode.trigger,
-        flowName: mode.flowName,
-        fieldsSchema: mode.fieldsSchema,
-        aiCoachPrompts: mode.aiCoachPrompts,
-        doneSignal: mode.doneSignal,
-        metricsSchema: mode.metricsSchema,
-        composabilityHooks: mode.composabilityHooks,
-        timeEstimateMinutes: mode.timeEstimateMinutes,
-        framework: framework
+        id: resolvedMode.id,
+        slug: resolvedMode.slug,
+        name: resolvedMode.name,
+        purpose: resolvedMode.purpose,
+        trigger: resolvedMode.trigger,
+        flowName: resolvedMode.flowName,
+        fieldsSchema: resolvedMode.fieldsSchema,
+        aiCoachPrompts: resolvedMode.aiCoachPrompts,
+        doneSignal: resolvedMode.doneSignal,
+        metricsSchema: resolvedMode.metricsSchema,
+        composabilityHooks: (resolvedMode.composabilityHooks ?? []).map((h) => ({
+          ...h,
+          modeName: hookNameMap[h.modeSlug] ?? h.modeSlug,
+        })),
+        timeEstimateMinutes: resolvedMode.timeEstimateMinutes,
+        framework: resolvedFramework
           ? {
-              slug: framework.slug,
-              name: framework.name,
-              color: framework.color,
+              slug: resolvedFramework.slug,
+              name: resolvedFramework.name,
+              color: resolvedFramework.color,
             }
           : null,
       },

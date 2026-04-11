@@ -3,24 +3,27 @@ import { Hono } from 'hono'
 import { assessments, frameworks, modes, proactiveObservations, sessions } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
+import { resolveContent } from '../lib/i18n.js'
 
-const activityRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const activityRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 activityRoutes.get('/', async (c) => {
   try {
     const userId = c.get('userId')
+    const locale = c.get('locale')
     const limit = Math.min(Number(c.req.query('limit') ?? 30), 100)
     const db = createDb(c.env.DB)
 
     const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
 
-    // Fetch completed sessions
+    // Fetch completed sessions (include mode translations)
     const recentSessions = await db
       .select({
         id: sessions.id,
         completedAt: sessions.completedAt,
         modeName: modes.name,
         modeSlug: modes.slug,
+        modeTranslations: modes.translations,
         status: sessions.status,
       })
       .from(sessions)
@@ -31,12 +34,13 @@ activityRoutes.get('/', async (c) => {
       .orderBy(desc(sessions.completedAt))
       .limit(limit)
 
-    // Fetch completed assessments
+    // Fetch completed assessments (include framework translations)
     const recentAssessments = await db
       .select({
         id: assessments.id,
         completedAt: assessments.completedAt,
         frameworkName: frameworks.name,
+        frameworkTranslations: frameworks.translations,
         level: assessments.level,
         totalScore: assessments.totalScore,
       })
@@ -76,20 +80,32 @@ activityRoutes.get('/', async (c) => {
     }
 
     const events: ActivityEvent[] = [
-      ...recentSessions.map((s) => ({
-        type: 'session' as const,
-        id: s.id,
-        title: s.modeName,
-        description: `Completed ${s.modeSlug?.replace(/-/g, ' ')}`,
-        timestamp: s.completedAt?.toISOString() ?? '',
-      })),
-      ...recentAssessments.map((a) => ({
-        type: 'assessment' as const,
-        id: a.id,
-        title: `${a.frameworkName} Assessment`,
-        description: `${a.level?.replace('-', ' ')} (${a.totalScore}/35)`,
-        timestamp: a.completedAt?.toISOString() ?? '',
-      })),
+      ...recentSessions.map((s) => {
+        const resolvedMode = resolveContent(
+          { name: s.modeName, slug: s.modeSlug, translations: s.modeTranslations },
+          locale,
+        )
+        return {
+          type: 'session' as const,
+          id: s.id,
+          title: resolvedMode.name,
+          description: `Completed ${resolvedMode.name}`,
+          timestamp: s.completedAt?.toISOString() ?? '',
+        }
+      }),
+      ...recentAssessments.map((a) => {
+        const resolvedFramework = resolveContent(
+          { name: a.frameworkName, translations: a.frameworkTranslations },
+          locale,
+        )
+        return {
+          type: 'assessment' as const,
+          id: a.id,
+          title: `${resolvedFramework.name} Assessment`,
+          description: `${a.level?.replace('-', ' ')} (${a.totalScore}/35)`,
+          timestamp: a.completedAt?.toISOString() ?? '',
+        }
+      }),
       ...recentObservations.map((o) => ({
         type: 'observation' as const,
         id: o.id,

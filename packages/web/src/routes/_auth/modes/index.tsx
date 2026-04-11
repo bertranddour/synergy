@@ -161,7 +161,6 @@ function ModeLibrary() {
                 purpose={mode.purpose}
                 flowName={mode.flowName}
                 timeEstimateMinutes={mode.timeEstimateMinutes}
-                frameworkSlug={mode.frameworkSlug}
                 frameworkName={mode.frameworkName}
                 frameworkColor={mode.frameworkColor}
                 isRecommended={recommendedSlugs.has(mode.slug)}

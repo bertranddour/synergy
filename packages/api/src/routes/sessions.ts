@@ -4,21 +4,23 @@ import {
   sessionListQuerySchema,
   updateSessionFieldSchema,
 } from '@synergy/shared'
-import { and, desc, eq } from 'drizzle-orm'
+import { and, desc, eq, inArray } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { modes, sessions } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
+import { resolveContent } from '../lib/i18n.js'
 import { newId } from '../lib/id.js'
 import { recordSessionMetrics } from '../services/metrics.js'
 
-const sessionRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const sessionRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 // ─── Create Session ──────────────────────────────────────────────────────────
 
 sessionRoutes.post('/', async (c) => {
   try {
     const userId = c.get('userId')
+    const locale = c.get('locale')
     const body = await c.req.json()
     const parsed = createSessionSchema.safeParse(body)
     if (!parsed.success) {
@@ -33,6 +35,8 @@ sessionRoutes.post('/', async (c) => {
     if (!mode) {
       return c.json({ error: 'Mode not found' }, 404)
     }
+
+    const resolvedMode = resolveContent(mode, locale)
 
     const id = newId()
     const now = new Date()
@@ -57,13 +61,13 @@ sessionRoutes.post('/', async (c) => {
       {
         session: formatSession(session),
         mode: {
-          id: mode.id,
-          slug: mode.slug,
-          name: mode.name,
-          fieldsSchema: mode.fieldsSchema,
-          aiCoachPrompts: mode.aiCoachPrompts,
-          doneSignal: mode.doneSignal,
-          timeEstimateMinutes: mode.timeEstimateMinutes,
+          id: resolvedMode.id,
+          slug: resolvedMode.slug,
+          name: resolvedMode.name,
+          fieldsSchema: resolvedMode.fieldsSchema,
+          aiCoachPrompts: resolvedMode.aiCoachPrompts,
+          doneSignal: resolvedMode.doneSignal,
+          timeEstimateMinutes: resolvedMode.timeEstimateMinutes,
         },
       },
       201,
@@ -127,6 +131,7 @@ sessionRoutes.patch('/:id', async (c) => {
 sessionRoutes.post('/:id/complete', async (c) => {
   try {
     const userId = c.get('userId')
+    const locale = c.get('locale')
     const sessionId = c.req.param('id')
     const body = await c.req.json()
     const parsed = completeSessionSchema.safeParse(body)
@@ -158,13 +163,31 @@ sessionRoutes.post('/:id/complete', async (c) => {
 
     // Get mode for composability suggestions
     const mode = await db.query.modes.findFirst({ where: eq(modes.id, session.modeId) })
+    const resolvedMode = mode ? resolveContent(mode, locale) : null
 
-    const composabilitySuggestions = (mode?.composabilityHooks ?? [])
-      .filter((h) => h.direction === 'feeds_into')
-      .map((h) => ({
-        modeSlug: h.modeSlug,
-        reason: h.description,
-      }))
+    const hooks = (resolvedMode?.composabilityHooks ?? []).filter((h) => h.direction === 'feeds_into')
+
+    // Look up translated names for target modes
+    const hookSlugs = hooks.map((h) => h.modeSlug)
+    let hookNameMap: Record<string, string> = {}
+    if (hookSlugs.length > 0) {
+      const hookModes = await db
+        .select({ slug: modes.slug, name: modes.name, translations: modes.translations })
+        .from(modes)
+        .where(inArray(modes.slug, hookSlugs))
+      hookNameMap = Object.fromEntries(
+        hookModes.map((m) => {
+          const resolved = resolveContent(m, locale)
+          return [resolved.slug, resolved.name]
+        }),
+      )
+    }
+
+    const composabilitySuggestions = hooks.map((h) => ({
+      modeSlug: h.modeSlug,
+      modeName: hookNameMap[h.modeSlug] ?? h.modeSlug,
+      reason: h.description,
+    }))
 
     const completed = await db.query.sessions.findFirst({ where: eq(sessions.id, sessionId) })
     if (!completed) return c.json({ error: 'Session not found after completion' }, 500)
@@ -234,6 +257,7 @@ sessionRoutes.get('/', async (c) => {
 sessionRoutes.get('/:id', async (c) => {
   try {
     const userId = c.get('userId')
+    const locale = c.get('locale')
     const sessionId = c.req.param('id')
     const db = createDb(c.env.DB)
 
@@ -245,16 +269,17 @@ sessionRoutes.get('/:id', async (c) => {
     }
 
     const mode = await db.query.modes.findFirst({ where: eq(modes.id, session.modeId) })
+    const resolvedMode = mode ? resolveContent(mode, locale) : null
 
     return c.json({
       session: formatSession(session),
-      mode: mode
+      mode: resolvedMode
         ? {
-            id: mode.id,
-            slug: mode.slug,
-            name: mode.name,
-            fieldsSchema: mode.fieldsSchema,
-            doneSignal: mode.doneSignal,
+            id: resolvedMode.id,
+            slug: resolvedMode.slug,
+            name: resolvedMode.name,
+            fieldsSchema: resolvedMode.fieldsSchema,
+            doneSignal: resolvedMode.doneSignal,
           }
         : null,
     })

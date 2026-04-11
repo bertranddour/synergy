@@ -1,0 +1,90 @@
+import type { ProgramTranslation } from '../../schema.js'
+
+export const dePrograms: Record<string, ProgramTranslation> = {
+  'your-first-validation-week': {
+    name: 'Deine erste Validierungswoche',
+    description: 'Teste deine riskanteste Annahme in 5 Tagen. Fünf Modi, eine evidenzbasierte Entscheidung.',
+    modeSequence: [
+      { day: 1, modeSlug: '', description: 'Bilde dein Geschäftsmodell ab. Identifiziere 3 Kernannahmen.' },
+      { day: 2, modeSlug: '', description: 'Ranke deine Annahmen nach Risiko. Wähle die riskanteste.' },
+      { day: 3, modeSlug: '', description: 'Entwirf und starte einen Test für deine riskanteste Annahme.' },
+      { day: 4, modeSlug: '', description: 'Während du auf Ergebnisse wartest, erfasse Signale aus deinem Markt.' },
+      {
+        day: 5,
+        modeSlug: '',
+        description: 'Überprüfe die Ergebnisse. Triff deine Weitermachen/Umschwenken/Erneut-testen-Entscheidung.',
+      },
+    ],
+  },
+  'async-maturity-sprint': {
+    name: 'Async-Reife-Sprint',
+    description:
+      'Reduziere Meeting-Stunden, baue Async-Entscheidungskompetenz auf und verpacke Arbeit für dein verteiltes Team.',
+    modeSequence: [
+      {
+        day: 1,
+        modeSlug: '',
+        description: 'Erfasse deinen aktuellen Meeting-Rhythmus. Identifiziere Meeting-Aufblähung.',
+      },
+      { day: 2, modeSlug: '', description: 'Definiere, welche Informationen wohin gehören.' },
+      { day: 3, modeSlug: '', description: 'Verpacke dein nächstes Team-Update im vorgegebenen Format.' },
+      { day: 4, modeSlug: '', description: 'Wandle eine anstehende Meeting-basierte Entscheidung in Async um.' },
+      { day: 5, modeSlug: '', description: 'Verpacke das Async-Entscheidungsergebnis. Miss die Klarheit.' },
+      { day: 6, modeSlug: '', description: 'Mache unsichtbare Arbeit sichtbar.' },
+      { day: 7, modeSlug: '', description: 'Setze Async-first-Standards für dein Team.' },
+      { day: 8, modeSlug: '', description: 'Adressiere die kulturellen Lücken in deinem verteilten Setup.' },
+    ],
+  },
+  'scaling-readiness-check': {
+    name: 'Skalierungsbereitschafts-Check',
+    description: 'Bereite deine Organisation auf 50+ Personen vor. Struktur, Verbindungen, Prioritäten, Ausführung.',
+    modeSequence: [
+      { day: 1, modeSlug: '', description: 'Bilde deine aktuelle Organisationsstruktur ab.' },
+      { day: 2, modeSlug: '', description: 'Definiere Blueprints für deine Schlüsselteams.' },
+      { day: 3, modeSlug: '', description: 'Bilde Team-zu-Team-Interaktionen ab.' },
+      { day: 4, modeSlug: '', description: 'Behebe deine schlimmste Team-Reibung.' },
+      { day: 5, modeSlug: '', description: 'Stimme 3–5 Unternehmensprioritäten ab.' },
+      { day: 6, modeSlug: '', description: 'Übersetze Unternehmensprioritäten auf Teamebene.' },
+      { day: 7, modeSlug: '', description: 'Richte teamübergreifendes Ausführungstracking ein.' },
+      { day: 8, modeSlug: '', description: 'Baue dein Dual-Kennzahlen-Dashboard.' },
+      { day: 9, modeSlug: '', description: 'Definiere Qualitätsstandards.' },
+      { day: 10, modeSlug: '', description: 'Verfolge Ausführung auf Teamebene.' },
+      { day: 11, modeSlug: '', description: 'Qualitätsprüfung eines teamübergreifenden Ergebnisses.' },
+      { day: 12, modeSlug: '', description: 'Bilde Verbindungen neu ab. Miss die Verbesserung.' },
+    ],
+  },
+  'ai-colleague-bootcamp': {
+    name: 'KI-Kollegen-Bootcamp',
+    description: 'Richte die Mensch-KI-Zusammenarbeit richtig ein. Kontext, Delegation, Verifizierung, Vertrauen.',
+    modeSequence: [
+      { day: 1, modeSlug: '', description: 'Lade deinen Business-Kontext in deinen KI-Kollegen.' },
+      { day: 2, modeSlug: '', description: 'Ordne deine Aufgaben zu: menschengeführt, KI-geführt, Zentaur.' },
+      { day: 3, modeSlug: '', description: 'Definiere, welche Entscheidungen die KI allein treffen kann.' },
+      { day: 4, modeSlug: '', description: 'Erstelle ein Protokoll zur Prüfung der KI-Output-Qualität.' },
+      { day: 5, modeSlug: '', description: 'Strukturiere, was die KI wissen muss.' },
+      { day: 6, modeSlug: '', description: 'Setze Vertrauensniveaus basierend auf Belegen, nicht Gefühl.' },
+      { day: 7, modeSlug: '', description: 'Plane, wie du skalierst, was funktioniert.' },
+    ],
+  },
+  'full-business-fitness': {
+    name: 'Volle Business-Fitness',
+    description: 'Die komplette 7-Flows-Erfahrung. 15 Modi über alle vier Frameworks in 6 Wochen.',
+    modeSequence: [
+      { day: 1, modeSlug: '', description: 'Bilde dein Geschäftsmodell ab.' },
+      { day: 2, modeSlug: '', description: 'Teste deine riskanteste Annahme.' },
+      { day: 3, modeSlug: '', description: 'Ranke und verpflichte dich zu Prioritäten.' },
+      { day: 4, modeSlug: '', description: 'Gestalte deinen Wochenrhythmus.' },
+      { day: 5, modeSlug: '', description: 'Verbessere die Auffindbarkeit von Informationen.' },
+      { day: 6, modeSlug: '', description: 'Übe asynchrone Kommunikation.' },
+      { day: 7, modeSlug: '', description: 'Triff deine erste strukturierte Async-Entscheidung.' },
+      { day: 8, modeSlug: '', description: 'Richte die KI-Zusammenarbeit ein.' },
+      { day: 9, modeSlug: '', description: 'Ordne Mensch- vs. KI-Aufgaben zu.' },
+      { day: 10, modeSlug: '', description: 'Verfolge Ausführung mit Sichtbarkeit.' },
+      { day: 11, modeSlug: '', description: 'Qualitätsprüfung deiner Arbeit.' },
+      { day: 12, modeSlug: '', description: 'Erfasse Marktsignale.' },
+      { day: 13, modeSlug: '', description: 'Kalibriere KI-Vertrauensniveaus.' },
+      { day: 14, modeSlug: '', description: 'Mache unsichtbare Arbeit sichtbar.' },
+      { day: 15, modeSlug: '', description: 'Abschließende Validierungsüberprüfung.' },
+    ],
+  },
+}

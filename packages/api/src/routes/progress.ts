@@ -4,7 +4,7 @@ import { metrics, sessions } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
 
-const progressRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const progressRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 progressRoutes.get('/', async (c) => {
   try {

@@ -29,7 +29,7 @@ function ActiveAssessment() {
     maxScore: number
     level: string
     aliciaDebrief: string
-    recommendations: Array<{ modeSlug: string; reason: string }>
+    recommendations: Array<{ modeSlug: string; modeName?: string; reason: string }>
   } | null>(null)
 
   // Load assessment detail with scenarios
@@ -73,7 +73,7 @@ function ActiveAssessment() {
         maxScore: number
         level: string
         aliciaDebrief: string
-        recommendations: Array<{ modeSlug: string; reason: string }>
+        recommendations: Array<{ modeSlug: string; modeName?: string; reason: string }>
       }>
     },
     onSuccess: (data) => {
@@ -146,7 +146,7 @@ function ActiveAssessment() {
             <div className="mt-3 space-y-2">
               {result.recommendations.map((rec) => (
                 <p key={rec.modeSlug} className="inline-flex items-center gap-1 text-sm text-[var(--text-secondary)]">
-                  <Icon name="arrow-right" size="sm" /> {t(`modeContent.${rec.modeSlug}.name`)}: {rec.reason}
+                  <Icon name="arrow-right" size="sm" /> {rec.modeName ?? rec.modeSlug}: {rec.reason}
                 </p>
               ))}
             </div>

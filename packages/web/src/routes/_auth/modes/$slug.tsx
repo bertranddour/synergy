@@ -29,6 +29,7 @@ interface ModeDetailData {
     metricsSchema: Array<{ name: string; unit: string }>
     composabilityHooks: Array<{
       direction: string
+      modeName?: string
       modeSlug: string
       description: string
     }>
@@ -109,20 +110,20 @@ function ModeDetail() {
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: mode.framework.color }} />
             <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-              {t(`frameworks.${mode.framework.slug}.name`)}
+              {mode.framework.name}
             </span>
             <span className="text-xs text-[var(--text-tertiary)]">·</span>
-            <span className="text-xs text-[var(--text-tertiary)]">{t(`flowNames.${mode.flowName}`)}</span>
+            <span className="text-xs text-[var(--text-tertiary)]">{mode.flowName}</span>
           </div>
         )}
-        <h1 className="font-display mt-2 text-3xl tracking-tight md:text-4xl">{t(`modeContent.${slug}.name`)}</h1>
-        <p className="mt-3 text-lg text-[var(--text-secondary)]">{t(`modeContent.${slug}.purpose`)}</p>
+        <h1 className="font-display mt-2 text-3xl tracking-tight md:text-4xl">{mode.name}</h1>
+        <p className="mt-3 text-lg text-[var(--text-secondary)]">{mode.purpose}</p>
       </div>
 
       {/* Trigger */}
       <div className="wave-entrance-2 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
         <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('modes.whenToUse')}</h2>
-        <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">{t(`modeContent.${slug}.trigger`)}</p>
+        <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">{mode.trigger}</p>
       </div>
 
       {/* Fields */}
@@ -137,15 +138,13 @@ function ModeDetail() {
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--surface)] text-xs font-semibold shadow-neo-button">
                   {i + 1}
                 </span>
-                <span className="font-semibold">{t(`modeContent.${slug}.fields.${i}.name`)}</span>
+                <span className="font-semibold">{field.name}</span>
                 <span className="text-xs text-[var(--text-tertiary)]">({field.type})</span>
               </div>
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                {t(`modeContent.${slug}.fields.${i}.description`)}
-              </p>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">{field.description}</p>
               {field.example && (
                 <p className="mt-1 text-xs italic text-[var(--text-tertiary)]">
-                  {t('modes.example', { example: t(`modeContent.${slug}.fields.${i}.example`) })}
+                  {t('modes.example', { example: field.example })}
                 </p>
               )}
             </div>
@@ -156,9 +155,7 @@ function ModeDetail() {
       {/* Done Signal */}
       <div className="wave-entrance-4 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
         <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('modes.doneSignal')}</h2>
-        <p className="mt-3 font-semibold italic text-[var(--text-secondary)]">
-          "{t(`modeContent.${slug}.doneSignal`)}"
-        </p>
+        <p className="mt-3 font-semibold italic text-[var(--text-secondary)]">"{mode.doneSignal}"</p>
       </div>
 
       {/* Meta: time, metrics, composability */}
@@ -184,7 +181,7 @@ function ModeDetail() {
                     params={{ slug: hook.modeSlug }}
                     className="underline decoration-[var(--text-tertiary)] underline-offset-2 hover:text-[var(--text-primary)]"
                   >
-                    {t(`modeContent.${hook.modeSlug}.name`)}
+                    {hook.modeName ?? hook.modeSlug}
                   </Link>
                 </div>
               ))}
@@ -229,9 +226,7 @@ function ModeDetail() {
           className="neo-btn shadow-neo-button rounded-full px-12 py-4 text-lg font-semibold disabled:opacity-50"
           style={mode.framework ? { color: mode.framework.color } : undefined}
         >
-          {startSession.isPending
-            ? t('common.starting')
-            : t('modes.startMode', { name: t(`modeContent.${slug}.name`) })}
+          {startSession.isPending ? t('common.starting') : t('modes.startMode', { name: mode.name })}
         </button>
       </div>
     </div>

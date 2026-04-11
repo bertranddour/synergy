@@ -114,12 +114,13 @@ authRoutes.get('/verify', async (c) => {
     // Generate JWT
     const jwt = await signJWT({ sub: user.id, email: user.email }, c.env.JWT_SECRET)
 
-    // Store session in KV (7-day TTL)
+    // Store session in KV (7-day TTL) — includes locale for middleware
     await c.env.KV.put(
       `session:${user.id}`,
       JSON.stringify({
         userId: user.id,
         email: user.email,
+        locale: user.locale,
         createdAt: Date.now(),
       }),
       { expirationTtl: 7 * 24 * 60 * 60 },
@@ -135,6 +136,7 @@ authRoutes.get('/verify', async (c) => {
         stage: user.stage,
         teamSize: user.teamSize,
         onboardingCompleted: user.onboardingCompleted,
+        locale: user.locale,
       },
     })
   } catch (err) {
@@ -187,6 +189,7 @@ authRoutes.get('/me', async (c) => {
         JSON.stringify({
           userId: user.id,
           email: user.email,
+          locale: user.locale,
           createdAt: Date.now(),
         }),
         { expirationTtl: 7 * 24 * 60 * 60 },
@@ -202,6 +205,7 @@ authRoutes.get('/me', async (c) => {
         stage: user.stage,
         teamSize: user.teamSize,
         onboardingCompleted: user.onboardingCompleted,
+        locale: user.locale,
       },
       ...(newToken ? { token: newToken } : {}),
     })

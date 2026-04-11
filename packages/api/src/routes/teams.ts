@@ -7,7 +7,7 @@ import { createDb } from '../lib/db.js'
 import { newId } from '../lib/id.js'
 import { calculateHealth } from '../services/health.js'
 
-const teamRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const teamRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 /** Verify the authenticated user is a member of the team. Returns the membership or null. */
 async function verifyTeamMembership(db: ReturnType<typeof createDb>, teamId: string, userId: string) {

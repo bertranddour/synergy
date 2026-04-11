@@ -1,11 +1,12 @@
 import { assessmentListQuerySchema, startAssessmentSchema, submitAnswerSchema } from '@synergy/shared'
-import { and, desc, eq } from 'drizzle-orm'
+import { and, desc, eq, inArray } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
-import { assessments, frameworks } from '../db/schema.js'
+import { assessments, frameworks, modes } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createAnthropicClient } from '../lib/anthropic.js'
 import { createDb } from '../lib/db.js'
+import { resolveContent } from '../lib/i18n.js'
 import { newId } from '../lib/id.js'
 
 const SCORING: Record<string, number> = { a: 5, b: 3, c: 1, d: 0 }
@@ -25,7 +26,7 @@ function getLevel(score: number): string {
   return 'standing-still'
 }
 
-const assessmentRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const assessmentRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 // ─── Start Assessment ────────────────────────────────────────────────────────
 
@@ -167,12 +168,34 @@ assessmentRoutes.post('/:id/complete', async (c) => {
       'syn-7': 'decision-protocol',
     }
 
+    const locale = c.get('locale')
+
+    // Collect unique mode slugs for recommendations
+    const recModeSlugs = weakScenarios.map((r) => SCENARIO_MODE_MAP[r.scenarioId]).filter((s): s is string => !!s)
+    const uniqueModeSlugs = [...new Set(recModeSlugs)]
+
+    // Batch-fetch modes for name resolution
+    const modeRows =
+      uniqueModeSlugs.length > 0 ? await db.select().from(modes).where(inArray(modes.slug, uniqueModeSlugs)) : []
+    const modesBySlug = new Map(
+      modeRows.map((m) => {
+        const resolved = resolveContent(m, locale)
+        return [resolved.slug, resolved.name]
+      }),
+    )
+
     const recommendations = weakScenarios
       .map((r) => {
         const modeSlug = SCENARIO_MODE_MAP[r.scenarioId]
-        return modeSlug ? { modeSlug, reason: `Scenario ${r.scenarioId} scored ${r.score}/5` } : null
+        return modeSlug
+          ? {
+              modeSlug,
+              modeName: modesBySlug.get(modeSlug) ?? modeSlug,
+              reason: `Scenario ${r.scenarioId} scored ${r.score}/5`,
+            }
+          : null
       })
-      .filter((r): r is { modeSlug: string; reason: string } => r !== null)
+      .filter((r): r is { modeSlug: string; modeName: string; reason: string } => r !== null)
       .slice(0, 3)
 
     // Generate Alicia debrief via Claude

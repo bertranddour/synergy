@@ -10,9 +10,10 @@ interface NudgeCardProps {
   title: string
   message: string
   suggestedModeSlug: string | null
+  suggestedModeName?: string | null
 }
 
-export function NudgeCard({ id, title, message, suggestedModeSlug }: NudgeCardProps) {
+export function NudgeCard({ id, title, message, suggestedModeSlug, suggestedModeName }: NudgeCardProps) {
   const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
   const queryClient = useQueryClient()
@@ -53,7 +54,7 @@ export function NudgeCard({ id, title, message, suggestedModeSlug }: NudgeCardPr
         >
           <span className="inline-flex items-center gap-1">
             {t('nudge.openMode', {
-              name: t(`modeContent.${suggestedModeSlug}.name`),
+              name: suggestedModeName ?? suggestedModeSlug,
             })}
             <Icon name="arrow-right" size="sm" />
           </span>

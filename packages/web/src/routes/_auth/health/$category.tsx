@@ -38,9 +38,10 @@ interface HealthDetailData {
   recentSessions: Array<{
     id: string
     modeSlug: string
+    modeName?: string
     completedAt: string
   }>
-  recommendations: string[]
+  recommendations: Array<{ slug: string; name: string }>
 }
 
 function HealthDetail() {
@@ -162,7 +163,7 @@ function HealthDetail() {
                   params={{ slug: s.modeSlug }}
                   className="text-[var(--text-secondary)] underline decoration-[var(--text-tertiary)] underline-offset-2 hover:text-[var(--text-primary)]"
                 >
-                  {t(`modeContent.${s.modeSlug}.name`)}
+                  {s.modeName ?? s.modeSlug}
                 </Link>
                 <span className="text-xs text-[var(--text-tertiary)]">
                   {new Date(s.completedAt).toLocaleDateString()}
@@ -180,15 +181,15 @@ function HealthDetail() {
             {t('health.recommendedModes')}
           </h2>
           <div className="mt-3 flex flex-wrap gap-2">
-            {data.recommendations.map((slug) => (
+            {data.recommendations.map((rec) => (
               <Link
-                key={slug}
+                key={rec.slug}
                 to="/modes/$slug"
-                params={{ slug }}
+                params={{ slug: rec.slug }}
                 className="neo-btn shadow-neo-button rounded-full px-4 py-2 text-xs font-semibold"
                 style={{ color: accentColor }}
               >
-                {t(`modeContent.${slug}.name`)}
+                {rec.name}
               </Link>
             ))}
           </div>

@@ -15,7 +15,7 @@ import { sessionRoutes } from './routes/sessions.js'
 import { teamRoutes } from './routes/teams.js'
 import { userRoutes } from './routes/users.js'
 
-const app = new Hono<{ Bindings: Env }>()
+const app = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 // Global middleware
 app.use(

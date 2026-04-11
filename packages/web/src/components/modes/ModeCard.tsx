@@ -8,7 +8,6 @@ interface ModeCardProps {
   purpose: string
   flowName: string
   timeEstimateMinutes: number
-  frameworkSlug: string
   frameworkName: string
   frameworkColor: string
   isRecommended?: boolean
@@ -16,9 +15,11 @@ interface ModeCardProps {
 
 export function ModeCard({
   slug,
+  name,
+  purpose,
   flowName,
   timeEstimateMinutes,
-  frameworkSlug,
+  frameworkName,
   frameworkColor,
   isRecommended,
 }: ModeCardProps) {
@@ -32,18 +33,16 @@ export function ModeCard({
       {/* Framework badge */}
       <div className="flex items-center gap-2">
         <span className="h-2 w-2 rounded-full" style={{ backgroundColor: frameworkColor }} />
-        <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">
-          {t(`frameworks.${frameworkSlug}.name`)}
-        </span>
+        <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">{frameworkName}</span>
         <span className="text-xs text-[var(--text-tertiary)]">·</span>
-        <span className="text-xs text-[var(--text-tertiary)]">{t(`flowNames.${flowName}`)}</span>
+        <span className="text-xs text-[var(--text-tertiary)]">{flowName}</span>
       </div>
 
       {/* Mode name */}
-      <h3 className="font-display mt-3 text-xl">{t(`modeContent.${slug}.name`)}</h3>
+      <h3 className="font-display mt-3 text-xl">{name}</h3>
 
       {/* Purpose */}
-      <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">{t(`modeContent.${slug}.purpose`)}</p>
+      <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">{purpose}</p>
 
       {/* Footer */}
       <div className="mt-4 flex items-center gap-4 text-xs text-[var(--text-tertiary)]">

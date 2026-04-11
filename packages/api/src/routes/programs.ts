@@ -1,32 +1,75 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
-import { trainingPrograms, userPrograms } from '../db/schema.js'
+import { frameworks, modes, trainingPrograms, userPrograms } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createAnthropicClient } from '../lib/anthropic.js'
 import { createDb } from '../lib/db.js'
+import { resolveContent } from '../lib/i18n.js'
 import { newId } from '../lib/id.js'
 import { calculateHealth } from '../services/health.js'
 
-const programRoutes = new Hono<{ Bindings: Env; Variables: { userId: string } }>()
+const programRoutes = new Hono<{ Bindings: Env; Variables: { userId: string; locale: string } }>()
 
 // ─── List Programs ───────────────────────────────────────────────────────────
 
 programRoutes.get('/', async (c) => {
+  const locale = c.get('locale')
   const db = createDb(c.env.DB)
   const programs = await db.select().from(trainingPrograms)
 
+  // Collect all unique mode slugs and framework slugs across all programs
+  const allModeSlugs = [...new Set(programs.flatMap((p) => p.modeSequence.map((s) => s.modeSlug)))]
+  const allFrameworkSlugs = [...new Set(programs.flatMap((p) => p.frameworksRequired))]
+
+  // Batch-fetch translated mode names
+  const modeRows =
+    allModeSlugs.length > 0
+      ? await db
+          .select({ slug: modes.slug, name: modes.name, translations: modes.translations })
+          .from(modes)
+          .where(inArray(modes.slug, allModeSlugs))
+      : []
+  const modeNameBySlug = new Map(
+    modeRows.map((m) => {
+      const resolved = resolveContent(m, locale)
+      return [resolved.slug, resolved.name]
+    }),
+  )
+
+  // Batch-fetch translated framework names
+  const frameworkRows =
+    allFrameworkSlugs.length > 0
+      ? await db
+          .select({ slug: frameworks.slug, name: frameworks.name, translations: frameworks.translations })
+          .from(frameworks)
+          .where(inArray(frameworks.slug, allFrameworkSlugs as ('core' | 'air' | 'max' | 'synergy')[]))
+      : []
+  const frameworkNameBySlug = new Map<string, string>(
+    frameworkRows.map((f) => {
+      const resolved = resolveContent(f, locale)
+      return [resolved.slug, resolved.name]
+    }),
+  )
+
   return c.json({
-    programs: programs.map((p) => ({
-      id: p.id,
-      slug: p.slug,
-      name: p.name,
-      description: p.description,
-      durationDays: p.durationDays,
-      frameworksRequired: p.frameworksRequired,
-      targetStage: p.targetStage,
-      modeSequence: p.modeSequence,
-    })),
+    programs: programs.map((p) => {
+      const resolved = resolveContent(p, locale)
+      return {
+        id: resolved.id,
+        slug: resolved.slug,
+        name: resolved.name,
+        description: resolved.description,
+        durationDays: resolved.durationDays,
+        frameworksRequired: p.frameworksRequired,
+        frameworkNames: p.frameworksRequired.map((s) => frameworkNameBySlug.get(s) ?? s),
+        targetStage: resolved.targetStage,
+        modeSequence: resolved.modeSequence.map((step) => ({
+          ...step,
+          modeName: modeNameBySlug.get(step.modeSlug) ?? step.modeSlug,
+        })),
+      }
+    }),
   })
 })
 
@@ -34,6 +77,7 @@ programRoutes.get('/', async (c) => {
 
 programRoutes.post('/:slug/enroll', async (c) => {
   const userId = c.get('userId')
+  const locale = c.get('locale')
   const slug = c.req.param('slug')
   const db = createDb(c.env.DB)
 
@@ -59,10 +103,23 @@ programRoutes.post('/:slug/enroll', async (c) => {
     completedModes: [],
   })
 
+  const resolvedProgram = resolveContent(program, locale)
+  const firstStep = resolvedProgram.modeSequence[0] ?? null
+
+  // Resolve mode name for the first step
+  let firstMode: { modeSlug: string; description: string; modeName: string } | null = null
+  if (firstStep) {
+    const modeRow = await db.query.modes.findFirst({
+      where: eq(modes.slug, firstStep.modeSlug),
+    })
+    const modeName = modeRow ? resolveContent(modeRow, locale).name : firstStep.modeSlug
+    firstMode = { ...firstStep, modeName }
+  }
+
   return c.json(
     {
       userProgram: { id, programSlug: slug, status: 'active', currentDay: 1 },
-      firstMode: program.modeSequence[0] ?? null,
+      firstMode,
     },
     201,
   )
@@ -72,6 +129,7 @@ programRoutes.post('/:slug/enroll', async (c) => {
 
 programRoutes.get('/active', async (c) => {
   const userId = c.get('userId')
+  const locale = c.get('locale')
   const db = createDb(c.env.DB)
 
   const userProgram = await db.query.userPrograms.findFirst({
@@ -84,14 +142,33 @@ programRoutes.get('/active', async (c) => {
   })
   if (!program) return c.json({ error: 'Program not found' }, 404)
 
+  const resolvedProgram = resolveContent(program, locale)
+
+  // Batch-fetch translated mode names for the schedule
+  const scheduleSlugs = [...new Set(resolvedProgram.modeSequence.map((s) => s.modeSlug))]
+  const modeRows =
+    scheduleSlugs.length > 0
+      ? await db
+          .select({ slug: modes.slug, name: modes.name, translations: modes.translations })
+          .from(modes)
+          .where(inArray(modes.slug, scheduleSlugs))
+      : []
+  const modeNameBySlug = new Map(
+    modeRows.map((m) => {
+      const resolved = resolveContent(m, locale)
+      return [resolved.slug, resolved.name]
+    }),
+  )
+
   const startDate = userProgram.startDate
-  const schedule = program.modeSequence.map((step) => {
+  const schedule = resolvedProgram.modeSequence.map((step) => {
     const date = new Date(startDate)
     date.setDate(date.getDate() + step.day - 1)
     return {
       day: step.day,
       date: date.toISOString().split('T')[0]!,
       modeSlug: step.modeSlug,
+      modeName: modeNameBySlug.get(step.modeSlug) ?? step.modeSlug,
       description: step.description,
       completed: (userProgram.completedModes ?? []).includes(step.modeSlug),
     }
@@ -99,10 +176,10 @@ programRoutes.get('/active', async (c) => {
 
   return c.json({
     program: {
-      slug: program.slug,
-      name: program.name,
-      description: program.description,
-      durationDays: program.durationDays,
+      slug: resolvedProgram.slug,
+      name: resolvedProgram.name,
+      description: resolvedProgram.description,
+      durationDays: resolvedProgram.durationDays,
     },
     userProgram: {
       id: userProgram.id,

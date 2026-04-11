@@ -1885,4 +1885,19 @@ export const programSeeds: ProgramInsert[] = [
 
 // ─── All Modes Combined ──────────────────────────────────────────────────────
 
+import { getFrameworkTranslations, getModeTranslations, getProgramTranslations } from './translations/index.js'
+
+// Attach translations to each entity by slug
+for (const fw of frameworkSeeds) {
+  ;(fw as Record<string, unknown>).translations = getFrameworkTranslations(fw.slug) ?? null
+}
+
+for (const mode of [...coreModes, ...airModes, ...maxModes, ...synergyModes]) {
+  ;(mode as Record<string, unknown>).translations = getModeTranslations(mode.slug) ?? null
+}
+
+for (const prog of programSeeds) {
+  ;(prog as Record<string, unknown>).translations = getProgramTranslations(prog.slug) ?? null
+}
+
 export const modeSeeds: ModeInsert[] = [...coreModes, ...airModes, ...maxModes, ...synergyModes]

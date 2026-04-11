@@ -1,0 +1,90 @@
+import type { ProgramTranslation } from '../../schema.js'
+
+export const esPrograms: Record<string, ProgramTranslation> = {
+  'your-first-validation-week': {
+    name: 'Tu Primera Semana de Validacion',
+    description: 'Pon a prueba tu hipotesis mas arriesgada en 5 dias. Cinco modos, una decision basada en evidencia.',
+    modeSequence: [
+      { day: 1, modeSlug: '', description: 'Mapea tu modelo de negocio. Identifica 3 hipotesis clave.' },
+      { day: 2, modeSlug: '', description: 'Clasifica tus hipotesis por riesgo. Elige la mas arriesgada.' },
+      { day: 3, modeSlug: '', description: 'Disena y lanza una prueba para tu hipotesis mas arriesgada.' },
+      { day: 4, modeSlug: '', description: 'Mientras esperas los resultados, captura senales de tu mercado.' },
+      {
+        day: 5,
+        modeSlug: '',
+        description: 'Revisa los resultados. Toma tu decision: Perseverar/Pivotar/Experimentar de nuevo.',
+      },
+    ],
+  },
+  'async-maturity-sprint': {
+    name: 'Sprint de Madurez Asincrona',
+    description:
+      'Reduce las horas de reunion, desarrolla el musculo de la decision asincrona y empaqueta el trabajo para tu equipo distribuido.',
+    modeSequence: [
+      {
+        day: 1,
+        modeSlug: '',
+        description: 'Mapea tu cadencia de reuniones actual. Identifica el exceso de reuniones.',
+      },
+      { day: 2, modeSlug: '', description: 'Define donde va cada tipo de informacion.' },
+      { day: 3, modeSlug: '', description: 'Empaqueta tu proxima actualizacion de equipo usando el formato.' },
+      { day: 4, modeSlug: '', description: 'Convierte una proxima decision prevista en reunion a asincrona.' },
+      { day: 5, modeSlug: '', description: 'Empaqueta el resultado de la decision asincrona. Mide la claridad.' },
+      { day: 6, modeSlug: '', description: 'Haz visible el trabajo invisible.' },
+      { day: 7, modeSlug: '', description: 'Establece los parametros asincronos por defecto para tu equipo.' },
+      { day: 8, modeSlug: '', description: 'Aborda las brechas culturales de tu configuracion distribuida.' },
+    ],
+  },
+  'scaling-readiness-check': {
+    name: 'Verificacion de Preparacion para Escalar',
+    description: 'Prepara tu organizacion para 50+ personas. Estructura, conexiones, prioridades, ejecucion.',
+    modeSequence: [
+      { day: 1, modeSlug: '', description: 'Mapea tu estructura organizacional actual.' },
+      { day: 2, modeSlug: '', description: 'Define blueprints para tus equipos clave.' },
+      { day: 3, modeSlug: '', description: 'Mapea las interacciones equipo-a-equipo.' },
+      { day: 4, modeSlug: '', description: 'Corrige tu peor friccion entre equipos.' },
+      { day: 5, modeSlug: '', description: 'Alinea 3 a 5 prioridades de empresa.' },
+      { day: 6, modeSlug: '', description: 'Traduce las prioridades de empresa al nivel de equipo.' },
+      { day: 7, modeSlug: '', description: 'Configura el seguimiento de ejecucion entre equipos.' },
+      { day: 8, modeSlug: '', description: 'Construye tu tablero de metricas duales.' },
+      { day: 9, modeSlug: '', description: 'Define estandares de calidad.' },
+      { day: 10, modeSlug: '', description: 'Haz seguimiento de la ejecucion a nivel de equipo.' },
+      { day: 11, modeSlug: '', description: 'Portal de calidad para un entregable entre equipos.' },
+      { day: 12, modeSlug: '', description: 'Re-mapea las conexiones. Mide la mejora.' },
+    ],
+  },
+  'ai-colleague-bootcamp': {
+    name: 'Bootcamp del Colega IA',
+    description: 'Configura correctamente la colaboracion humano-IA. Contexto, delegacion, verificacion, confianza.',
+    modeSequence: [
+      { day: 1, modeSlug: '', description: 'Carga el contexto de tu negocio en tu colega IA.' },
+      { day: 2, modeSlug: '', description: 'Mapea tus tareas: dirigidas por humano, dirigidas por IA, centauro.' },
+      { day: 3, modeSlug: '', description: 'Define que decisiones puede tomar la IA sola.' },
+      { day: 4, modeSlug: '', description: 'Construye un protocolo para verificar la calidad de la produccion de IA.' },
+      { day: 5, modeSlug: '', description: 'Estructura lo que la IA necesita saber.' },
+      { day: 6, modeSlug: '', description: 'Fija niveles de confianza basados en evidencia, no en sentimientos.' },
+      { day: 7, modeSlug: '', description: 'Planifica como escalar lo que funciona.' },
+    ],
+  },
+  'full-business-fitness': {
+    name: 'Fitness Empresarial Completo',
+    description: 'La experiencia completa de 7 Flows. 15 modos en los cuatro frameworks en 6 semanas.',
+    modeSequence: [
+      { day: 1, modeSlug: '', description: 'Mapea tu modelo de negocio.' },
+      { day: 2, modeSlug: '', description: 'Pon a prueba tu hipotesis mas arriesgada.' },
+      { day: 3, modeSlug: '', description: 'Clasifica y comprometete con tus prioridades.' },
+      { day: 4, modeSlug: '', description: 'Disena tu cadencia semanal.' },
+      { day: 5, modeSlug: '', description: 'Mejora la encontrabilidad de la informacion.' },
+      { day: 6, modeSlug: '', description: 'Practica la comunicacion asincrona.' },
+      { day: 7, modeSlug: '', description: 'Toma tu primera decision asincrona estructurada.' },
+      { day: 8, modeSlug: '', description: 'Configura la colaboracion IA.' },
+      { day: 9, modeSlug: '', description: 'Mapea tareas humanas vs IA.' },
+      { day: 10, modeSlug: '', description: 'Haz seguimiento de la ejecucion con visibilidad.' },
+      { day: 11, modeSlug: '', description: 'Portal de calidad para tu trabajo.' },
+      { day: 12, modeSlug: '', description: 'Captura senales del mercado.' },
+      { day: 13, modeSlug: '', description: 'Calibra los niveles de confianza en IA.' },
+      { day: 14, modeSlug: '', description: 'Haz visible el trabajo invisible.' },
+      { day: 15, modeSlug: '', description: 'Revision de validacion final.' },
+    ],
+  },
+}

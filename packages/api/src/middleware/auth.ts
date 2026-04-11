@@ -70,9 +70,9 @@ export async function signJWT(
   return `${header}.${body}.${sig}`
 }
 
-/** Auth middleware — validates JWT and sets userId in context */
+/** Auth middleware — validates JWT and sets userId + locale in context */
 export const auth = () =>
-  createMiddleware<{ Bindings: Env; Variables: { userId: string } }>(async (c, next) => {
+  createMiddleware<{ Bindings: Env; Variables: { userId: string; locale: string } }>(async (c, next) => {
     const authorization = c.req.header('Authorization')
     if (!authorization) {
       return c.json({ error: 'Unauthorized' }, 401)
@@ -90,6 +90,16 @@ export const auth = () =>
       return c.json({ error: 'Session expired' }, 401)
     }
 
+    // Extract locale from session data
+    let locale = 'en'
+    try {
+      const sessionData = JSON.parse(session) as { locale?: string }
+      if (sessionData.locale) locale = sessionData.locale
+    } catch {
+      // Legacy session format (plain string) — default to 'en'
+    }
+
     c.set('userId', payload.sub)
+    c.set('locale', locale)
     await next()
   })

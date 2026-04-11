@@ -60,6 +60,7 @@ function Dashboard() {
           title: string
           message: string
           suggestedModeSlug: string | null
+          suggestedModeName?: string | null
         }>
       }>
     },
@@ -107,6 +108,7 @@ function Dashboard() {
               title={obs.title}
               message={obs.message}
               suggestedModeSlug={obs.suggestedModeSlug}
+              suggestedModeName={obs.suggestedModeName}
             />
           ))}
         </div>
