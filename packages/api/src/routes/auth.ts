@@ -1,7 +1,7 @@
 import { magicLinkRequestSchema } from '@synergy/shared'
-import { eq } from 'drizzle-orm'
+import { and, eq, gt } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { users } from '../db/schema.js'
+import { teamInvitations, teamMembers, teams, users } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { signToken, verifyToken } from '../lib/crypto.js'
 import { createDb } from '../lib/db.js'
@@ -111,6 +111,41 @@ authRoutes.get('/verify', async (c) => {
       }
     }
 
+    // Auto-accept pending invitations for this email
+    const pendingInvites = await db
+      .select()
+      .from(teamInvitations)
+      .where(
+        and(
+          eq(teamInvitations.email, email.toLowerCase()),
+          eq(teamInvitations.status, 'pending'),
+          gt(teamInvitations.expiresAt, new Date()),
+        ),
+      )
+
+    const autoJoinedTeams: Array<{ id: string; name: string }> = []
+
+    for (const invite of pendingInvites) {
+      const alreadyMember = await db.query.teamMembers.findFirst({
+        where: and(eq(teamMembers.teamId, invite.teamId), eq(teamMembers.userId, user.id)),
+      })
+      if (!alreadyMember) {
+        await db.insert(teamMembers).values({
+          teamId: invite.teamId,
+          userId: user.id,
+          role: invite.role,
+          joinedAt: new Date(),
+        })
+        const team = await db.query.teams.findFirst({ where: eq(teams.id, invite.teamId) })
+        if (team) autoJoinedTeams.push({ id: team.id, name: team.name })
+      }
+      await db
+        .update(teamInvitations)
+        .set({ status: 'accepted', acceptedAt: new Date() })
+        .where(eq(teamInvitations.id, invite.id))
+      await c.env.KV.delete(`invite:${invite.token}`)
+    }
+
     // Generate JWT
     const jwt = await signJWT({ sub: user.id, email: user.email }, c.env.JWT_SECRET)
 
@@ -138,6 +173,7 @@ authRoutes.get('/verify', async (c) => {
         onboardingCompleted: user.onboardingCompleted,
         locale: user.locale,
       },
+      autoJoinedTeams,
     })
   } catch (err) {
     console.error('Route error:', err)

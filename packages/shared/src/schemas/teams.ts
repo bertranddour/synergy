@@ -57,8 +57,35 @@ export const teamHealthSchema = z.object({
   ),
 })
 
+export const inviteMemberSchema = z.object({
+  email: z.string().email(),
+  role: z.enum(['lead', 'member']).default('member'),
+})
+
+export const teamInvitationSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  role: z.enum(['lead', 'member']),
+  invitedByName: z.string(),
+  status: z.enum(['pending', 'accepted', 'revoked']),
+  createdAt: z.string().datetime(),
+  expiresAt: z.string().datetime(),
+})
+
+export const inviteInfoSchema = z.object({
+  teamName: z.string(),
+  teamType: z.string(),
+  inviterName: z.string(),
+  email: z.string().email(),
+  expiresAt: z.string().datetime(),
+  expired: z.boolean(),
+})
+
 export type Team = z.infer<typeof teamSchema>
 export type TeamMember = z.infer<typeof teamMemberSchema>
 export type TeamWithMembers = z.infer<typeof teamWithMembersSchema>
 export type CreateTeam = z.infer<typeof createTeamSchema>
 export type TeamHealth = z.infer<typeof teamHealthSchema>
+export type InviteMember = z.infer<typeof inviteMemberSchema>
+export type TeamInvitation = z.infer<typeof teamInvitationSchema>
+export type InviteInfo = z.infer<typeof inviteInfoSchema>

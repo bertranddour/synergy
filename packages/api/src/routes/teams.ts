@@ -1,9 +1,11 @@
-import { addMemberSchema, createTeamSchema } from '@synergy/shared'
+import { createTeamSchema, inviteMemberSchema } from '@synergy/shared'
 import { and, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { teamMembers, teams, users } from '../db/schema.js'
+import { nanoid } from 'nanoid'
+import { teamInvitations, teamMembers, teams, users } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createDb } from '../lib/db.js'
+import { sendTeamInviteEmail } from '../lib/email.js'
 import { newId } from '../lib/id.js'
 import { calculateHealth } from '../services/health.js'
 
@@ -208,43 +210,161 @@ teamRoutes.get('/:id/health', async (c) => {
   }
 })
 
-// ─── Add Member ──────────────────────────────────────────────────────────────
+// ─── Send Invitation ────────────────────────────────────────────────────────
 
-teamRoutes.post('/:id/members', async (c) => {
+teamRoutes.post('/:id/invitations', async (c) => {
   try {
     const userId = c.get('userId')
     const teamId = c.req.param('id')
     const db = createDb(c.env.DB)
 
     const leadCheck = await verifyTeamLead(db, teamId, userId)
-    if (!leadCheck) return c.json({ error: 'Only team leads can add members' }, 403)
+    if (!leadCheck) return c.json({ error: 'Only team leads can invite members' }, 403)
 
     const body = await c.req.json()
-    const parsed = addMemberSchema.safeParse(body)
+    const parsed = inviteMemberSchema.safeParse(body)
     if (!parsed.success) {
       return c.json({ error: 'Invalid data', details: parsed.error.flatten() }, 400)
     }
 
-    // Find user by email
-    const user = await db.query.users.findFirst({
-      where: eq(users.email, parsed.data.email),
-    })
-    if (!user) return c.json({ error: 'User not found with that email' }, 404)
+    const email = parsed.data.email.toLowerCase()
 
-    // Check not already a member
-    const existing = await db.query.teamMembers.findFirst({
-      where: and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, user.id)),
-    })
-    if (existing) return c.json({ error: 'Already a member' }, 400)
+    // Self-invite check
+    const currentUser = await db.query.users.findFirst({ where: eq(users.id, userId) })
+    if (currentUser && currentUser.email.toLowerCase() === email) {
+      return c.json({ error: 'Cannot invite yourself' }, 400)
+    }
 
-    await db.insert(teamMembers).values({
+    // Already-member check
+    const existingUser = await db.query.users.findFirst({ where: eq(users.email, email) })
+    if (existingUser) {
+      const existingMember = await db.query.teamMembers.findFirst({
+        where: and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, existingUser.id)),
+      })
+      if (existingMember) return c.json({ error: 'Already a team member' }, 400)
+    }
+
+    // Duplicate pending check
+    const pendingInvite = await db.query.teamInvitations.findFirst({
+      where: and(
+        eq(teamInvitations.teamId, teamId),
+        eq(teamInvitations.email, email),
+        eq(teamInvitations.status, 'pending'),
+      ),
+    })
+    if (pendingInvite) return c.json({ error: 'Invitation already pending' }, 400)
+
+    // Get team name + inviter name for email
+    const team = await db.query.teams.findFirst({ where: eq(teams.id, teamId) })
+    if (!team) return c.json({ error: 'Team not found' }, 404)
+    const inviterName = currentUser?.name ?? 'A team lead'
+
+    // Build invite URL
+    const token = nanoid(42)
+    const baseUrl =
+      c.env.ENVIRONMENT === 'development' ? 'http://localhost:5173/invite' : 'https://synergy.7flows.com/invite'
+    const inviteUrl = `${baseUrl}?token=${token}`
+
+    // Send email first — if it fails, no orphan DB row
+    await sendTeamInviteEmail(c.env, email, inviterName, team.name, inviteUrl)
+
+    // Create invitation record
+    const invitationId = newId()
+    const now = new Date()
+    const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+
+    await db.insert(teamInvitations).values({
+      id: invitationId,
       teamId,
-      userId: user.id,
+      email,
       role: parsed.data.role,
-      joinedAt: new Date(),
+      invitedBy: userId,
+      status: 'pending',
+      token,
+      createdAt: now,
+      expiresAt,
     })
 
-    return c.json({ added: true, userId: user.id })
+    // Store in KV for fast token lookup
+    await c.env.KV.put(`invite:${token}`, JSON.stringify({ invitationId, teamId, email }), {
+      expirationTtl: 7 * 24 * 60 * 60,
+    })
+
+    return c.json({ sent: true, invitationId }, 201)
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// ─── List Pending Invitations ───────────────────────────────────────────────
+
+teamRoutes.get('/:id/invitations', async (c) => {
+  try {
+    const userId = c.get('userId')
+    const teamId = c.req.param('id')
+    const db = createDb(c.env.DB)
+
+    const membership = await verifyTeamMembership(db, teamId, userId)
+    if (!membership) return c.json({ error: 'Not a team member' }, 403)
+
+    const now = new Date()
+    const invitations = await db
+      .select({
+        id: teamInvitations.id,
+        email: teamInvitations.email,
+        role: teamInvitations.role,
+        invitedBy: teamInvitations.invitedBy,
+        inviterName: users.name,
+        createdAt: teamInvitations.createdAt,
+        expiresAt: teamInvitations.expiresAt,
+      })
+      .from(teamInvitations)
+      .innerJoin(users, eq(teamInvitations.invitedBy, users.id))
+      .where(and(eq(teamInvitations.teamId, teamId), eq(teamInvitations.status, 'pending')))
+
+    // Filter expired
+    const pending = invitations
+      .filter((inv) => inv.expiresAt > now)
+      .map((inv) => ({
+        id: inv.id,
+        email: inv.email,
+        role: inv.role,
+        inviterName: inv.inviterName,
+        createdAt: inv.createdAt.toISOString(),
+        expiresAt: inv.expiresAt.toISOString(),
+      }))
+
+    return c.json({ invitations: pending })
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// ─── Revoke Invitation ──────────────────────────────────────────────────────
+
+teamRoutes.delete('/:id/invitations/:inviteId', async (c) => {
+  try {
+    const userId = c.get('userId')
+    const teamId = c.req.param('id')
+    const inviteId = c.req.param('inviteId')
+    const db = createDb(c.env.DB)
+
+    const leadCheck = await verifyTeamLead(db, teamId, userId)
+    if (!leadCheck) return c.json({ error: 'Only team leads can revoke invitations' }, 403)
+
+    const invitation = await db.query.teamInvitations.findFirst({
+      where: and(eq(teamInvitations.id, inviteId), eq(teamInvitations.teamId, teamId)),
+    })
+    if (!invitation) return c.json({ error: 'Invitation not found' }, 404)
+    if (invitation.status !== 'pending') return c.json({ error: 'Invitation is not pending' }, 400)
+
+    await db.update(teamInvitations).set({ status: 'revoked' }).where(eq(teamInvitations.id, inviteId))
+
+    await c.env.KV.delete(`invite:${invitation.token}`)
+
+    return c.json({ revoked: true })
   } catch (err) {
     console.error('Route error:', err)
     return c.json({ error: 'Internal server error' }, 500)
@@ -262,6 +382,12 @@ teamRoutes.delete('/:id/members/:userId', async (c) => {
 
     const leadCheck = await verifyTeamLead(db, teamId, userId)
     if (!leadCheck) return c.json({ error: 'Only team leads can remove members' }, 403)
+
+    // Cannot remove team owner
+    const team = await db.query.teams.findFirst({ where: eq(teams.id, teamId) })
+    if (team && memberUserId === team.ownerId) {
+      return c.json({ error: 'Cannot remove team owner' }, 400)
+    }
 
     await db.delete(teamMembers).where(and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, memberUserId)))
 

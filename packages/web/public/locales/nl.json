@@ -23,7 +23,9 @@
     "complete": "Afronden",
     "next": "Volgende",
     "getStarted": "Aan de slag",
-    "exit": "Afsluiten"
+    "exit": "Afsluiten",
+    "member": "Lid",
+    "lead": "Leider"
   },
   "nav": {
     "dashboard": "Overzicht",
@@ -194,7 +196,18 @@
     "teamNamePlaceholder": "Teamnaam",
     "failedToLoad": "Teams konden niet worden geladen",
     "emptyState": "Maak een team aan om collectieve gezondheid en voortgang bij te houden.",
-    "membersCount": "Leden ({{count}})"
+    "membersCount": "Leden ({{count}})",
+    "inviteMembers": "Leden uitnodigen",
+    "inviteEmailPlaceholder": "E-mailadres",
+    "sendInvite": "Uitnodigen",
+    "sending": "Verzenden...",
+    "inviteSent": "Uitnodiging succesvol verzonden.",
+    "pendingInvitations": "Openstaande uitnodigingen",
+    "invitedBy": "Uitgenodigd door {{name}}",
+    "revokeInvite": "Intrekken",
+    "revokeConfirm": "Uitnodiging voor {{email}} intrekken?",
+    "removeMember": "Verwijderen",
+    "removeConfirm": "{{name}} uit het team verwijderen?"
   },
   "settings": {
     "title": "Instellingen",
@@ -287,5 +300,18 @@
     "team": "Team",
     "scaling": "Schaalbaarheid",
     "ai-collaboration": "AI-samenwerking"
+  },
+  "invite": {
+    "title": "Team uitnodiging",
+    "joinTeam": "Word lid van {{teamName}}",
+    "invitedBy": "{{name}} heeft je uitgenodigd",
+    "accept": "Uitnodiging accepteren",
+    "accepting": "Toetreden...",
+    "accepted": "Je bent lid geworden van het team!",
+    "expired": "Deze uitnodiging is verlopen",
+    "expiredHint": "Vraag de teamleider om een nieuwe uitnodiging te sturen.",
+    "invalidToken": "Ongeldige uitnodigingslink",
+    "signInToJoin": "Log in om lid te worden van {{teamName}}",
+    "emailMismatch": "Deze uitnodiging is naar een ander e-mailadres gestuurd"
   }
 }

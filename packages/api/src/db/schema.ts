@@ -52,6 +52,36 @@ export const teamMembers = sqliteTable(
   (table) => [primaryKey({ columns: [table.teamId, table.userId] })],
 )
 
+// ─── Team Invitations ───────────────────────────────────────────────────────
+
+export const teamInvitations = sqliteTable(
+  'team_invitations',
+  {
+    id: text('id').primaryKey(),
+    teamId: text('team_id')
+      .notNull()
+      .references(() => teams.id),
+    email: text('email').notNull(),
+    role: text('role', { enum: ['lead', 'member'] })
+      .notNull()
+      .default('member'),
+    invitedBy: text('invited_by')
+      .notNull()
+      .references(() => users.id),
+    status: text('status', { enum: ['pending', 'accepted', 'revoked'] })
+      .notNull()
+      .default('pending'),
+    token: text('token').notNull().unique(),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+    expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+    acceptedAt: integer('accepted_at', { mode: 'timestamp' }),
+  },
+  (table) => [
+    index('idx_invitations_team_status').on(table.teamId, table.status),
+    index('idx_invitations_email_status').on(table.email, table.status),
+  ],
+)
+
 // ─── Frameworks ──────────────────────────────────────────────────────────────
 
 export const frameworks = sqliteTable('frameworks', {
@@ -310,6 +340,12 @@ export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
 export const teamsRelations = relations(teams, ({ one, many }) => ({
   owner: one(users, { fields: [teams.ownerId], references: [users.id] }),
   members: many(teamMembers),
+  invitations: many(teamInvitations),
+}))
+
+export const teamInvitationsRelations = relations(teamInvitations, ({ one }) => ({
+  team: one(teams, { fields: [teamInvitations.teamId], references: [teams.id] }),
+  inviter: one(users, { fields: [teamInvitations.invitedBy], references: [users.id] }),
 }))
 
 // ─── JSON Type Helpers ───────────────────────────────────────────────────────

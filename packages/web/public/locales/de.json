@@ -23,7 +23,9 @@
     "complete": "Abschließen",
     "next": "Weiter",
     "getStarted": "Loslegen",
-    "exit": "Beenden"
+    "exit": "Beenden",
+    "member": "Mitglied",
+    "lead": "Leitung"
   },
   "nav": {
     "dashboard": "Übersicht",
@@ -194,7 +196,18 @@
     "teamNamePlaceholder": "Teamname",
     "failedToLoad": "Teams konnten nicht geladen werden",
     "emptyState": "Erstelle ein Team, um kollektive Gesundheit und Fortschritte zu verfolgen.",
-    "membersCount": "Mitglieder ({{count}})"
+    "membersCount": "Mitglieder ({{count}})",
+    "inviteMembers": "Mitglieder einladen",
+    "inviteEmailPlaceholder": "E-Mail-Adresse",
+    "sendInvite": "Einladen",
+    "sending": "Wird gesendet...",
+    "inviteSent": "Einladung erfolgreich gesendet.",
+    "pendingInvitations": "Ausstehende Einladungen",
+    "invitedBy": "Eingeladen von {{name}}",
+    "revokeInvite": "Widerrufen",
+    "revokeConfirm": "Einladung für {{email}} widerrufen?",
+    "removeMember": "Entfernen",
+    "removeConfirm": "{{name}} aus dem Team entfernen?"
   },
   "settings": {
     "title": "Einstellungen",
@@ -287,5 +300,18 @@
     "team": "Team",
     "scaling": "Skalierung",
     "ai-collaboration": "KI-Zusammenarbeit"
+  },
+  "invite": {
+    "title": "Team-Einladung",
+    "joinTeam": "{{teamName}} beitreten",
+    "invitedBy": "{{name}} hat dich eingeladen beizutreten",
+    "accept": "Einladung annehmen",
+    "accepting": "Beitritt...",
+    "accepted": "Du bist dem Team beigetreten!",
+    "expired": "Diese Einladung ist abgelaufen",
+    "expiredHint": "Bitte den Team-Lead, eine neue Einladung zu senden.",
+    "invalidToken": "Ungueltiger Einladungslink",
+    "signInToJoin": "Melde dich an, um {{teamName}} beizutreten",
+    "emailMismatch": "Diese Einladung wurde an eine andere E-Mail-Adresse gesendet"
   }
 }

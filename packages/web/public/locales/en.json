@@ -23,7 +23,9 @@
     "complete": "Complete",
     "next": "Next",
     "getStarted": "Get Started",
-    "exit": "Exit"
+    "exit": "Exit",
+    "member": "Member",
+    "lead": "Lead"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -194,7 +196,18 @@
     "teamNamePlaceholder": "Team name",
     "failedToLoad": "Failed to load teams",
     "emptyState": "Create a team to start tracking collective health and progress.",
-    "membersCount": "Members ({{count}})"
+    "membersCount": "Members ({{count}})",
+    "inviteMembers": "Invite Members",
+    "inviteEmailPlaceholder": "Email address",
+    "sendInvite": "Send Invite",
+    "sending": "Sending...",
+    "inviteSent": "Invitation sent successfully.",
+    "pendingInvitations": "Pending Invitations",
+    "invitedBy": "Invited by {{name}}",
+    "revokeInvite": "Revoke",
+    "revokeConfirm": "Revoke invitation for {{email}}?",
+    "removeMember": "Remove",
+    "removeConfirm": "Remove {{name}} from the team?"
   },
   "settings": {
     "title": "Settings",
@@ -280,6 +293,19 @@
     "assessmentAlreadyCompleted": "Assessment already completed",
     "alreadyEnrolled": "Already enrolled in an active program",
     "noActiveProgram": "No active program"
+  },
+  "invite": {
+    "title": "Team Invitation",
+    "joinTeam": "Join {{teamName}}",
+    "invitedBy": "{{name}} invited you to join",
+    "accept": "Accept Invitation",
+    "accepting": "Joining...",
+    "accepted": "You've joined the team!",
+    "expired": "This invitation has expired",
+    "expiredHint": "Ask the team lead to send a new invitation.",
+    "invalidToken": "Invalid invitation link",
+    "signInToJoin": "Sign in to join {{teamName}}",
+    "emailMismatch": "This invitation was sent to a different email address"
   },
   "healthCategories": {
     "validation": "Validation",

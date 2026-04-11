@@ -47,6 +47,7 @@ function VerifyPage() {
             onboardingCompleted: boolean
             locale: string
           }
+          autoJoinedTeams?: Array<{ id: string; name: string }>
         }
 
         setAuth(data.token, data.user)
@@ -55,7 +56,12 @@ function VerifyPage() {
         if (SUPPORTED_LOCALE_CODES.includes(userLocale as SupportedLocale)) {
           setLocale(userLocale as SupportedLocale)
         }
-        void navigate({ to: data.user.onboardingCompleted ? '/' : '/onboarding' })
+        const firstTeam = data.autoJoinedTeams?.[0]
+        if (firstTeam) {
+          void navigate({ to: '/teams/$id', params: { id: firstTeam.id } })
+        } else {
+          void navigate({ to: data.user.onboardingCompleted ? '/' : '/onboarding' })
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : t('verify.failed'))
       }

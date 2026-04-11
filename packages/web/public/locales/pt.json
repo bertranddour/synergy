@@ -23,7 +23,9 @@
     "complete": "Concluir",
     "next": "Seguinte",
     "getStarted": "Começar",
-    "exit": "Sair"
+    "exit": "Sair",
+    "member": "Membro",
+    "lead": "Líder"
   },
   "nav": {
     "dashboard": "Painel",
@@ -194,7 +196,18 @@
     "teamNamePlaceholder": "Nome da equipa",
     "failedToLoad": "Não foi possível carregar as equipas",
     "emptyState": "Crie uma equipa para começar a acompanhar a saúde coletiva e o progresso.",
-    "membersCount": "Membros ({{count}})"
+    "membersCount": "Membros ({{count}})",
+    "inviteMembers": "Convidar membros",
+    "inviteEmailPlaceholder": "Endereço de e-mail",
+    "sendInvite": "Enviar",
+    "sending": "Enviando...",
+    "inviteSent": "Convite enviado com sucesso.",
+    "pendingInvitations": "Convites pendentes",
+    "invitedBy": "Convidado por {{name}}",
+    "revokeInvite": "Revogar",
+    "revokeConfirm": "Revogar convite para {{email}}?",
+    "removeMember": "Remover",
+    "removeConfirm": "Remover {{name}} da equipe?"
   },
   "settings": {
     "title": "Definições",
@@ -287,5 +300,18 @@
     "team": "Equipa",
     "scaling": "Escalabilidade",
     "ai-collaboration": "Colaboração IA"
+  },
+  "invite": {
+    "title": "Convite de equipa",
+    "joinTeam": "Juntar-se a {{teamName}}",
+    "invitedBy": "{{name}} convidou-o a juntar-se",
+    "accept": "Aceitar convite",
+    "accepting": "A juntar...",
+    "accepted": "Juntou-se a equipa!",
+    "expired": "Este convite expirou",
+    "expiredHint": "Peca ao lider da equipa para enviar um novo convite.",
+    "invalidToken": "Link de convite invalido",
+    "signInToJoin": "Inicie sessao para juntar-se a {{teamName}}",
+    "emailMismatch": "Este convite foi enviado para outro endereco de email"
   }
 }

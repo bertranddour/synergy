@@ -8,6 +8,7 @@ import { assessmentRoutes } from './routes/assessments.js'
 import { authRoutes } from './routes/auth.js'
 import { coachRoutes } from './routes/coach.js'
 import { healthRoutes } from './routes/health.js'
+import { invitationRoutes } from './routes/invitations.js'
 import { modeRoutes } from './routes/modes.js'
 import { programRoutes } from './routes/programs.js'
 import { progressRoutes } from './routes/progress.js'
@@ -44,6 +45,10 @@ app.get('/api/health-check', (c) => c.json({ status: 'ok', timestamp: new Date()
 
 // Auth routes (no auth middleware)
 app.route('/api/auth', authRoutes)
+
+// Invitation accept requires auth, but info is public
+app.use('/api/invitations/accept', auth())
+app.route('/api/invitations', invitationRoutes)
 
 // Protected routes
 app.use('/api/users/*', auth())

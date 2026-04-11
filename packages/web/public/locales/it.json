@@ -23,7 +23,9 @@
     "complete": "Completa",
     "next": "Avanti",
     "getStarted": "Inizia",
-    "exit": "Esci"
+    "exit": "Esci",
+    "member": "Membro",
+    "lead": "Responsabile"
   },
   "nav": {
     "dashboard": "Pannello",
@@ -194,7 +196,18 @@
     "teamNamePlaceholder": "Nome del team",
     "failedToLoad": "Impossibile caricare i team",
     "emptyState": "Crea un team per iniziare a monitorare la salute collettiva e i progressi.",
-    "membersCount": "Membri ({{count}})"
+    "membersCount": "Membri ({{count}})",
+    "inviteMembers": "Invita membri",
+    "inviteEmailPlaceholder": "Indirizzo e-mail",
+    "sendInvite": "Invia",
+    "sending": "Invio...",
+    "inviteSent": "Invito inviato con successo.",
+    "pendingInvitations": "Inviti in sospeso",
+    "invitedBy": "Invitato da {{name}}",
+    "revokeInvite": "Revoca",
+    "revokeConfirm": "Revocare l'invito per {{email}}?",
+    "removeMember": "Rimuovi",
+    "removeConfirm": "Rimuovere {{name}} dal team?"
   },
   "settings": {
     "title": "Impostazioni",
@@ -287,5 +300,18 @@
     "team": "Team",
     "scaling": "Scalabilità",
     "ai-collaboration": "Collaborazione IA"
+  },
+  "invite": {
+    "title": "Invito al team",
+    "joinTeam": "Unisciti a {{teamName}}",
+    "invitedBy": "{{name}} ti ha invitato a unirti",
+    "accept": "Accetta invito",
+    "accepting": "Accesso in corso...",
+    "accepted": "Ti sei unito al team!",
+    "expired": "Questo invito e scaduto",
+    "expiredHint": "Chiedi al team lead di inviare un nuovo invito.",
+    "invalidToken": "Link di invito non valido",
+    "signInToJoin": "Accedi per unirti a {{teamName}}",
+    "emailMismatch": "Questo invito e stato inviato a un altro indirizzo email"
   }
 }
