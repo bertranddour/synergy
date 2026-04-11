@@ -89,43 +89,9 @@ function Dashboard() {
         </Link>
       </div>
 
-      {/* Health Cards */}
-      {healthQuery.isLoading ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="wave-skeleton h-44 rounded-[1.8rem]" />
-          ))}
-        </div>
-      ) : healthQuery.data?.categories.length === 0 ? (
-        <div className="wave-entrance-2 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-          <p className="text-lg text-[var(--text-secondary)]">
-            Activate a framework in Settings to start tracking health.
-          </p>
-          <Link
-            to="/modes"
-            className="neo-btn shadow-neo-button mt-4 inline-block rounded-full px-8 py-3 font-semibold"
-          >
-            Get Started
-          </Link>
-        </div>
-      ) : (
-        <div className="wave-entrance-2 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {healthQuery.data?.categories.map((cat) => (
-            <HealthCard
-              key={cat.name}
-              name={cat.name}
-              score={cat.score}
-              trend={cat.trend}
-              color={cat.color}
-              topMetrics={cat.topMetrics}
-            />
-          ))}
-        </div>
-      )}
-
       {/* Alicia's Nudges */}
       {nudgesQuery.data && nudgesQuery.data.observations.length > 0 && (
-        <div className="wave-entrance-3 space-y-3">
+        <div className="wave-entrance-2 space-y-3">
           <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">From Alicia</h2>
           {nudgesQuery.data.observations.map((obs) => (
             <NudgeCard
@@ -152,6 +118,40 @@ function Dashboard() {
           <div className="wave-skeleton h-64 rounded-[2rem]" />
         )}
       </div>
+
+      {/* Health Cards */}
+      {healthQuery.isLoading ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="wave-skeleton h-44 rounded-[1.8rem]" />
+          ))}
+        </div>
+      ) : healthQuery.data?.categories.length === 0 ? (
+        <div className="wave-entrance-4 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
+          <p className="text-lg text-[var(--text-secondary)]">
+            Activate a framework in Settings to start tracking health.
+          </p>
+          <Link
+            to="/modes"
+            className="neo-btn shadow-neo-button mt-4 inline-block rounded-full px-8 py-3 font-semibold"
+          >
+            Get Started
+          </Link>
+        </div>
+      ) : (
+        <div className="wave-entrance-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {healthQuery.data?.categories.map((cat) => (
+            <HealthCard
+              key={cat.name}
+              name={cat.name}
+              score={cat.score}
+              trend={cat.trend}
+              color={cat.color}
+              topMetrics={cat.topMetrics}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
