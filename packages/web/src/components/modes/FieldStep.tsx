@@ -13,19 +13,21 @@ interface FieldStepProps {
   value: unknown
   onSubmit: (value: unknown) => void
   isLast: boolean
+  modeSlug: string
+  fieldIndex: number
 }
 
 export function FieldStep({
   index,
   total,
-  name,
-  description,
   type,
   example,
   options,
   value,
   onSubmit,
   isLast,
+  modeSlug,
+  fieldIndex,
 }: FieldStepProps) {
   const { t } = useTranslation()
   const [inputValue, setInputValue] = useState<string>(typeof value === 'string' ? value : '')
@@ -55,15 +57,21 @@ export function FieldStep({
       </div>
 
       {/* Field header */}
-      <h2 className="font-display text-2xl md:text-3xl">{name}</h2>
-      <p className="mt-3 text-[var(--text-secondary)]">{description}</p>
-      {example && <p className="mt-2 text-sm italic text-[var(--text-tertiary)]">{t('modes.example', { example })}</p>}
+      <h2 className="font-display text-2xl md:text-3xl">{t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`)}</h2>
+      <p className="mt-3 text-[var(--text-secondary)]">
+        {t(`modeContent.${modeSlug}.fields.${fieldIndex}.description`)}
+      </p>
+      {example && (
+        <p className="mt-2 text-sm italic text-[var(--text-tertiary)]">
+          {t('modes.example', { example: t(`modeContent.${modeSlug}.fields.${fieldIndex}.example`) })}
+        </p>
+      )}
 
       {/* Input */}
       <div className="mt-8">
         {type === 'select' && options ? (
           <div className="space-y-3">
-            {options.map((option) => (
+            {options.map((option, optionIndex) => (
               <button
                 key={option}
                 type="button"
@@ -72,7 +80,7 @@ export function FieldStep({
                   inputValue === option ? 'shadow-neo-inset font-semibold' : 'shadow-neo-button'
                 }`}
               >
-                {option}
+                {t(`modeContent.${modeSlug}.fields.${fieldIndex}.options.${optionIndex}`)}
               </button>
             ))}
           </div>
@@ -82,7 +90,9 @@ export function FieldStep({
             onChange={(e) => setInputValue(e.target.value)}
             rows={6}
             className="shadow-neo-inset w-full resize-none rounded-[1.2rem] bg-[var(--surface)] p-6 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none"
-            placeholder={t('fields.enterPlaceholder', { name: name.toLowerCase() })}
+            placeholder={t('fields.enterPlaceholder', {
+              name: t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`).toLowerCase(),
+            })}
           />
         ) : type === 'number' ? (
           <input
@@ -90,11 +100,13 @@ export function FieldStep({
             min="0"
             step="1"
             inputMode="numeric"
-            aria-label={name}
+            aria-label={t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`)}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="input-embossed w-full px-6 py-4 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
-            placeholder={t('fields.enterPlaceholder', { name: name.toLowerCase() })}
+            placeholder={t('fields.enterPlaceholder', {
+              name: t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`).toLowerCase(),
+            })}
           />
         ) : type === 'toggle' ? (
           <div className="flex items-center gap-4">
@@ -104,7 +116,7 @@ export function FieldStep({
               className={`neo-btn h-12 w-20 rounded-full transition-all ${
                 inputValue === 'true' ? 'shadow-neo-inset bg-[var(--color-core)]' : 'shadow-neo-button'
               }`}
-              aria-label={`Toggle ${name}`}
+              aria-label={`Toggle ${t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`)}`}
               aria-pressed={inputValue === 'true'}
             >
               <span
@@ -122,18 +134,22 @@ export function FieldStep({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             rows={8}
-            aria-label={name}
+            aria-label={t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`)}
             className="shadow-neo-inset w-full resize-none rounded-[1.2rem] bg-[var(--surface)] p-6 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none"
-            placeholder={t('fields.structuredPlaceholder', { name: name.toLowerCase() })}
+            placeholder={t('fields.structuredPlaceholder', {
+              name: t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`).toLowerCase(),
+            })}
           />
         ) : (
           <input
             type="text"
-            aria-label={name}
+            aria-label={t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`)}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="input-embossed w-full px-6 py-4 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
-            placeholder={t('fields.enterPlaceholder', { name: name.toLowerCase() })}
+            placeholder={t('fields.enterPlaceholder', {
+              name: t(`modeContent.${modeSlug}.fields.${fieldIndex}.name`).toLowerCase(),
+            })}
           />
         )}
       </div>

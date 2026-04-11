@@ -126,7 +126,7 @@ function ActiveAssessment() {
           <p className="mt-4 text-5xl font-bold">
             {result.score}/{result.maxScore}
           </p>
-          <p className="mt-2 text-lg capitalize text-[var(--text-secondary)]">{result.level.replace('-', ' ')}</p>
+          <p className="mt-2 text-lg capitalize text-[var(--text-secondary)]">{t(`maturity.${result.level}`)}</p>
         </div>
 
         {result.aliciaDebrief && (
@@ -146,8 +146,7 @@ function ActiveAssessment() {
             <div className="mt-3 space-y-2">
               {result.recommendations.map((rec) => (
                 <p key={rec.modeSlug} className="inline-flex items-center gap-1 text-sm text-[var(--text-secondary)]">
-                  <Icon name="arrow-right" size="sm" />{' '}
-                  {rec.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}: {rec.reason}
+                  <Icon name="arrow-right" size="sm" /> {t(`modeContent.${rec.modeSlug}.name`)}: {rec.reason}
                 </p>
               ))}
             </div>

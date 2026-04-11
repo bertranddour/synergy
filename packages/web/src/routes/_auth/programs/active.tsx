@@ -67,8 +67,8 @@ function ActiveProgram() {
             <Icon name="arrow-left" size="sm" /> {t('nav.programs')}
           </span>
         </Link>
-        <h1 className="font-display mt-2 text-3xl tracking-tight">{program.name}</h1>
-        <p className="mt-1 text-[var(--text-secondary)]">{program.description}</p>
+        <h1 className="font-display mt-2 text-3xl tracking-tight">{t(`programContent.${program.slug}.name`)}</h1>
+        <p className="mt-1 text-[var(--text-secondary)]">{t(`programContent.${program.slug}.description`)}</p>
       </div>
 
       {/* Progress */}
@@ -110,9 +110,11 @@ function ActiveProgram() {
               </span>
               <div className="flex-1">
                 <p className={day.completed ? 'text-[var(--text-tertiary)] line-through' : 'font-semibold'}>
-                  {day.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                  {t(`modeContent.${day.modeSlug}.name`)}
                 </p>
-                <p className="text-xs text-[var(--text-tertiary)]">{day.description}</p>
+                <p className="text-xs text-[var(--text-tertiary)]">
+                  {t(`programContent.${program.slug}.schedule.${day.day - 1}`)}
+                </p>
               </div>
               <span className="text-xs text-[var(--text-tertiary)]">{day.date}</span>
             </div>

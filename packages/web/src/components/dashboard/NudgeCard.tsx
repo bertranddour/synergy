@@ -53,7 +53,7 @@ export function NudgeCard({ id, title, message, suggestedModeSlug }: NudgeCardPr
         >
           <span className="inline-flex items-center gap-1">
             {t('nudge.openMode', {
-              name: suggestedModeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+              name: t(`modeContent.${suggestedModeSlug}.name`),
             })}
             <Icon name="arrow-right" size="sm" />
           </span>

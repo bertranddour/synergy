@@ -162,7 +162,7 @@ function HealthDetail() {
                   params={{ slug: s.modeSlug }}
                   className="text-[var(--text-secondary)] underline decoration-[var(--text-tertiary)] underline-offset-2 hover:text-[var(--text-primary)]"
                 >
-                  {s.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                  {t(`modeContent.${s.modeSlug}.name`)}
                 </Link>
                 <span className="text-xs text-[var(--text-tertiary)]">
                   {new Date(s.completedAt).toLocaleDateString()}
@@ -188,7 +188,7 @@ function HealthDetail() {
                 className="neo-btn shadow-neo-button rounded-full px-4 py-2 text-xs font-semibold"
                 style={{ color: accentColor }}
               >
-                {slug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                {t(`modeContent.${slug}.name`)}
               </Link>
             ))}
           </div>

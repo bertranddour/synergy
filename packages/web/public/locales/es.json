@@ -113,14 +113,14 @@
     "subtitle": "Tu colega de coaching empresarial",
     "newChat": "Nueva conversación",
     "greeting": "¡Hola! ¿En qué trabajamos?",
-    "greetingSub": "Conozco tu negocio. Pregúntame lo que quieras \u2014 estrategia, validación, equipo, crecimiento, colaboración con IA.",
+    "greetingSub": "Conozco tu negocio. Pregúntame lo que quieras — estrategia, validación, equipo, crecimiento, colaboración con IA.",
     "placeholder": "Pregúntale lo que sea a Alicia...",
     "continue": "Continuar",
     "dismissAria": "Cerrar coaching"
   },
   "assessments": {
     "title": "Centro de evaluación",
-    "subtitle": "Diagnósticos basados en escenarios. Sin autoevaluación \u2014 situaciones reales con decisiones reales.",
+    "subtitle": "Diagnósticos basados en escenarios. Sin autoevaluación — situaciones reales con decisiones reales.",
     "lastResult": "Último resultado:",
     "startAssessment": "Iniciar evaluación",
     "history": "Historial de evaluaciones",
@@ -216,20 +216,56 @@
     "themeSystem": "Sistema"
   },
   "frameworks": {
-    "core": { "name": "Core X", "description": "Construcción de negocio basada en validación. Pon a prueba tus hipótesis, captura insights, construye propuestas." },
-    "air": { "name": "Air X", "description": "Trabajo flexible asíncrono. Flujo de información, ritmos de equipo, cultura remota." },
-    "max": { "name": "Max X", "description": "Escalar sin burocracia. Estructura organizativa, alineación entre equipos, calidad a escala." },
-    "synergy": { "name": "Synergy X", "description": "Colaboración humano-IA. Integración de colegas IA, calibración de confianza, protocolos de decisión." }
+    "core": {
+      "name": "Core X",
+      "description": "Construcción de negocio basada en validación. Pon a prueba tus hipótesis, captura insights, construye propuestas."
+    },
+    "air": {
+      "name": "Air X",
+      "description": "Trabajo flexible asíncrono. Flujo de información, ritmos de equipo, cultura remota."
+    },
+    "max": {
+      "name": "Max X",
+      "description": "Escalar sin burocracia. Estructura organizativa, alineación entre equipos, calidad a escala."
+    },
+    "synergy": {
+      "name": "Synergy X",
+      "description": "Colaboración humano-IA. Integración de colegas IA, calibración de confianza, protocolos de decisión."
+    }
   },
   "stages": {
-    "solo": { "label": "Fundador solo", "description": "Solo yo, construyendo y validando" },
-    "small-team": { "label": "Equipo pequeño", "description": "2-10 personas, buscando el product-market fit" },
-    "growing": { "label": "En crecimiento", "description": "10-50 personas, escalando lo que funciona" },
-    "scaling": { "label": "A gran escala", "description": "50+ personas, construyendo para escalar" }
+    "solo": {
+      "label": "Fundador solo",
+      "description": "Solo yo, construyendo y validando"
+    },
+    "small-team": {
+      "label": "Equipo pequeño",
+      "description": "2-10 personas, buscando el product-market fit"
+    },
+    "growing": {
+      "label": "En crecimiento",
+      "description": "10-50 personas, escalando lo que funciona"
+    },
+    "scaling": {
+      "label": "A gran escala",
+      "description": "50+ personas, construyendo para escalar"
+    }
   },
-  "maturity": { "standing-still": "Parado", "crawling": "Gateando", "walking": "Caminando", "running": "Corriendo", "flying": "Volando" },
-  "nudge": { "dismiss": "Cerrar", "openMode": "Abrir {{name}}" },
-  "frameworkToggle": { "activeHint": "Activo \u2014 modos y seguimiento de salud habilitados", "tapToActivate": "Toca para activar" },
+  "maturity": {
+    "standing-still": "Parado",
+    "crawling": "Gateando",
+    "walking": "Caminando",
+    "running": "Corriendo",
+    "flying": "Volando"
+  },
+  "nudge": {
+    "dismiss": "Cerrar",
+    "openMode": "Abrir {{name}}"
+  },
+  "frameworkToggle": {
+    "activeHint": "Activo — modos y seguimiento de salud habilitados",
+    "tapToActivate": "Toca para activar"
+  },
   "errors": {
     "genericError": "Algo salió mal",
     "failedToFetch": "No se pudieron obtener los datos",
@@ -244,5 +280,1088 @@
     "assessmentAlreadyCompleted": "Evaluación ya completada",
     "alreadyEnrolled": "Ya inscrito en un programa activo",
     "noActiveProgram": "Sin programa activo"
+  },
+  "modeContent": {
+    "validation": {
+      "name": "Modo Validacion",
+      "purpose": "Pon a prueba tu hipotesis de negocio mas arriesgada con evidencia y toma una decision clara: Perseverar/Pivotar/Experimentar de nuevo.",
+      "trigger": "Usar cuando estas a punto de tomar una decision de negocio importante basada en algo que crees pero no has probado.",
+      "flowName": "Validacion",
+      "doneSignal": "Puedes enunciar tu hipotesis, la evidencia a favor o en contra, y tu decision en una frase?",
+      "fields": {
+        "0": {
+          "name": "Hipotesis",
+          "description": "La creencia especifica que estas poniendo a prueba. Debe ser falsificable.",
+          "example": "Los disenadores freelance pagaran 49 $/mes por facturacion automatizada."
+        },
+        "1": {
+          "name": "Nivel de riesgo",
+          "description": "Cuanto dano si esta hipotesis es incorrecta.",
+          "options": [
+            "Alto",
+            "Medio",
+            "Bajo"
+          ]
+        },
+        "2": {
+          "name": "Evidencia actual",
+          "description": "Lo que ya sabes. Datos, conversaciones, senales."
+        },
+        "3": {
+          "name": "Diseno del experimento",
+          "description": "La prueba mas barata y rapida que podria refutar la hipotesis."
+        },
+        "4": {
+          "name": "Criterios de exito",
+          "description": "El numero especifico que significa que la hipotesis se sostiene.",
+          "example": "5 % de tasa de registro en 7 dias."
+        },
+        "5": {
+          "name": "Plazo limitado",
+          "description": "Cuanto tiempo dura el experimento.",
+          "example": "7 dias."
+        },
+        "6": {
+          "name": "Resultados",
+          "description": "Lo que realmente paso. Datos brutos, no interpretacion."
+        },
+        "7": {
+          "name": "Decision",
+          "description": "Basandose en la evidencia: Perseverar, Pivotar o Experimentar de nuevo.",
+          "options": [
+            "Perseverar",
+            "Pivotar",
+            "Experimentar de nuevo"
+          ]
+        },
+        "8": {
+          "name": "Proxima accion",
+          "description": "El siguiente paso concreto con una fecha."
+        },
+        "9": {
+          "name": "Actualizacion de la hipotesis",
+          "description": "Como ha cambiado esta hipotesis en base a lo que aprendiste?"
+        }
+      },
+      "hooks": {
+        "0": "Las hipotesis identificadas en el Motor de Negocio alimentan la Validacion",
+        "1": "La hipotesis de mayor prioridad de la Pila de Prioridades",
+        "2": "Los resultados del experimento alimentan la Captura de Insights",
+        "3": "Los resultados validados pueden empaquetarse para revision del equipo"
+      }
+    },
+    "insight-capture": {
+      "name": "Modo Captura de Insights",
+      "purpose": "Transforma las senales brutas de tu mercado en patrones estructurados y proximos pasos accionables.",
+      "trigger": "Usar cuando tienes datos brutos, conversaciones con clientes o senales del mercado que necesitan estructura.",
+      "flowName": "Validacion",
+      "doneSignal": "Puedes explicar este insight a alguien que no estaba en la sala, con suficiente contexto para que pueda actuar?",
+      "fields": {
+        "0": {
+          "name": "Fuente de la senal",
+          "description": "De donde vino este insight?",
+          "options": [
+            "Conversacion con cliente",
+            "Datos de uso",
+            "Investigacion de mercado",
+            "Observacion de competencia",
+            "Feedback del equipo",
+            "Otro"
+          ]
+        },
+        "1": {
+          "name": "Senal bruta",
+          "description": "La observacion exacta, cita o dato."
+        },
+        "2": {
+          "name": "Coincidencia de patron",
+          "description": "Se conecta esto con algo que hayas visto antes?"
+        },
+        "3": {
+          "name": "Intensidad",
+          "description": "Que tan fuerte es esta senal?",
+          "options": [
+            "Fuerte (multiples fuentes)",
+            "Moderada (2+ senales)",
+            "Debil (senal unica)"
+          ]
+        },
+        "4": {
+          "name": "Implicacion",
+          "description": "Si esta senal es real, que significa para tu negocio?"
+        },
+        "5": {
+          "name": "Accion",
+          "description": "Que siguiente paso concreto impulsa este insight?"
+        }
+      },
+      "hooks": {
+        "0": "Los resultados del experimento alimentan la Captura de Insights",
+        "1": "Los insights validados orientan las propuestas de valor"
+      }
+    },
+    "proposition-builder": {
+      "name": "Modo Constructor de Propuesta",
+      "purpose": "Construye propuestas de valor respaldadas por evidencia en tres niveles: Basico, Satisfactorio, Encantador.",
+      "trigger": "Usar cuando necesitas articular lo que ofreces y por que importa, basandote en evidencia.",
+      "flowName": "Validacion",
+      "doneSignal": "Puede un nuevo miembro del equipo explicar tu propuesta de valor en 30 segundos, incluyendo para quien es y por que les importa?",
+      "fields": {
+        "0": {
+          "name": "Cliente objetivo",
+          "description": "Para quien exactamente es esta propuesta?"
+        },
+        "1": {
+          "name": "Enunciado del problema",
+          "description": "El problema especifico que resuelves, en sus palabras."
+        },
+        "2": {
+          "name": "Nivel Basico",
+          "description": "El valor minimo viable -- lo que debes entregar."
+        },
+        "3": {
+          "name": "Nivel Satisfactorio",
+          "description": "El valor esperado que cumple con el estandar."
+        },
+        "4": {
+          "name": "Nivel Encantador",
+          "description": "El valor inesperado que crea fidelidad."
+        },
+        "5": {
+          "name": "Evidencia",
+          "description": "Que datos validados respaldan cada nivel?"
+        },
+        "6": {
+          "name": "Diferenciacion",
+          "description": "Que hace que tu propuesta sea diferente de las alternativas?"
+        }
+      },
+      "hooks": {
+        "0": "Los insights validados orientan las propuestas",
+        "1": "La propuesta alimenta el diseno del modelo de negocio"
+      }
+    },
+    "business-engine": {
+      "name": "Modo Motor de Negocio",
+      "purpose": "Mapea las hipotesis de tu modelo de negocio e identifica cuales podrian romper el motor.",
+      "trigger": "Usar cuando necesitas entender como funciona tu negocio como sistema y que hipotesis son fundamentales.",
+      "flowName": "Estrategia",
+      "doneSignal": "Puedes explicar tu modelo de negocio en una frase, nombrar la hipotesis mas arriesgada y decir que evidencia tienes?",
+      "fields": {
+        "0": {
+          "name": "Modelo de ingresos",
+          "description": "Como entra el dinero? Se especifico con precios y canales."
+        },
+        "1": {
+          "name": "Estructura de costos",
+          "description": "A donde va el dinero? Costos fijos vs variables."
+        },
+        "2": {
+          "name": "Hipotesis clave",
+          "description": "Lista las 3 a 5 hipotesis de las que depende tu modelo."
+        },
+        "3": {
+          "name": "Hipotesis mas arriesgada",
+          "description": "Cual hipotesis, si es incorrecta, rompe el modelo?"
+        },
+        "4": {
+          "name": "Evidencia actual",
+          "description": "Que datos respaldan o cuestionan cada hipotesis?"
+        },
+        "5": {
+          "name": "Economia unitaria",
+          "description": "Ingreso por unidad, costo por unidad, margen."
+        }
+      },
+      "hooks": {
+        "0": "Las hipotesis alimentan la clasificacion por prioridad",
+        "1": "La hipotesis mas arriesgada debe ser validada"
+      }
+    },
+    "priority-stack": {
+      "name": "Modo Pila de Prioridades",
+      "purpose": "Crea un ranking forzado de prioridades basado en evidencia con una lista clara de lo que No Haces.",
+      "trigger": "Usar cuando tienes mas cosas por hacer que tiempo para hacerlas, y necesitas claridad despiadada sobre lo que importa.",
+      "flowName": "Estrategia",
+      "doneSignal": "Puedes decirle a alguien tus 3 prioridades principales y tu lista de No Hacer sin dudar?",
+      "fields": {
+        "0": {
+          "name": "Candidatos",
+          "description": "Lista todo lo que compite por tu atencion ahora mismo."
+        },
+        "1": {
+          "name": "Criterios",
+          "description": "Que criterios usaras para clasificar? Impacto, urgencia, solidez de la evidencia."
+        },
+        "2": {
+          "name": "Ranking forzado",
+          "description": "Clasifica todos los candidatos del 1 al N. No se permiten empates."
+        },
+        "3": {
+          "name": "Top 3",
+          "description": "Tus 3 prioridades principales con una justificacion de una frase cada una."
+        },
+        "4": {
+          "name": "Lista No Hacer",
+          "description": "Todo lo que queda por debajo de la linea de corte. Dilo explicitamente."
+        },
+        "5": {
+          "name": "Asignacion de tiempo",
+          "description": "Como se distribuira tu tiempo entre el top 3 este periodo?"
+        }
+      },
+      "hooks": {
+        "0": "Las hipotesis del Motor de Negocio necesitan clasificacion",
+        "1": "Las prioridades principales alimentan el seguimiento de ejecucion",
+        "2": "La hipotesis de mayor prioridad va a Validacion"
+      }
+    },
+    "execution-tracker": {
+      "name": "Modo Seguimiento de Ejecucion",
+      "purpose": "Haz seguimiento de la visibilidad del trabajo e identifica bloqueos con seguimiento asincrono.",
+      "trigger": "Usar cuando necesitas ver que esta pasando, que esta bloqueado y que necesita desbloquearse.",
+      "flowName": "Ejecucion",
+      "doneSignal": "Puedes ver todo el trabajo activo, saber que esta bloqueado y tener una accion de desbloqueo especifica para cada obstáculo?",
+      "fields": {
+        "0": {
+          "name": "Elementos de trabajo",
+          "description": "Lista los elementos de trabajo activos conectados a tus prioridades."
+        },
+        "1": {
+          "name": "Estado",
+          "description": "Para cada elemento: No iniciado, En progreso, Bloqueado, Terminado."
+        },
+        "2": {
+          "name": "Bloqueos",
+          "description": "Que esta bloqueado y por que? Se especifico."
+        },
+        "3": {
+          "name": "Acciones de desbloqueo",
+          "description": "Para cada bloqueo: quien necesita hacer que y para cuando?"
+        },
+        "4": {
+          "name": "Tiempo de ciclo",
+          "description": "Cuanto tiempo desde el inicio hasta la finalizacion de los elementos recientes?"
+        }
+      },
+      "hooks": {
+        "0": "Las prioridades definen que rastrear",
+        "1": "Los elementos terminados van al Control de Entrega"
+      }
+    },
+    "delivery-check": {
+      "name": "Modo Control de Entrega",
+      "purpose": "Portal de calidad para el trabajo terminado y seguimiento del rendimiento post-entrega.",
+      "trigger": "Usar cuando el trabajo esta terminado y necesita un control de calidad antes de darlo por entregado.",
+      "flowName": "Ejecucion",
+      "doneSignal": "Puedes afirmar con confianza que este entregable esta listo para la persona que lo recibe?",
+      "fields": {
+        "0": {
+          "name": "Entregable",
+          "description": "Que se entrego? Se especifico."
+        },
+        "1": {
+          "name": "Criterios de calidad",
+          "description": "Que estandares debe cumplir?"
+        },
+        "2": {
+          "name": "Evaluacion de calidad",
+          "description": "Cumple con cada criterio? Pasa/Falla por elemento."
+        },
+        "3": {
+          "name": "Problemas encontrados",
+          "description": "Que necesita corregirse antes de la entrega?"
+        },
+        "4": {
+          "name": "Seguimiento post-entrega",
+          "description": "Que monitorearas despues de la entrega para confirmar la calidad?"
+        }
+      },
+      "hooks": {
+        "0": "Elementos de trabajo terminados del Seguimiento de Ejecucion"
+      }
+    },
+    "information-architecture": {
+      "name": "Modo Arquitectura de la Informacion",
+      "purpose": "Disena donde vive la informacion para que las personas encuentren lo que necesitan en 5 minutos sin preguntar.",
+      "trigger": "Usar cuando la gente no para de preguntar donde estan las cosas, la informacion esta duplicada o perdida, o los nuevos integrantes no encuentran lo que necesitan.",
+      "flowName": "Informar",
+      "doneSignal": "Puede un nuevo miembro del equipo encontrar cualquier informacion critica en 5 minutos sin preguntar a alguien?",
+      "fields": {
+        "0": {
+          "name": "Auditoria de informacion",
+          "description": "Donde vive actualmente la informacion? Lista todas las herramientas y ubicaciones."
+        },
+        "1": {
+          "name": "Puntos de dolor",
+          "description": "Que informacion es la mas dificil de encontrar? Que preguntas se hacen repetidamente?"
+        },
+        "2": {
+          "name": "Categorias",
+          "description": "Agrupa la informacion en categorias logicas."
+        },
+        "3": {
+          "name": "Fuente unica de verdad",
+          "description": "Para cada categoria, cual es la ubicacion canonica?"
+        },
+        "4": {
+          "name": "Prueba de encontrabilidad",
+          "description": "Puede un nuevo miembro del equipo encontrar X en 5 minutos? Prueba con 3 elementos comunes."
+        }
+      },
+      "hooks": {
+        "0": "La estructura de informacion habilita el diseno de trabajo asincrono",
+        "1": "Las categorias de informacion alimentan la estructura de conocimiento IA"
+      }
+    },
+    "flex-work-design": {
+      "name": "Modo Diseno de Trabajo Flexible",
+      "purpose": "Define los parametros asincronos por defecto, las excepciones sincronas, el presupuesto de reuniones y los ritmos de energia de tu equipo.",
+      "trigger": "Usar cuando tu equipo pasa demasiado tiempo en reuniones, trabaja en distintas zonas horarias o tiene dificultades con el equilibrio vida-trabajo.",
+      "flowName": "Informar",
+      "doneSignal": "Cada miembro del equipo puede explicar cuando usar asincrono por defecto, cuando lo sincrono es apropiado y cual es su presupuesto de reuniones?",
+      "fields": {
+        "0": {
+          "name": "Carga de reuniones actual",
+          "description": "Cuantas horas por semana pasa cada persona en reuniones?"
+        },
+        "1": {
+          "name": "Asincrono por defecto",
+          "description": "Cual es tu modo por defecto: asincrono o sincrono? Define la regla."
+        },
+        "2": {
+          "name": "Excepciones sincronas",
+          "description": "Que requiere especificamente interaccion en tiempo real?"
+        },
+        "3": {
+          "name": "Presupuesto de reuniones",
+          "description": "Horas maximas de reunion por persona por semana."
+        },
+        "4": {
+          "name": "Ritmos de energia",
+          "description": "Cuando son las personas mas productivas? Como proteges el trabajo profundo?"
+        },
+        "5": {
+          "name": "Protocolo de zonas horarias",
+          "description": "Como manejas lo asincrono entre zonas? Horas de superposicion?"
+        }
+      },
+      "hooks": {
+        "0": "La estructura de informacion habilita el trabajo flexible",
+        "1": "El diseno de trabajo alimenta la cadencia del equipo"
+      }
+    },
+    "team-rhythm": {
+      "name": "Modo Ritmo de Equipo",
+      "purpose": "Disena tu cadencia semanal: puntos de contacto sincronos, bloques de trabajo profundo, puntos de control de energia.",
+      "trigger": "Usar cuando el equipo carece de una cadencia consistente, la gente no sabe cuando esperar actualizaciones, o el trabajo profundo se interrumpe constantemente.",
+      "flowName": "Coordinar",
+      "doneSignal": "Cada miembro del equipo conoce el ritmo semanal sin consultar un calendario?",
+      "fields": {
+        "0": {
+          "name": "Cadencia semanal",
+          "description": "Mapea el ritmo semanal recurrente del equipo."
+        },
+        "1": {
+          "name": "Puntos de contacto sincronos",
+          "description": "Lista los momentos sincronos esenciales y su proposito."
+        },
+        "2": {
+          "name": "Bloques de trabajo profundo",
+          "description": "Cuando son los periodos de concentracion protegidos? Como se hacen cumplir?"
+        },
+        "3": {
+          "name": "Puntos de control de energia",
+          "description": "Como verificas la energia y carga de trabajo del equipo?"
+        }
+      },
+      "hooks": {
+        "0": "El diseno de trabajo define las restricciones de ritmo",
+        "1": "El ritmo define cuando las decisiones se toman asincrona vs sincronamente"
+      }
+    },
+    "async-decision": {
+      "name": "Modo Decision Asincrona",
+      "purpose": "Toma una decision clara de forma asincrona con una pregunta estructurada, opciones, fecha limite y protocolo de disenso.",
+      "trigger": "Usar cuando se necesita tomar una decision y una reunion no es la mejor forma de tomarla.",
+      "flowName": "Coordinar",
+      "doneSignal": "Esta la decision registrada, la justificacion documentada y todas las partes interesadas notificadas?",
+      "fields": {
+        "0": {
+          "name": "Pregunta de decision",
+          "description": "La pregunta especifica que se esta decidiendo. Una frase."
+        },
+        "1": {
+          "name": "Opciones",
+          "description": "Las opciones que se consideran, con pros/contras de cada una."
+        },
+        "2": {
+          "name": "Decisor",
+          "description": "Quien toma la decision final?"
+        },
+        "3": {
+          "name": "Fecha limite",
+          "description": "Cuando debe tomarse la decision?"
+        },
+        "4": {
+          "name": "Opinion solicitada a",
+          "description": "Quien debe opinar antes de la fecha limite?"
+        },
+        "5": {
+          "name": "Protocolo de disenso",
+          "description": "Como puede alguien expresar su desacuerdo? Que pasa con las objeciones?"
+        },
+        "6": {
+          "name": "Registro de decision",
+          "description": "La decision final, la justificacion y quienes fueron consultados."
+        }
+      },
+      "hooks": {
+        "0": "Las decisiones deben empaquetarse para la visibilidad del equipo"
+      }
+    },
+    "package": {
+      "name": "Modo Empaquetado",
+      "purpose": "Crea paquetes de comunicacion autonomos que no requieren preguntas de seguimiento.",
+      "trigger": "Usar cuando compartes trabajo, actualizaciones o decisiones con personas que no estaban en la sala.",
+      "flowName": "Comunicar",
+      "doneSignal": "Puede alguien actuar sobre este paquete sin hacer una sola pregunta de aclaracion?",
+      "fields": {
+        "0": {
+          "name": "Contexto",
+          "description": "Que necesita saber el lector para entender esto?"
+        },
+        "1": {
+          "name": "Puntos clave",
+          "description": "Las 3 a 5 cosas mas importantes. Numeradas."
+        },
+        "2": {
+          "name": "Decision necesaria",
+          "description": "Se necesita una decision? De quien? Para cuando?"
+        },
+        "3": {
+          "name": "Fecha limite",
+          "description": "Cuando debe responder el lector?"
+        },
+        "4": {
+          "name": "Formato de respuesta",
+          "description": "Como debe responder el lector? Comentar, aprobar, editar?"
+        }
+      },
+      "hooks": {
+        "0": "Los resultados de validacion pueden empaquetarse",
+        "1": "Las decisiones deben empaquetarse"
+      }
+    },
+    "contribution-tracker": {
+      "name": "Modo Seguimiento de Contribuciones",
+      "purpose": "Haz visible el trabajo invisible a traves de 5 tipos de contribuciones.",
+      "trigger": "Usar cuando algunos miembros del equipo hacen trabajo critico que nadie ve, o el reconocimiento esta sesgado hacia los entregables visibles.",
+      "flowName": "Reconocer",
+      "doneSignal": "Puedes ver las contribuciones en los 5 tipos, no solo la entrega?",
+      "fields": {
+        "0": {
+          "name": "Miembro del equipo",
+          "description": "Para quien estas haciendo seguimiento de contribuciones?"
+        },
+        "1": {
+          "name": "Entrega",
+          "description": "Productos tangibles entregados."
+        },
+        "2": {
+          "name": "Mentoria",
+          "description": "Ayudar a otros a crecer, trabajo en pares, revision, ensenanza."
+        },
+        "3": {
+          "name": "Documentacion",
+          "description": "Escritos que ayudan a otros a trabajar de forma autonoma."
+        },
+        "4": {
+          "name": "Mejora de procesos",
+          "description": "Mejorar sistemas, herramientas o flujos de trabajo."
+        },
+        "5": {
+          "name": "Desbloqueo",
+          "description": "Eliminar obstaculos para otros."
+        }
+      },
+      "hooks": {}
+    },
+    "culture-at-distance": {
+      "name": "Modo Cultura a Distancia",
+      "purpose": "Define comportamientos observables, rituales, protocolo de conflicto y senales de confianza para equipos distribuidos.",
+      "trigger": "Usar cuando la cultura se siente debil en un equipo distribuido -- la gente es productiva pero desconectada.",
+      "flowName": "Cultura",
+      "doneSignal": "Podria un nuevo integrante remoto entender la cultura de tu equipo solo con la documentacion?",
+      "fields": {
+        "0": {
+          "name": "Comportamientos observables",
+          "description": "Que comportamientos definen tu cultura? Lista 5 que sean visibles en el trabajo asincrono."
+        },
+        "1": {
+          "name": "Rituales",
+          "description": "Practicas regulares que refuerzan la cultura. No reuniones -- rituales."
+        },
+        "2": {
+          "name": "Protocolo de conflicto",
+          "description": "Como manejas los desacuerdos cuando no puedes leer el lenguaje corporal?"
+        },
+        "3": {
+          "name": "Senales de confianza",
+          "description": "Que construye confianza en tu equipo distribuido? Que la erosiona?"
+        },
+        "4": {
+          "name": "Anti-patrones",
+          "description": "Que comportamientos estas tratando activamente de prevenir?"
+        }
+      },
+      "hooks": {}
+    },
+    "dashboard": {
+      "name": "Modo Tablero de Control",
+      "purpose": "Configura metricas duales: rendimiento (tiempo de resolucion, tiempo de ciclo) y dinamicas (aprendizaje, colaboracion, diversion).",
+      "trigger": "Usar cuando superas las 50 personas y las metricas tradicionales no capturan el lado humano de la organizacion.",
+      "flowName": "Monitorear",
+      "doneSignal": "Puedes ver tanto el rendimiento como las dinamicas de un vistazo, y saber cuando actuar?",
+      "fields": {
+        "0": {
+          "name": "Metricas de rendimiento",
+          "description": "Indicadores operativos clave: tiempo de ciclo, tiempo de resolucion, tiempo de entrega."
+        },
+        "1": {
+          "name": "Metricas de dinamicas",
+          "description": "Indicadores humanos: tasa de aprendizaje, puntaje de colaboracion, compromiso, diversion."
+        },
+        "2": {
+          "name": "Fuentes de datos",
+          "description": "De donde viene cada metrica?"
+        },
+        "3": {
+          "name": "Cadencia de revision",
+          "description": "Con que frecuencia se revisan y por quien?"
+        },
+        "4": {
+          "name": "Disparadores de accion",
+          "description": "Que niveles de metricas disparan una accion?"
+        }
+      },
+      "hooks": {
+        "0": "Las senales del tablero alimentan la revision de la estructura organizativa"
+      }
+    },
+    "org-map": {
+      "name": "Modo Mapa Organizacional",
+      "purpose": "Crea una vista panoramica de tu organizacion: tipos de equipos, brechas y superposiciones.",
+      "trigger": "Usar cuando la organizacion esta creciendo y necesitas ver el panorama completo.",
+      "flowName": "Estructura",
+      "doneSignal": "Puedes explicar tu estructura organizacional a un nuevo VP en 5 minutos?",
+      "fields": {
+        "0": {
+          "name": "Equipos",
+          "description": "Lista todos los equipos con tipo: Mision, Plataforma o Circulo de Liderazgo."
+        },
+        "1": {
+          "name": "Tamano de equipos",
+          "description": "Personal por equipo."
+        },
+        "2": {
+          "name": "Brechas",
+          "description": "Que capacidades faltan?"
+        },
+        "3": {
+          "name": "Superposiciones",
+          "description": "Donde estan duplicando esfuerzo los equipos?"
+        }
+      },
+      "hooks": {
+        "0": "El mapa organizacional identifica equipos que necesitan blueprints"
+      }
+    },
+    "team-blueprint": {
+      "name": "Modo Blueprint de Equipo",
+      "purpose": "Define mision, miembros, autoridad de decision, cadencia y estandares de calidad de un equipo.",
+      "trigger": "Usar cuando creas un nuevo equipo o cuando un equipo existente carece de claridad sobre su proposito y autoridad.",
+      "flowName": "Estructura",
+      "doneSignal": "Cada miembro del equipo puede enunciar la mision, su rol y que decisiones puede tomar?",
+      "fields": {
+        "0": {
+          "name": "Mision del equipo",
+          "description": "Por que existe este equipo? Una frase."
+        },
+        "1": {
+          "name": "Miembros",
+          "description": "Quien esta en el equipo y cuales son sus roles?"
+        },
+        "2": {
+          "name": "Autoridad de decision",
+          "description": "Que decisiones puede tomar este equipo sin escalar?"
+        },
+        "3": {
+          "name": "Cadencia",
+          "description": "Como se comunica y coordina el equipo?"
+        },
+        "4": {
+          "name": "Estandares de calidad",
+          "description": "Que nivel de calidad mantiene este equipo?"
+        }
+      },
+      "hooks": {
+        "0": "Los blueprints de equipo definen los nodos en el mapa de conexiones"
+      }
+    },
+    "connection-map": {
+      "name": "Modo Mapa de Conexiones",
+      "purpose": "Mapea las interacciones entre equipos: fluidas, con friccion o rotas. Encuentra los cuellos de botella.",
+      "trigger": "Usar cuando la coordinacion entre equipos es lenta, las transferencias fallan o los equipos se culpan mutuamente.",
+      "flowName": "Conectar",
+      "doneSignal": "Puedes mostrarle a alguien un mapa de todas las conexiones entre equipos con calificaciones de calidad y soluciones a los cuellos de botella?",
+      "fields": {
+        "0": {
+          "name": "Pares de equipos",
+          "description": "Lista todos los pares de interaccion equipo-a-equipo."
+        },
+        "1": {
+          "name": "Calidad de la interaccion",
+          "description": "Para cada par: Fluida, Con friccion o Rota."
+        },
+        "2": {
+          "name": "Cuellos de botella",
+          "description": "Que pares de equipos son los mayores cuellos de botella?"
+        },
+        "3": {
+          "name": "Causas raiz",
+          "description": "Por que esta atascado cada cuello de botella?"
+        },
+        "4": {
+          "name": "Acciones correctivas",
+          "description": "Que accion especifica mejorara cada cuello de botella?"
+        }
+      },
+      "hooks": {
+        "0": "Los blueprints definen los equipos a mapear",
+        "1": "Las conexiones problematicas necesitan un diagnostico de salud"
+      }
+    },
+    "relationship-health": {
+      "name": "Modo Salud Relacional",
+      "purpose": "Diagnostica y repara la friccion entre equipos con un analisis estructurado.",
+      "trigger": "Usar cuando dos equipos tienen una conexion Con friccion o Rota que necesita reparacion.",
+      "flowName": "Conectar",
+      "doneSignal": "Ambos equipos han acordado el protocolo de reparacion y se han comprometido con una fecha de revision?",
+      "fields": {
+        "0": {
+          "name": "Equipos involucrados",
+          "description": "Que dos equipos tienen la friccion?"
+        },
+        "1": {
+          "name": "Generadores de dolor",
+          "description": "Que acciones o inacciones especificas causan dolor?"
+        },
+        "2": {
+          "name": "Brecha de expectativas",
+          "description": "Que espera cada equipo del otro? Donde difieren las expectativas?"
+        },
+        "3": {
+          "name": "Propuesta de valor",
+          "description": "Que valor aporta cada equipo al otro?"
+        },
+        "4": {
+          "name": "Protocolo de reparacion",
+          "description": "Acciones acordadas para mejorar la relacion."
+        }
+      },
+      "hooks": {
+        "0": "Conexiones problematicas identificadas en el Mapa de Conexiones"
+      }
+    },
+    "company-priority": {
+      "name": "Modo Prioridades de la Empresa",
+      "purpose": "Alinea 3 a 5 prioridades de empresa con evidencia, traduccion por equipo y mapeo de dependencias.",
+      "trigger": "Usar cuando la empresa tiene demasiadas prioridades, los equipos tiran en direcciones distintas o se necesita una planificacion trimestral.",
+      "flowName": "Alinear",
+      "doneSignal": "Puede cada lider de equipo explicar las prioridades de la empresa y como contribuye su equipo?",
+      "fields": {
+        "0": {
+          "name": "Prioridades de la empresa",
+          "description": "Lista 3 a 5 prioridades de la empresa con su base de evidencia."
+        },
+        "1": {
+          "name": "Traduccion por equipo",
+          "description": "Que significa cada prioridad para cada equipo?"
+        },
+        "2": {
+          "name": "Dependencias",
+          "description": "Que prioridades dependen de que equipos?"
+        },
+        "3": {
+          "name": "Resolucion de conflictos",
+          "description": "Cuando las prioridades entran en conflicto, cual gana?"
+        }
+      },
+      "hooks": {
+        "0": "Las prioridades impulsan el seguimiento de ejecucion a escala"
+      }
+    },
+    "scaled-execution": {
+      "name": "Modo Ejecucion a Gran Escala",
+      "purpose": "Haz seguimiento de la ejecucion entre equipos con conexiones a prioridades, entregables clave y dependencias.",
+      "trigger": "Usar cuando multiples equipos trabajan hacia las mismas prioridades y necesitan visibilidad del progreso de los demas.",
+      "flowName": "Ejecutar",
+      "doneSignal": "Puedes ver todo el trabajo entre equipos, dependencias y bloqueos en una sola vista?",
+      "fields": {
+        "0": {
+          "name": "Conexion a prioridades",
+          "description": "A que prioridad de la empresa se conecta este trabajo?"
+        },
+        "1": {
+          "name": "Entregables clave",
+          "description": "Que debe entregarse y por cual equipo?"
+        },
+        "2": {
+          "name": "Dependencias entre equipos",
+          "description": "Que equipos dependen de que entregables?"
+        },
+        "3": {
+          "name": "Estado",
+          "description": "Estado actual de cada entregable."
+        },
+        "4": {
+          "name": "Bloqueos",
+          "description": "Bloqueos entre equipos y acciones de desbloqueo."
+        }
+      },
+      "hooks": {
+        "0": "Las prioridades definen que rastrear a gran escala"
+      }
+    },
+    "quality-matrix": {
+      "name": "Modo Matriz de Calidad",
+      "purpose": "Define estandares de calidad consistentes entre equipos: a nivel de empresa y especificos por equipo.",
+      "trigger": "Usar cuando la calidad varia entre equipos y no hay una definicion compartida de \"suficientemente bueno\".",
+      "flowName": "Calidad",
+      "doneSignal": "Cualquier miembro del equipo puede consultar el estandar de calidad para su trabajo y saber si lo cumple?",
+      "fields": {
+        "0": {
+          "name": "Estandares a nivel de empresa",
+          "description": "Estandares de calidad que aplican a todos los equipos."
+        },
+        "1": {
+          "name": "Estandares especificos por equipo",
+          "description": "Estandares propios de cada equipo segun su dominio."
+        },
+        "2": {
+          "name": "Medicion",
+          "description": "Como se mide la calidad para cada estandar?"
+        },
+        "3": {
+          "name": "Proceso de revision",
+          "description": "Quien revisa la calidad y con que frecuencia?"
+        }
+      },
+      "hooks": {}
+    },
+    "ai-onboarding": {
+      "name": "Modo Integracion del Colega IA",
+      "purpose": "Define los roles del colega IA, las fuentes de conocimiento, los limites de acceso y las metricas de exito.",
+      "trigger": "Usar cuando empiezas a trabajar con herramientas de IA y necesitas configurar la colaboracion correctamente.",
+      "flowName": "Contexto",
+      "doneSignal": "Podrias entregar este documento de integracion a un nuevo miembro del equipo y sabria exactamente como tu equipo usa la IA?",
+      "fields": {
+        "0": {
+          "name": "Rol de la IA",
+          "description": "Que rol juega la IA en tu flujo de trabajo?"
+        },
+        "1": {
+          "name": "Fuentes de conocimiento",
+          "description": "A que informacion necesita acceder la IA?"
+        },
+        "2": {
+          "name": "Limites de acceso",
+          "description": "A que NO deberia tener acceso la IA?"
+        },
+        "3": {
+          "name": "Metricas de exito",
+          "description": "Como mediras si la colaboracion con IA esta funcionando?"
+        },
+        "4": {
+          "name": "Cadencia de revision",
+          "description": "Con que frecuencia revisaras la configuracion de colaboracion IA?"
+        },
+        "5": {
+          "name": "Disparadores de escalamiento",
+          "description": "Cuando deberia un humano tomar el control de la IA?"
+        }
+      },
+      "hooks": {
+        "0": "La configuracion IA alimenta la evaluacion de delegacion de tareas"
+      }
+    },
+    "centaur-assessment": {
+      "name": "Modo Evaluacion Centauro",
+      "purpose": "Mapea cada tarea: dirigida por humano, dirigida por IA, o centauro (ambos) con evaluacion de capacidades.",
+      "trigger": "Usar cuando necesitas decidir que tareas puede manejar la IA y cuales necesitan juicio humano.",
+      "flowName": "Contexto",
+      "doneSignal": "Puedes explicar para cada tarea recurrente quien la realiza (humano, IA o ambos) y por que?",
+      "fields": {
+        "0": {
+          "name": "Inventario de tareas",
+          "description": "Lista todas las tareas recurrentes en tu flujo de trabajo."
+        },
+        "1": {
+          "name": "Clasificacion",
+          "description": "Para cada tarea: Dirigida por humano, Dirigida por IA o Centauro."
+        },
+        "2": {
+          "name": "Evaluacion de capacidades",
+          "description": "Para tareas IA/Centauro: en que es buena la IA y donde necesita ayuda?"
+        },
+        "3": {
+          "name": "Ruta de evolucion",
+          "description": "Que tareas Dirigidas por humano podrian volverse Centauro con el tiempo?"
+        }
+      },
+      "hooks": {
+        "0": "La configuracion IA informa la delegacion de tareas",
+        "1": "El mapa de delegacion informa los protocolos de decision"
+      }
+    },
+    "decision-protocol": {
+      "name": "Modo Protocolo de Decision",
+      "purpose": "Define cuando la IA lidera decisiones vs humanos, condiciones de anulacion y cadencia de retrospectiva.",
+      "trigger": "Usar cuando la IA esta involucrada en decisiones y necesitas reglas claras sobre autoridad y anulacion.",
+      "flowName": "Gobernar",
+      "doneSignal": "Para cualquier tipo de decision, puedes decir instantaneamente quien tiene la autoridad y que desencadena una anulacion?",
+      "fields": {
+        "0": {
+          "name": "Categorias de decisiones",
+          "description": "Lista los tipos de decisiones en tu flujo de trabajo."
+        },
+        "1": {
+          "name": "Mapa de autoridad",
+          "description": "Para cada categoria: la IA lidera, el Humano lidera o Compartido."
+        },
+        "2": {
+          "name": "Condiciones de anulacion",
+          "description": "Cuando puede un humano anular una decision de IA? Cuando puede la IA anular una recomendacion humana?"
+        },
+        "3": {
+          "name": "Cadencia de retrospectiva",
+          "description": "Con que frecuencia revisas la calidad de las decisiones?"
+        }
+      },
+      "hooks": {
+        "0": "El mapa de delegacion informa la autoridad de decision"
+      }
+    },
+    "verification-ritual": {
+      "name": "Modo Ritual de Verificacion",
+      "purpose": "Construye protocolos de revision ajustados al riesgo: revision profunda para alto riesgo, flujo libre para bajo riesgo.",
+      "trigger": "Usar cuando la calidad de la produccion de IA varia y necesitas verificacion consistente sin frenar todo.",
+      "flowName": "Gobernar",
+      "doneSignal": "Tu equipo puede clasificar instantaneamente cualquier produccion de IA por nivel de riesgo y conocer el protocolo de revision?",
+      "fields": {
+        "0": {
+          "name": "Categorias de produccion",
+          "description": "Lista los tipos de produccion de IA de tu equipo."
+        },
+        "1": {
+          "name": "Nivel de riesgo",
+          "description": "Para cada categoria: riesgo Alto, Medio o Bajo."
+        },
+        "2": {
+          "name": "Protocolo de revision",
+          "description": "Para cada nivel de riesgo: que revision se requiere?"
+        },
+        "3": {
+          "name": "Umbral de calidad",
+          "description": "Que tasa de aceptacion desencadena una revision del protocolo?"
+        }
+      },
+      "hooks": {}
+    },
+    "knowledge-architecture": {
+      "name": "Modo Arquitectura del Conocimiento",
+      "purpose": "Estructura el contexto persistente de la IA para que tu colega IA no haga las mismas preguntas en cada sesion.",
+      "trigger": "Usar cuando la IA sigue pidiendo contexto que ya deberia tener, o da respuestas que ignoran las particularidades de tu negocio.",
+      "flowName": "Conocimiento",
+      "doneSignal": "Tu colega IA puede iniciar una nueva sesion y tener inmediatamente el contexto que necesita para ser util?",
+      "fields": {
+        "0": {
+          "name": "Dominios de conocimiento",
+          "description": "Que categorias de conocimiento necesita la IA?"
+        },
+        "1": {
+          "name": "Contexto persistente",
+          "description": "Para cada dominio: que deberia saber la IA siempre?"
+        },
+        "2": {
+          "name": "Disparadores de actualizacion",
+          "description": "Cuando deberia actualizarse cada dominio de conocimiento?"
+        },
+        "3": {
+          "name": "Patron de acceso",
+          "description": "Como accede la IA a este conocimiento? Archivos, APIs, prompts?"
+        }
+      },
+      "hooks": {
+        "0": "La estructura de informacion alimenta el conocimiento de la IA"
+      }
+    },
+    "trust-calibration": {
+      "name": "Modo Calibracion de Confianza",
+      "purpose": "Fija niveles de confianza basados en evidencia, no en sentimientos. Calibra la sobre-confianza y la sub-confianza.",
+      "trigger": "Usar cuando sospechas que el equipo confia demasiado o demasiado poco en la IA, y las decisiones se toman por instinto en vez de por datos.",
+      "flowName": "Confianza",
+      "doneSignal": "Puedes justificar cada nivel de confianza con evidencia, no con intuicion?",
+      "fields": {
+        "0": {
+          "name": "Inventario de confianza",
+          "description": "Para cada caso de uso de IA: nivel de confianza actual (Sobre-confianza, Calibrado, Sub-confianza, No probado)."
+        },
+        "1": {
+          "name": "Evidencia",
+          "description": "Que datos respaldan cada nivel de confianza?"
+        },
+        "2": {
+          "name": "Acciones de calibracion",
+          "description": "Para sobre-confianza: agregar verificacion. Para sub-confianza: ejecutar un piloto."
+        },
+        "3": {
+          "name": "Calendario de revision",
+          "description": "Cuando recalibraras los niveles de confianza?"
+        }
+      },
+      "hooks": {}
+    },
+    "ai-scaling": {
+      "name": "Modo Escalamiento de la Colaboracion IA",
+      "purpose": "Planifica como evoluciona la colaboracion humano-IA a medida que la organizacion crece.",
+      "trigger": "Usar cuando la colaboracion IA funciona para una persona o equipo y necesita escalar a la organizacion.",
+      "flowName": "Escala",
+      "doneSignal": "Puedes presentar una hoja de ruta para la colaboracion IA que cualquier lider de equipo pueda seguir?",
+      "fields": {
+        "0": {
+          "name": "Estado actual",
+          "description": "Como funciona la colaboracion IA hoy? Quien la usa, para que?"
+        },
+        "1": {
+          "name": "Ruta de escalamiento",
+          "description": "Como deberia evolucionar la colaboracion IA? Solo -> Equipo -> Organizacion."
+        },
+        "2": {
+          "name": "Estandarizacion vs Personalizacion",
+          "description": "Que deberia ser estandar entre equipos vs personalizado por equipo?"
+        },
+        "3": {
+          "name": "Necesidades de infraestructura",
+          "description": "Que herramientas, acceso o capacitacion se necesitan para escalar?"
+        },
+        "4": {
+          "name": "Evaluacion de riesgos",
+          "description": "Que podria salir mal al escalar la colaboracion IA?"
+        }
+      },
+      "hooks": {}
+    }
+  },
+  "programContent": {
+    "your-first-validation-week": {
+      "name": "Tu Primera Semana de Validacion",
+      "description": "Pon a prueba tu hipotesis mas arriesgada en 5 dias. Cinco modos, una decision basada en evidencia.",
+      "schedule": {
+        "0": "Mapea tu modelo de negocio. Identifica 3 hipotesis clave.",
+        "1": "Clasifica tus hipotesis por riesgo. Elige la mas arriesgada.",
+        "2": "Disena y lanza una prueba para tu hipotesis mas arriesgada.",
+        "3": "Mientras esperas los resultados, captura senales de tu mercado.",
+        "4": "Revisa los resultados. Toma tu decision: Perseverar/Pivotar/Experimentar de nuevo."
+      }
+    },
+    "async-maturity-sprint": {
+      "name": "Sprint de Madurez Asincrona",
+      "description": "Reduce las horas de reunion, desarrolla el musculo de la decision asincrona y empaqueta el trabajo para tu equipo distribuido.",
+      "schedule": {
+        "0": "Mapea tu cadencia de reuniones actual. Identifica el exceso de reuniones.",
+        "1": "Define donde va cada tipo de informacion.",
+        "2": "Empaqueta tu proxima actualizacion de equipo usando el formato.",
+        "3": "Convierte una proxima decision prevista en reunion a asincrona.",
+        "4": "Empaqueta el resultado de la decision asincrona. Mide la claridad.",
+        "5": "Haz visible el trabajo invisible.",
+        "6": "Establece los parametros asincronos por defecto para tu equipo.",
+        "7": "Aborda las brechas culturales de tu configuracion distribuida."
+      }
+    },
+    "scaling-readiness-check": {
+      "name": "Verificacion de Preparacion para Escalar",
+      "description": "Prepara tu organizacion para 50+ personas. Estructura, conexiones, prioridades, ejecucion.",
+      "schedule": {
+        "0": "Mapea tu estructura organizacional actual.",
+        "1": "Define blueprints para tus equipos clave.",
+        "2": "Mapea las interacciones equipo-a-equipo.",
+        "3": "Corrige tu peor friccion entre equipos.",
+        "4": "Alinea 3 a 5 prioridades de empresa.",
+        "5": "Traduce las prioridades de empresa al nivel de equipo.",
+        "6": "Configura el seguimiento de ejecucion entre equipos.",
+        "7": "Construye tu tablero de metricas duales.",
+        "8": "Define estandares de calidad.",
+        "9": "Haz seguimiento de la ejecucion a nivel de equipo.",
+        "10": "Portal de calidad para un entregable entre equipos.",
+        "11": "Re-mapea las conexiones. Mide la mejora."
+      }
+    },
+    "ai-colleague-bootcamp": {
+      "name": "Bootcamp del Colega IA",
+      "description": "Configura correctamente la colaboracion humano-IA. Contexto, delegacion, verificacion, confianza.",
+      "schedule": {
+        "0": "Carga el contexto de tu negocio en tu colega IA.",
+        "1": "Mapea tus tareas: dirigidas por humano, dirigidas por IA, centauro.",
+        "2": "Define que decisiones puede tomar la IA sola.",
+        "3": "Construye un protocolo para verificar la calidad de la produccion de IA.",
+        "4": "Estructura lo que la IA necesita saber.",
+        "5": "Fija niveles de confianza basados en evidencia, no en sentimientos.",
+        "6": "Planifica como escalar lo que funciona."
+      }
+    },
+    "full-business-fitness": {
+      "name": "Fitness Empresarial Completo",
+      "description": "La experiencia completa de 7 Flows. 15 modos en los cuatro frameworks en 6 semanas.",
+      "schedule": {
+        "0": "Mapea tu modelo de negocio.",
+        "1": "Pon a prueba tu hipotesis mas arriesgada.",
+        "2": "Clasifica y comprometete con tus prioridades.",
+        "3": "Disena tu cadencia semanal.",
+        "4": "Mejora la encontrabilidad de la informacion.",
+        "5": "Practica la comunicacion asincrona.",
+        "6": "Toma tu primera decision asincrona estructurada.",
+        "7": "Configura la colaboracion IA.",
+        "8": "Mapea tareas humanas vs IA.",
+        "9": "Haz seguimiento de la ejecucion con visibilidad.",
+        "10": "Portal de calidad para tu trabajo.",
+        "11": "Captura senales del mercado.",
+        "12": "Calibra los niveles de confianza en IA.",
+        "13": "Haz visible el trabajo invisible.",
+        "14": "Revision de validacion final."
+      }
+    }
+  },
+  "flowNames": {
+    "Align": "Alinear",
+    "Communicate": "Comunicar",
+    "Connect": "Conectar",
+    "Context": "Contexto",
+    "Coordinate": "Coordinar",
+    "Culture": "Cultura",
+    "Execute": "Ejecutar",
+    "Execution": "Ejecucion",
+    "Govern": "Gobernar",
+    "Inform": "Informar",
+    "Knowledge": "Conocimiento",
+    "Monitor": "Monitorear",
+    "Quality": "Calidad",
+    "Recognize": "Reconocer",
+    "Scale": "Escala",
+    "Strategy": "Estrategia",
+    "Structure": "Estructura",
+    "Trust": "Confianza",
+    "Validation": "Validacion"
   }
 }

@@ -113,14 +113,14 @@
     "subtitle": "Je zakelijke coaching-collega",
     "newChat": "Nieuw gesprek",
     "greeting": "Hey! Waar werken we aan?",
-    "greetingSub": "Ik ken je business. Vraag me alles \u2014 strategie, validatie, team, opschalen, AI-samenwerking.",
+    "greetingSub": "Ik ken je business. Vraag me alles — strategie, validatie, team, opschalen, AI-samenwerking.",
     "placeholder": "Vraag Alicia alles...",
     "continue": "Doorgaan",
     "dismissAria": "Coaching sluiten"
   },
   "assessments": {
     "title": "Assessment Center",
-    "subtitle": "Scenariogebaseerde diagnoses. Geen zelfbeoordelingen \u2014 echte situaties met echte keuzes.",
+    "subtitle": "Scenariogebaseerde diagnoses. Geen zelfbeoordelingen — echte situaties met echte keuzes.",
     "lastResult": "Laatste resultaat:",
     "startAssessment": "Assessment starten",
     "history": "Assessmentgeschiedenis",
@@ -263,7 +263,7 @@
     "openMode": "{{name}} openen"
   },
   "frameworkToggle": {
-    "activeHint": "Actief \u2014 modi en gezondheidsbewaking ingeschakeld",
+    "activeHint": "Actief — modi en gezondheidsbewaking ingeschakeld",
     "tapToActivate": "Tik om te activeren"
   },
   "errors": {
@@ -280,5 +280,1088 @@
     "assessmentAlreadyCompleted": "Assessment is al voltooid",
     "alreadyEnrolled": "Al ingeschreven in een actief programma",
     "noActiveProgram": "Geen actief programma"
+  },
+  "modeContent": {
+    "validation": {
+      "name": "Validatiemodus",
+      "purpose": "Test je riskantste bedrijfsaanname met bewijs en neem een duidelijke Doorgaan/Bijsturen/Opnieuw-testen-beslissing.",
+      "trigger": "Gebruik wanneer je een belangrijke bedrijfsbeslissing wilt nemen op basis van iets wat je gelooft maar niet hebt getest.",
+      "flowName": "Validatie",
+      "doneSignal": "Kun je je aanname, het bewijs voor of tegen, en je beslissing in één zin formuleren?",
+      "fields": {
+        "0": {
+          "name": "Aanname",
+          "description": "De specifieke overtuiging die je test. Moet weerlegbaar zijn.",
+          "example": "Freelance designers betalen €49/maand voor geautomatiseerde facturatie."
+        },
+        "1": {
+          "name": "Risiconiveau",
+          "description": "Hoeveel schade als deze aanname onjuist is.",
+          "options": [
+            "Hoog",
+            "Gemiddeld",
+            "Laag"
+          ]
+        },
+        "2": {
+          "name": "Huidig bewijs",
+          "description": "Wat je al weet. Data, gesprekken, signalen."
+        },
+        "3": {
+          "name": "Experimentontwerp",
+          "description": "De goedkoopste, snelste test die de aanname zou kunnen weerleggen."
+        },
+        "4": {
+          "name": "Succescriteria",
+          "description": "Het specifieke getal dat betekent dat de aanname klopt.",
+          "example": "5% aanmeldingspercentage binnen 7 dagen."
+        },
+        "5": {
+          "name": "Tijdskader",
+          "description": "Hoe lang het experiment loopt.",
+          "example": "7 dagen."
+        },
+        "6": {
+          "name": "Resultaten",
+          "description": "Wat er daadwerkelijk is gebeurd. Ruwe data, geen interpretatie."
+        },
+        "7": {
+          "name": "Beslissing",
+          "description": "Op basis van het bewijs: Doorgaan, Bijsturen of Opnieuw testen.",
+          "options": [
+            "Doorgaan",
+            "Bijsturen",
+            "Opnieuw testen"
+          ]
+        },
+        "8": {
+          "name": "Volgende actie",
+          "description": "De specifieke volgende stap met een datum."
+        },
+        "9": {
+          "name": "Aanname-update",
+          "description": "Hoe is deze aanname veranderd op basis van wat je hebt geleerd?"
+        }
+      },
+      "hooks": {
+        "0": "Aannames uit de Business Engine worden ingevoerd in Validatie",
+        "1": "Aanname met hoogste prioriteit uit de Prioriteitenstapel",
+        "2": "Experimentresultaten worden ingevoerd in Inzichtregistratie",
+        "3": "Gevalideerde resultaten kunnen worden verpakt voor teamreview"
+      }
+    },
+    "insight-capture": {
+      "name": "Inzichtregistratie",
+      "purpose": "Verwerk ruwe signalen uit je markt tot gestructureerde patronen en uitvoerbare vervolgstappen.",
+      "trigger": "Gebruik wanneer je ruwe data, klantgesprekken of marktsignalen hebt die structuur nodig hebben.",
+      "flowName": "Validatie",
+      "doneSignal": "Kun je dit inzicht uitleggen aan iemand die er niet bij was, met genoeg context zodat die persoon ernaar kan handelen?",
+      "fields": {
+        "0": {
+          "name": "Signaalbron",
+          "description": "Waar kwam dit inzicht vandaan?",
+          "options": [
+            "Klantgesprek",
+            "Gebruiksdata",
+            "Marktonderzoek",
+            "Concurrentieobservatie",
+            "Teamfeedback",
+            "Overig"
+          ]
+        },
+        "1": {
+          "name": "Rauw signaal",
+          "description": "De exacte observatie, het citaat of datapunt."
+        },
+        "2": {
+          "name": "Patroonmatch",
+          "description": "Sluit dit aan bij iets dat je eerder hebt gezien?"
+        },
+        "3": {
+          "name": "Sterkte",
+          "description": "Hoe sterk is dit signaal?",
+          "options": [
+            "Sterk (meerdere bronnen)",
+            "Matig (2+ signalen)",
+            "Zwak (enkel signaal)"
+          ]
+        },
+        "4": {
+          "name": "Implicatie",
+          "description": "Als dit signaal echt is, wat betekent het voor je business?"
+        },
+        "5": {
+          "name": "Actie",
+          "description": "Welke specifieke vervolgstap drijft dit inzicht aan?"
+        }
+      },
+      "hooks": {
+        "0": "Experimentresultaten worden ingevoerd in Inzichtregistratie",
+        "1": "Gevalideerde inzichten informeren waardeproposities"
+      }
+    },
+    "proposition-builder": {
+      "name": "Propositiebouwer",
+      "purpose": "Bouw bewijs-onderbouwde waardeproposities in drie niveaus: Basis, Tevredensteller, Verrassend goed.",
+      "trigger": "Gebruik wanneer je moet verwoorden wat je aanbiedt en waarom het ertoe doet, onderbouwd met bewijs.",
+      "flowName": "Validatie",
+      "doneSignal": "Kan een nieuw teamlid je waardepropositie in 30 seconden uitleggen, inclusief voor wie het is en waarom het hen interesseert?",
+      "fields": {
+        "0": {
+          "name": "Doelklant",
+          "description": "Voor wie precies is deze propositie?"
+        },
+        "1": {
+          "name": "Probleemstelling",
+          "description": "Het specifieke probleem dat je oplost, in hun woorden."
+        },
+        "2": {
+          "name": "Basisniveau",
+          "description": "De minimale waarde — wat je moet leveren."
+        },
+        "3": {
+          "name": "Tevredensteller-niveau",
+          "description": "Verwachte waarde die aan de standaard voldoet."
+        },
+        "4": {
+          "name": "Verrassend-goed-niveau",
+          "description": "Onverwachte waarde die loyaliteit creëert."
+        },
+        "5": {
+          "name": "Bewijs",
+          "description": "Welke gevalideerde data ondersteunen elk niveau?"
+        },
+        "6": {
+          "name": "Differentiatie",
+          "description": "Wat maakt jouw propositie anders dan alternatieven?"
+        }
+      },
+      "hooks": {
+        "0": "Gevalideerde inzichten informeren proposities",
+        "1": "Propositie vloeit in het bedrijfsmodelontwerp"
+      }
+    },
+    "business-engine": {
+      "name": "Business-Engine-modus",
+      "purpose": "Breng je bedrijfsmodel-aannames in kaart en identificeer welke de motor kunnen laten vastlopen.",
+      "trigger": "Gebruik wanneer je moet begrijpen hoe je business als systeem werkt en welke aannames dragend zijn.",
+      "flowName": "Strategie",
+      "doneSignal": "Kun je je bedrijfsmodel in één zin uitleggen, de riskantste aanname noemen en zeggen welk bewijs je ervoor hebt?",
+      "fields": {
+        "0": {
+          "name": "Verdienmodel",
+          "description": "Hoe komt geld binnen? Wees specifiek over prijsstelling en kanalen."
+        },
+        "1": {
+          "name": "Kostenstructuur",
+          "description": "Waar gaat geld naartoe? Vaste vs. variabele kosten."
+        },
+        "2": {
+          "name": "Kernaannames",
+          "description": "Noem de 3-5 aannames waarvan je model afhankelijk is."
+        },
+        "3": {
+          "name": "Riskantste aanname",
+          "description": "Welke aanname, als die onjuist is, breekt het model?"
+        },
+        "4": {
+          "name": "Huidig bewijs",
+          "description": "Welke data ondersteunen of weerspreken elke aanname?"
+        },
+        "5": {
+          "name": "Eenheidseconomie",
+          "description": "Omzet per eenheid, kosten per eenheid, marge."
+        }
+      },
+      "hooks": {
+        "0": "Aannames vloeien in de prioriteitenrangschikking",
+        "1": "Riskantste aanname moet gevalideerd worden"
+      }
+    },
+    "priority-stack": {
+      "name": "Prioriteitenstapel-modus",
+      "purpose": "Maak een bewijs-onderbouwde gedwongen rangschikking van prioriteiten met een duidelijke Niet-doen-lijst.",
+      "trigger": "Gebruik wanneer je meer te doen hebt dan tijd om het te doen, en meedogenloze helderheid nodig hebt over wat ertoe doet.",
+      "flowName": "Strategie",
+      "doneSignal": "Kun je iemand je top 3 prioriteiten en je Niet-doen-lijst zonder aarzeling vertellen?",
+      "fields": {
+        "0": {
+          "name": "Kandidaten",
+          "description": "Noem alles wat op dit moment om je aandacht concurreert."
+        },
+        "1": {
+          "name": "Criteria",
+          "description": "Welke criteria gebruik je om te rangschikken? Impact, urgentie, bewijskracht."
+        },
+        "2": {
+          "name": "Gedwongen rangschikking",
+          "description": "Rangschik alle kandidaten van 1 tot N. Geen gelijke plaatsen toegestaan."
+        },
+        "3": {
+          "name": "Top 3",
+          "description": "Je top 3 prioriteiten met elk een onderbouwing in één zin."
+        },
+        "4": {
+          "name": "Niet-doen-lijst",
+          "description": "Alles onder de scheidslijn. Zeg het expliciet."
+        },
+        "5": {
+          "name": "Tijdsverdeling",
+          "description": "Hoe verdeel je je tijd over de top 3 deze periode?"
+        }
+      },
+      "hooks": {
+        "0": "Aannames uit de Business Engine moeten gerangschikt worden",
+        "1": "Topprioriteiten vloeien in uitvoeringstracking",
+        "2": "Aanname met hoogste prioriteit gaat naar Validatie"
+      }
+    },
+    "execution-tracker": {
+      "name": "Uitvoeringstracker-modus",
+      "purpose": "Volg werkzichtbaarheid en identificeer blokkades met async-first statustracking.",
+      "trigger": "Gebruik wanneer je moet zien wat er gebeurt, wat vastzit en wat gedeblokkeerd moet worden.",
+      "flowName": "Uitvoering",
+      "doneSignal": "Kun je al het actieve werk zien, weten wat geblokkeerd is en een specifieke deblokkeringsactie hebben voor elke blokkade?",
+      "fields": {
+        "0": {
+          "name": "Werkitems",
+          "description": "Noem actieve werkitems die verbonden zijn aan je prioriteiten."
+        },
+        "1": {
+          "name": "Status",
+          "description": "Per item: Niet gestart, In uitvoering, Geblokkeerd, Klaar."
+        },
+        "2": {
+          "name": "Blokkades",
+          "description": "Wat is geblokkeerd en waarom? Wees specifiek."
+        },
+        "3": {
+          "name": "Deblokkeringsacties",
+          "description": "Per blokkade: wie moet wat doen voor wanneer?"
+        },
+        "4": {
+          "name": "Doorlooptijd",
+          "description": "Hoe lang van start tot voltooiing voor recente items?"
+        }
+      },
+      "hooks": {
+        "0": "Prioriteiten definiëren wat gevolgd wordt",
+        "1": "Voltooide items gaan naar de Leveringscontrole"
+      }
+    },
+    "delivery-check": {
+      "name": "Leveringscontrole",
+      "purpose": "Kwaliteitspoort voor voltooid werk en monitoring van prestaties na levering.",
+      "trigger": "Gebruik wanneer werk klaar is en een kwaliteitscontrole nodig heeft voordat het als opgeleverd geldt.",
+      "flowName": "Uitvoering",
+      "doneSignal": "Kun je met vertrouwen zeggen dat dit resultaat klaar is voor de persoon die het ontvangt?",
+      "fields": {
+        "0": {
+          "name": "Oplevering",
+          "description": "Wat is opgeleverd? Wees specifiek."
+        },
+        "1": {
+          "name": "Kwaliteitscriteria",
+          "description": "Aan welke standaarden moet het voldoen?"
+        },
+        "2": {
+          "name": "Kwaliteitsbeoordeling",
+          "description": "Voldoet het aan elk criterium? Geslaagd/Niet geslaagd per item."
+        },
+        "3": {
+          "name": "Gevonden problemen",
+          "description": "Wat moet gerepareerd worden voor oplevering?"
+        },
+        "4": {
+          "name": "Monitoring na levering",
+          "description": "Wat ga je na levering in de gaten houden om kwaliteit te bevestigen?"
+        }
+      },
+      "hooks": {
+        "0": "Voltooide werkitems uit de Uitvoeringstracker"
+      }
+    },
+    "information-architecture": {
+      "name": "Informatiearchitectuur-modus",
+      "purpose": "Ontwerp waar informatie leeft zodat mensen in 5 minuten kunnen vinden wat ze nodig hebben zonder te vragen.",
+      "trigger": "Gebruik wanneer mensen blijven vragen waar dingen zijn, informatie gedupliceerd of verloren raakt, of nieuwe teamleden niet kunnen vinden wat ze nodig hebben.",
+      "flowName": "Informeren",
+      "doneSignal": "Kan een nieuw teamlid elk kritisch stuk informatie binnen 5 minuten vinden zonder iemand te vragen?",
+      "fields": {
+        "0": {
+          "name": "Informatie-audit",
+          "description": "Waar leeft informatie momenteel? Noem alle tools en locaties."
+        },
+        "1": {
+          "name": "Pijnpunten",
+          "description": "Welke informatie is het moeilijkst te vinden? Welke vragen worden herhaaldelijk gesteld?"
+        },
+        "2": {
+          "name": "Categorieën",
+          "description": "Groepeer informatie in logische categorieën."
+        },
+        "3": {
+          "name": "Single Source of Truth",
+          "description": "Per categorie: waar is de canonieke locatie?"
+        },
+        "4": {
+          "name": "Vindbaarheidstest",
+          "description": "Kan een nieuw teamlid X in 5 minuten vinden? Test 3 veelvoorkomende items."
+        }
+      },
+      "hooks": {
+        "0": "Informatiestructuur maakt asynchroon werkontwerp mogelijk",
+        "1": "Informatiecategorieën vloeien in de AI-kennisstructuur"
+      }
+    },
+    "flex-work-design": {
+      "name": "Flexibel-werken-ontwerp",
+      "purpose": "Definieer async-standaarden, sync-uitzonderingen, meetingbudget en energieritmes voor je team.",
+      "trigger": "Gebruik wanneer je team te veel tijd in meetings besteedt, over tijdzones heen werkt of worstelt met werk-privégrenzen.",
+      "flowName": "Informeren",
+      "doneSignal": "Kan elk teamlid uitleggen wanneer async standaard is, wanneer sync gepast is en wat het meetingbudget is?",
+      "fields": {
+        "0": {
+          "name": "Huidige meetingbelasting",
+          "description": "Hoeveel uur per week besteedt elke persoon aan meetings?"
+        },
+        "1": {
+          "name": "Async-standaard",
+          "description": "Wat is je standaard: async of sync? Definieer de regel."
+        },
+        "2": {
+          "name": "Sync-uitzonderingen",
+          "description": "Wat vereist specifiek realtime interactie?"
+        },
+        "3": {
+          "name": "Meetingbudget",
+          "description": "Maximale meetinguren per persoon per week."
+        },
+        "4": {
+          "name": "Energieritmes",
+          "description": "Wanneer zijn mensen het productiefst? Hoe bescherm je diep werk?"
+        },
+        "5": {
+          "name": "Tijdzoneprotocol",
+          "description": "Hoe ga je om met async over tijdzones? Overlappingsuren?"
+        }
+      },
+      "hooks": {
+        "0": "Informatiestructuur maakt flexibel werken mogelijk",
+        "1": "Werkontwerp vloeit in het teamritme"
+      }
+    },
+    "team-rhythm": {
+      "name": "Teamritme-modus",
+      "purpose": "Ontwerp je weekritme: sync-contactmomenten, diep-werkblokken, energie-checkpoints.",
+      "trigger": "Gebruik wanneer het team een consistent ritme mist, niemand weet wanneer updates komen, of diep werk steeds wordt onderbroken.",
+      "flowName": "Coördineren",
+      "doneSignal": "Weet elk teamlid het weekritme zonder in de agenda te kijken?",
+      "fields": {
+        "0": {
+          "name": "Weekritme",
+          "description": "Breng het terugkerende weekritme van het team in kaart."
+        },
+        "1": {
+          "name": "Sync-contactmomenten",
+          "description": "Noem de essentiële sync-momenten en hun doel."
+        },
+        "2": {
+          "name": "Diep-werkblokken",
+          "description": "Wanneer zijn beschermde focusperiodes? Hoe worden ze gehandhaafd?"
+        },
+        "3": {
+          "name": "Energie-checkpoints",
+          "description": "Hoe check je teamenergie en werkbelasting?"
+        }
+      },
+      "hooks": {
+        "0": "Werkontwerp definieert ritme-beperkingen",
+        "1": "Ritme definieert wanneer beslissingen async vs. sync genomen worden"
+      }
+    },
+    "async-decision": {
+      "name": "Async-beslissingsmodus",
+      "purpose": "Neem een duidelijke beslissing asynchroon met gestructureerde vraag, opties, deadline en bezwaarprotocol.",
+      "trigger": "Gebruik wanneer er een beslissing genomen moet worden en een meeting niet de beste manier is.",
+      "flowName": "Coördineren",
+      "doneSignal": "Is de beslissing vastgelegd, de onderbouwing gedocumenteerd en alle betrokkenen geïnformeerd?",
+      "fields": {
+        "0": {
+          "name": "Beslissingsvraag",
+          "description": "De specifieke vraag waarover beslist wordt. Eén zin."
+        },
+        "1": {
+          "name": "Opties",
+          "description": "De opties die overwogen worden, met voor- en nadelen."
+        },
+        "2": {
+          "name": "Beslisser",
+          "description": "Wie neemt de uiteindelijke beslissing?"
+        },
+        "3": {
+          "name": "Deadline",
+          "description": "Wanneer moet de beslissing genomen zijn?"
+        },
+        "4": {
+          "name": "Input gevraagd van",
+          "description": "Wie moet zich uitspreken voor de deadline?"
+        },
+        "5": {
+          "name": "Bezwaarprotocol",
+          "description": "Hoe kan iemand bezwaar maken? Wat gebeurt er met bezwaren?"
+        },
+        "6": {
+          "name": "Beslissingsverslag",
+          "description": "De uiteindelijke beslissing, onderbouwing en wie geraadpleegd is."
+        }
+      },
+      "hooks": {
+        "0": "Beslissingen moeten verpakt worden voor teamzichtbaarheid"
+      }
+    },
+    "package": {
+      "name": "Pakketmodus",
+      "purpose": "Maak zelfstandige communicatiepakketten die geen vervolgvragen vereisen.",
+      "trigger": "Gebruik wanneer je werk, updates of beslissingen deelt met mensen die er niet bij waren.",
+      "flowName": "Communiceren",
+      "doneSignal": "Kan iemand op basis van dit pakket handelen zonder een enkele verduidelijkingsvraag te stellen?",
+      "fields": {
+        "0": {
+          "name": "Context",
+          "description": "Wat moet de lezer weten om dit te begrijpen?"
+        },
+        "1": {
+          "name": "Kernpunten",
+          "description": "De 3-5 belangrijkste punten. Genummerd."
+        },
+        "2": {
+          "name": "Beslissing nodig",
+          "description": "Is er een beslissing nodig? Van wie? Voor wanneer?"
+        },
+        "3": {
+          "name": "Deadline",
+          "description": "Wanneer moet de lezer reageren?"
+        },
+        "4": {
+          "name": "Feedbackformaat",
+          "description": "Hoe moet de lezer reageren? Commentaar, goedkeuring, bewerking?"
+        }
+      },
+      "hooks": {
+        "0": "Validatieresultaten kunnen verpakt worden",
+        "1": "Beslissingen moeten verpakt worden"
+      }
+    },
+    "contribution-tracker": {
+      "name": "Bijdragetracker-modus",
+      "purpose": "Maak onzichtbaar werk zichtbaar over 5 bijdragetypes.",
+      "trigger": "Gebruik wanneer sommige teamleden cruciaal werk doen dat niemand ziet, of erkenning scheef richting zichtbare resultaten gaat.",
+      "flowName": "Erkennen",
+      "doneSignal": "Kun je bijdragen over alle 5 types zien, niet alleen levering?",
+      "fields": {
+        "0": {
+          "name": "Teamlid",
+          "description": "Voor wie volg je bijdragen?"
+        },
+        "1": {
+          "name": "Levering",
+          "description": "Tastbare opgeleverde resultaten."
+        },
+        "2": {
+          "name": "Mentoring",
+          "description": "Anderen helpen groeien, pairing, reviews, onderwijzen."
+        },
+        "3": {
+          "name": "Documentatie",
+          "description": "Teksten die anderen helpen zelfstandig te werken."
+        },
+        "4": {
+          "name": "Procesverbetering",
+          "description": "Systemen, tools of workflows verbeteren."
+        },
+        "5": {
+          "name": "Deblokkeren",
+          "description": "Obstakels voor anderen verwijderen."
+        }
+      },
+      "hooks": {}
+    },
+    "culture-at-distance": {
+      "name": "Cultuur-op-afstand-modus",
+      "purpose": "Definieer observeerbaar gedrag, rituelen, conflictprotocol en vertrouwenssignalen voor verspreide teams.",
+      "trigger": "Gebruik wanneer cultuur dun aanvoelt in een verspreid team — mensen zijn productief maar niet verbonden.",
+      "flowName": "Cultuur",
+      "doneSignal": "Zou een nieuwe remote medewerker je teamcultuur kunnen begrijpen alleen op basis van documentatie?",
+      "fields": {
+        "0": {
+          "name": "Observeerbaar gedrag",
+          "description": "Welk gedrag definieert je cultuur? Noem 5 die zichtbaar zijn in async werk."
+        },
+        "1": {
+          "name": "Rituelen",
+          "description": "Regelmatige praktijken die de cultuur versterken. Geen meetings — rituelen."
+        },
+        "2": {
+          "name": "Conflictprotocol",
+          "description": "Hoe ga je om met meningsverschillen wanneer je geen lichaamstaal kunt lezen?"
+        },
+        "3": {
+          "name": "Vertrouwenssignalen",
+          "description": "Wat bouwt vertrouwen op in je verspreide team? Wat ondermijnt het?"
+        },
+        "4": {
+          "name": "Anti-patronen",
+          "description": "Welk gedrag probeer je actief te voorkomen?"
+        }
+      },
+      "hooks": {}
+    },
+    "dashboard": {
+      "name": "Dashboard-modus",
+      "purpose": "Stel dubbele meetwaarden in: prestatie (oplostijd, doorlooptijd) en dynamiek (leren, samenwerking, plezier).",
+      "trigger": "Gebruik bij opschaling voorbij 50 personen wanneer traditionele meetwaarden de menselijke kant van de organisatie missen.",
+      "flowName": "Monitoren",
+      "doneSignal": "Kun je zowel prestatie als dynamiek in één oogopslag zien en weten wanneer je moet handelen?",
+      "fields": {
+        "0": {
+          "name": "Prestatiemeetwaarden",
+          "description": "Belangrijke operationele meetwaarden: doorlooptijd, oplostijd, leadtijd."
+        },
+        "1": {
+          "name": "Dynamiekmeetwaarden",
+          "description": "Menselijke meetwaarden: leertempo, samenwerkingsscore, betrokkenheid, plezier."
+        },
+        "2": {
+          "name": "Databronnen",
+          "description": "Waar komt elke meetwaarde vandaan?"
+        },
+        "3": {
+          "name": "Reviewritme",
+          "description": "Hoe vaak worden deze beoordeeld en door wie?"
+        },
+        "4": {
+          "name": "Actietriggers",
+          "description": "Welke meetwaardeniveaus triggeren actie?"
+        }
+      },
+      "hooks": {
+        "0": "Dashboardsignalen vloeien in de organisatiestructuurreview"
+      }
+    },
+    "org-map": {
+      "name": "Org-map-modus",
+      "purpose": "Maak een vogelvluchtoverzicht van je organisatie: teamtypes, gaten en overlappingen.",
+      "trigger": "Gebruik wanneer de organisatie groeit en je het totaalplaatje moet zien.",
+      "flowName": "Structuur",
+      "doneSignal": "Kun je je organisatiestructuur uitleggen aan een nieuwe VP in 5 minuten?",
+      "fields": {
+        "0": {
+          "name": "Teams",
+          "description": "Noem alle teams met type: Missie, Platform of Leiderschapskring."
+        },
+        "1": {
+          "name": "Teamgroottes",
+          "description": "Aantal personen per team."
+        },
+        "2": {
+          "name": "Gaten",
+          "description": "Welke capaciteiten ontbreken?"
+        },
+        "3": {
+          "name": "Overlappingen",
+          "description": "Waar dupliceren teams inspanning?"
+        }
+      },
+      "hooks": {
+        "0": "Org-map identificeert teams die blueprints nodig hebben"
+      }
+    },
+    "team-blueprint": {
+      "name": "Team-blueprint-modus",
+      "purpose": "Definieer missie, leden, beslissingsbevoegdheid, ritme en kwaliteitsstandaarden voor een team.",
+      "trigger": "Gebruik bij het opzetten van een nieuw team of wanneer een bestaand team helderheid mist over doel en bevoegdheid.",
+      "flowName": "Structuur",
+      "doneSignal": "Kan elk teamlid de missie, zijn rol en welke beslissingen hij of zij kan nemen benoemen?",
+      "fields": {
+        "0": {
+          "name": "Teammissie",
+          "description": "Waarom bestaat dit team? Eén zin."
+        },
+        "1": {
+          "name": "Leden",
+          "description": "Wie zit er in het team en wat zijn hun rollen?"
+        },
+        "2": {
+          "name": "Beslissingsbevoegdheid",
+          "description": "Welke beslissingen kan dit team nemen zonder escalatie?"
+        },
+        "3": {
+          "name": "Ritme",
+          "description": "Hoe communiceert en coördineert het team?"
+        },
+        "4": {
+          "name": "Kwaliteitsstandaarden",
+          "description": "Welke kwaliteitslat hanteert dit team?"
+        }
+      },
+      "hooks": {
+        "0": "Team-blueprints definiëren knooppunten in de verbindingskaart"
+      }
+    },
+    "connection-map": {
+      "name": "Verbindingskaart-modus",
+      "purpose": "Breng teaminteracties in kaart: soepel, wrijving of defect. Vind knelpunten.",
+      "trigger": "Gebruik wanneer cross-team coördinatie traag is, overdrachten mislukken of teams elkaar de schuld geven.",
+      "flowName": "Verbinden",
+      "doneSignal": "Kun je iemand een kaart laten zien van alle teamverbindingen met kwaliteitsbeoordelingen en knelpuntoplossingen?",
+      "fields": {
+        "0": {
+          "name": "Teamparen",
+          "description": "Noem alle team-naar-team interactieparen."
+        },
+        "1": {
+          "name": "Interactiekwaliteit",
+          "description": "Per paar: Soepel, Wrijving of Defect."
+        },
+        "2": {
+          "name": "Knelpunten",
+          "description": "Welke teamparen zijn de grootste knelpunten?"
+        },
+        "3": {
+          "name": "Oorzaken",
+          "description": "Waarom zit elk knelpunt vast?"
+        },
+        "4": {
+          "name": "Oplossingsacties",
+          "description": "Welke specifieke actie verbetert elk knelpunt?"
+        }
+      },
+      "hooks": {
+        "0": "Blueprints definiëren de teams om in kaart te brengen",
+        "1": "Probleemverbindingen hebben een gezondheidsdiagnose nodig"
+      }
+    },
+    "relationship-health": {
+      "name": "Relatiegezondheid-modus",
+      "purpose": "Diagnosticeer en repareer cross-team wrijving met gestructureerde analyse.",
+      "trigger": "Gebruik wanneer twee teams een wrijvings- of defecte verbinding hebben die gerepareerd moet worden.",
+      "flowName": "Verbinden",
+      "doneSignal": "Hebben beide teams ingestemd met het oplossingsprotocol en zich vastgelegd op een reviewdatum?",
+      "fields": {
+        "0": {
+          "name": "Betrokken teams",
+          "description": "Welke twee teams hebben de wrijving?"
+        },
+        "1": {
+          "name": "Pijnveroorzakers",
+          "description": "Welke specifieke acties of nalatigheden veroorzaken pijn?"
+        },
+        "2": {
+          "name": "Verwachtingskloof",
+          "description": "Wat verwacht elk team van het andere? Waar verschillen de verwachtingen?"
+        },
+        "3": {
+          "name": "Waardepropositie",
+          "description": "Welke waarde biedt elk team aan het andere?"
+        },
+        "4": {
+          "name": "Oplossingsprotocol",
+          "description": "Overeengekomen acties om de relatie te verbeteren."
+        }
+      },
+      "hooks": {
+        "0": "Probleemverbindingen geïdentificeerd in de Verbindingskaart"
+      }
+    },
+    "company-priority": {
+      "name": "Bedrijfsprioriteiten-modus",
+      "purpose": "Lijn 3-5 bedrijfsprioriteiten uit met bewijs, teamvertaling en afhankelijkheidskaart.",
+      "trigger": "Gebruik wanneer het bedrijf te veel prioriteiten heeft, teams in verschillende richtingen trekken of kwartaalplanning nodig is.",
+      "flowName": "Uitlijnen",
+      "doneSignal": "Kan elke teamleider de bedrijfsprioriteiten uitleggen en hoe zijn team bijdraagt?",
+      "fields": {
+        "0": {
+          "name": "Bedrijfsprioriteiten",
+          "description": "Noem 3-5 bedrijfsprioriteiten met bewijsbasis."
+        },
+        "1": {
+          "name": "Teamvertaling",
+          "description": "Wat betekent elke prioriteit voor elk team?"
+        },
+        "2": {
+          "name": "Afhankelijkheden",
+          "description": "Welke prioriteiten zijn afhankelijk van welke teams?"
+        },
+        "3": {
+          "name": "Conflictoplossing",
+          "description": "Als prioriteiten botsen, welke wint?"
+        }
+      },
+      "hooks": {
+        "0": "Prioriteiten sturen uitvoeringstracking op schaal"
+      }
+    },
+    "scaled-execution": {
+      "name": "Geschaalde-uitvoering-modus",
+      "purpose": "Volg cross-team uitvoering met prioriteitsverbindingen, sleutelresultaten en afhankelijkheden.",
+      "trigger": "Gebruik wanneer meerdere teams aan dezelfde prioriteiten werken en inzicht nodig hebben in elkaars voortgang.",
+      "flowName": "Uitvoeren",
+      "doneSignal": "Kun je al het cross-team werk, afhankelijkheden en blokkades in één weergave zien?",
+      "fields": {
+        "0": {
+          "name": "Prioriteitsverbinding",
+          "description": "Met welke bedrijfsprioriteit is dit werk verbonden?"
+        },
+        "1": {
+          "name": "Sleutelresultaten",
+          "description": "Wat moet opgeleverd worden en door welk team?"
+        },
+        "2": {
+          "name": "Cross-team afhankelijkheden",
+          "description": "Welke teams zijn afhankelijk van welke resultaten?"
+        },
+        "3": {
+          "name": "Status",
+          "description": "Huidige status van elk resultaat."
+        },
+        "4": {
+          "name": "Blokkades",
+          "description": "Cross-team blokkades en deblokkeringsacties."
+        }
+      },
+      "hooks": {
+        "0": "Prioriteiten definiëren wat op schaal gevolgd wordt"
+      }
+    },
+    "quality-matrix": {
+      "name": "Kwaliteitsmatrix-modus",
+      "purpose": "Definieer consistente kwaliteitsstandaarden over teams heen: bedrijfsbreed plus teamspecifiek.",
+      "trigger": "Gebruik wanneer kwaliteit varieert tussen teams en er geen gedeelde definitie van \"goed genoeg\" is.",
+      "flowName": "Kwaliteit",
+      "doneSignal": "Kan elk teamlid de kwaliteitsstandaard voor zijn werk opzoeken en weten of hij eraan voldoet?",
+      "fields": {
+        "0": {
+          "name": "Bedrijfsbrede standaarden",
+          "description": "Kwaliteitsstandaarden die voor elk team gelden."
+        },
+        "1": {
+          "name": "Teamspecifieke standaarden",
+          "description": "Standaarden uniek voor elk team op basis van hun domein."
+        },
+        "2": {
+          "name": "Meting",
+          "description": "Hoe wordt kwaliteit gemeten voor elke standaard?"
+        },
+        "3": {
+          "name": "Reviewproces",
+          "description": "Wie beoordeelt kwaliteit en hoe vaak?"
+        }
+      },
+      "hooks": {}
+    },
+    "ai-onboarding": {
+      "name": "AI-collega-onboarding-modus",
+      "purpose": "Definieer AI-collegarollen, kennisbronnen, toegangsgrenzen en succesmeetwaarden.",
+      "trigger": "Gebruik wanneer je begint met AI-tools en de samenwerking goed moet opzetten.",
+      "flowName": "Context",
+      "doneSignal": "Zou je dit onboardingdocument aan een nieuw teamlid kunnen geven en zou die precies weten hoe je team AI gebruikt?",
+      "fields": {
+        "0": {
+          "name": "AI-rol",
+          "description": "Welke rol speelt de AI in je workflow?"
+        },
+        "1": {
+          "name": "Kennisbronnen",
+          "description": "Welke informatie heeft de AI toegang tot nodig?"
+        },
+        "2": {
+          "name": "Toegangsgrenzen",
+          "description": "Waar mag de AI GEEN toegang toe hebben?"
+        },
+        "3": {
+          "name": "Succesmeetwaarden",
+          "description": "Hoe meet je of de AI-samenwerking werkt?"
+        },
+        "4": {
+          "name": "Reviewritme",
+          "description": "Hoe vaak beoordeel je de AI-samenwerkingsopzet?"
+        },
+        "5": {
+          "name": "Escalatietriggers",
+          "description": "Wanneer moet een mens het overnemen van de AI?"
+        }
+      },
+      "hooks": {
+        "0": "AI-opzet vloeit in de taakdelegatiebeoordeling"
+      }
+    },
+    "centaur-assessment": {
+      "name": "Centaur-beoordelingsmodus",
+      "purpose": "Breng elke taak in kaart: mensgestuurd, AI-gestuurd of centaur (beiden) met capaciteitsbeoordeling.",
+      "trigger": "Gebruik wanneer je moet beslissen welke taken AI kan afhandelen en welke menselijk oordeelsvermogen nodig hebben.",
+      "flowName": "Context",
+      "doneSignal": "Kun je voor elke terugkerende taak uitleggen wie hem doet (mens, AI of beiden) en waarom?",
+      "fields": {
+        "0": {
+          "name": "Taakinventaris",
+          "description": "Noem alle terugkerende taken in je workflow."
+        },
+        "1": {
+          "name": "Classificatie",
+          "description": "Per taak: Mensgestuurd, AI-gestuurd of Centaur."
+        },
+        "2": {
+          "name": "Capaciteitsbeoordeling",
+          "description": "Voor AI/Centaur-taken: waar is de AI goed in en waar heeft die hulp nodig?"
+        },
+        "3": {
+          "name": "Ontwikkelpad",
+          "description": "Welke mensgestuurde taken zouden na verloop van tijd centaur kunnen worden?"
+        }
+      },
+      "hooks": {
+        "0": "AI-opzet informeert taakdelegatie",
+        "1": "Delegatiekaart informeert beslissingsprotocollen"
+      }
+    },
+    "decision-protocol": {
+      "name": "Beslissingsprotocol-modus",
+      "purpose": "Definieer wanneer AI beslissingen leidt vs. mensen, overstemmingsvoorwaarden en retrospectief ritme.",
+      "trigger": "Gebruik wanneer AI betrokken is bij beslissingen en je duidelijke regels nodig hebt over bevoegdheid en overstemming.",
+      "flowName": "Besturen",
+      "doneSignal": "Kun je voor elk beslissingstype direct zeggen wie de bevoegdheid heeft en wat een overstemming triggert?",
+      "fields": {
+        "0": {
+          "name": "Beslissingscategorieën",
+          "description": "Noem de types beslissingen in je workflow."
+        },
+        "1": {
+          "name": "Bevoegdheidskaart",
+          "description": "Per categorie: AI leidt, Mens leidt of Gedeeld."
+        },
+        "2": {
+          "name": "Overstemmingsvoorwaarden",
+          "description": "Wanneer kan een mens een AI-beslissing overstemmen? Wanneer kan AI een menselijke aanbeveling overstemmen?"
+        },
+        "3": {
+          "name": "Retrospectief ritme",
+          "description": "Hoe vaak beoordeel je de beslissingskwaliteit?"
+        }
+      },
+      "hooks": {
+        "0": "Delegatiekaart informeert beslissingsbevoegdheid"
+      }
+    },
+    "verification-ritual": {
+      "name": "Verificatieritueel-modus",
+      "purpose": "Bouw risicogeschaalde reviewprotocollen: hoog risico krijgt diepe review, laag risico stroomt vrij.",
+      "trigger": "Gebruik wanneer de kwaliteit van AI-output varieert en je consistente verificatie nodig hebt zonder alles te vertragen.",
+      "flowName": "Besturen",
+      "doneSignal": "Kan je team elke AI-output direct classificeren op risiconiveau en het reviewprotocol kennen?",
+      "fields": {
+        "0": {
+          "name": "Outputcategorieën",
+          "description": "Noem de types AI-output die je team produceert."
+        },
+        "1": {
+          "name": "Risiconiveau",
+          "description": "Per categorie: Hoog, Gemiddeld of Laag risico."
+        },
+        "2": {
+          "name": "Reviewprotocol",
+          "description": "Per risiconiveau: welke review is vereist?"
+        },
+        "3": {
+          "name": "Kwaliteitsdrempel",
+          "description": "Welk acceptatiepercentage triggert een review van het protocol?"
+        }
+      },
+      "hooks": {}
+    },
+    "knowledge-architecture": {
+      "name": "Kennisarchitectuur-modus",
+      "purpose": "Structureer persistente AI-context zodat je AI-collega niet elke sessie dezelfde vragen stelt.",
+      "trigger": "Gebruik wanneer AI steeds om context vraagt die het al zou moeten hebben, of antwoorden geeft die je bedrijfsspecifieke kenmerken negeren.",
+      "flowName": "Kennis",
+      "doneSignal": "Kan je AI-collega een nieuwe sessie starten en direct de context hebben die nodig is om nuttig te zijn?",
+      "fields": {
+        "0": {
+          "name": "Kennisdomeinen",
+          "description": "Welke categorieën kennis heeft de AI nodig?"
+        },
+        "1": {
+          "name": "Persistente context",
+          "description": "Per domein: wat moet de AI altijd weten?"
+        },
+        "2": {
+          "name": "Update-triggers",
+          "description": "Wanneer moet elk kennisdomein bijgewerkt worden?"
+        },
+        "3": {
+          "name": "Toegangspatroon",
+          "description": "Hoe benadert de AI deze kennis? Bestanden, API's, prompts?"
+        }
+      },
+      "hooks": {
+        "0": "Informatiestructuur vloeit in AI-kennis"
+      }
+    },
+    "trust-calibration": {
+      "name": "Vertrouwenskalibratie-modus",
+      "purpose": "Stel vertrouwensniveaus in op basis van bewijs, niet gevoel. Kalibreer oververtrouwen en ondervertrouwen.",
+      "trigger": "Gebruik wanneer je vermoedt dat het team AI te veel of te weinig vertrouwt, en beslissingen op onderbuikgevoel in plaats van data genomen worden.",
+      "flowName": "Vertrouwen",
+      "doneSignal": "Kun je elk vertrouwensniveau onderbouwen met bewijs, niet intuïtie?",
+      "fields": {
+        "0": {
+          "name": "Vertrouwensinventaris",
+          "description": "Per AI-toepassing: huidig vertrouwensniveau (Oververtrouwen, Gekalibreerd, Ondervertrouwen, Ongetest)."
+        },
+        "1": {
+          "name": "Bewijs",
+          "description": "Welke data ondersteunen elk vertrouwensniveau?"
+        },
+        "2": {
+          "name": "Kalibratieacties",
+          "description": "Bij oververtrouwen: verificatie toevoegen. Bij ondervertrouwen: pilot uitvoeren."
+        },
+        "3": {
+          "name": "Reviewplanning",
+          "description": "Wanneer ga je de vertrouwensniveaus opnieuw kalibreren?"
+        }
+      },
+      "hooks": {}
+    },
+    "ai-scaling": {
+      "name": "AI-samenwerking-schaalmodus",
+      "purpose": "Plan hoe mens-AI-samenwerking evolueert naarmate de organisatie groeit.",
+      "trigger": "Gebruik wanneer AI-samenwerking werkt voor één persoon of team en opgeschaald moet worden naar de organisatie.",
+      "flowName": "Opschalen",
+      "doneSignal": "Kun je een roadmap voor AI-samenwerking presenteren die elke teamleider kan volgen?",
+      "fields": {
+        "0": {
+          "name": "Huidige situatie",
+          "description": "Hoe werkt AI-samenwerking vandaag? Wie gebruikt het, waarvoor?"
+        },
+        "1": {
+          "name": "Opschalingspad",
+          "description": "Hoe zou AI-samenwerking moeten evolueren? Solo → Team → Organisatie."
+        },
+        "2": {
+          "name": "Standaardisatie vs. maatwerk",
+          "description": "Wat moet standaard zijn over teams vs. aangepast per team?"
+        },
+        "3": {
+          "name": "Infrastructuurbehoeften",
+          "description": "Welke tools, toegang of training is nodig om op te schalen?"
+        },
+        "4": {
+          "name": "Risicobeoordeling",
+          "description": "Wat kan misgaan als je AI-samenwerking opschaalt?"
+        }
+      },
+      "hooks": {}
+    }
+  },
+  "programContent": {
+    "your-first-validation-week": {
+      "name": "Je eerste validatieweek",
+      "description": "Test je riskantste aanname in 5 dagen. Vijf modi, één bewijs-onderbouwde beslissing.",
+      "schedule": {
+        "0": "Breng je bedrijfsmodel in kaart. Identificeer 3 kernaannames.",
+        "1": "Rangschik je aannames op risico. Kies de riskantste.",
+        "2": "Ontwerp en lanceer een test voor je riskantste aanname.",
+        "3": "Terwijl je wacht op resultaten, vang signalen op uit je markt.",
+        "4": "Bekijk de resultaten. Neem je Doorgaan/Bijsturen/Opnieuw-testen-beslissing."
+      }
+    },
+    "async-maturity-sprint": {
+      "name": "Async-rijpheidssprint",
+      "description": "Verminder meetinguren, bouw async-beslissingskracht op en verpak werk voor je verspreide team.",
+      "schedule": {
+        "0": "Breng je huidige meetingritme in kaart. Identificeer meetingbloat.",
+        "1": "Definieer welke informatie waar thuishoort.",
+        "2": "Verpak je volgende teamupdate volgens het format.",
+        "3": "Zet een aankomende meeting-gebaseerde beslissing om naar async.",
+        "4": "Verpak het async-beslissingsresultaat. Meet de helderheid.",
+        "5": "Maak onzichtbaar werk zichtbaar.",
+        "6": "Stel async-first standaarden in voor je team.",
+        "7": "Adresseer de culturele gaten in je verspreide opzet."
+      }
+    },
+    "scaling-readiness-check": {
+      "name": "Opschalingsgereedheidscheck",
+      "description": "Bereid je organisatie voor op 50+ personen. Structuur, verbindingen, prioriteiten, uitvoering.",
+      "schedule": {
+        "0": "Breng je huidige organisatiestructuur in kaart.",
+        "1": "Definieer blueprints voor je sleutelteams.",
+        "2": "Breng team-naar-team interacties in kaart.",
+        "3": "Los je ergste teamwrijving op.",
+        "4": "Lijn 3-5 bedrijfsprioriteiten uit.",
+        "5": "Vertaal bedrijfsprioriteiten naar teamniveau.",
+        "6": "Stel cross-team uitvoeringstracking in.",
+        "7": "Bouw je dubbele meetwaardendashboard.",
+        "8": "Definieer kwaliteitsstandaarden.",
+        "9": "Volg uitvoering op teamniveau.",
+        "10": "Kwaliteitspoort voor een cross-team resultaat.",
+        "11": "Breng verbindingen opnieuw in kaart. Meet de verbetering."
+      }
+    },
+    "ai-colleague-bootcamp": {
+      "name": "AI-collega-bootcamp",
+      "description": "Zet mens-AI-samenwerking goed op. Context, delegatie, verificatie, vertrouwen.",
+      "schedule": {
+        "0": "Laad je businesscontext in je AI-collega.",
+        "1": "Breng je taken in kaart: mensgestuurd, AI-gestuurd, centaur.",
+        "2": "Definieer welke beslissingen AI alleen kan nemen.",
+        "3": "Bouw een protocol voor het controleren van AI-outputkwaliteit.",
+        "4": "Structureer wat de AI moet weten.",
+        "5": "Stel vertrouwensniveaus in op basis van bewijs, niet gevoel.",
+        "6": "Plan hoe je opschaalt wat werkt."
+      }
+    },
+    "full-business-fitness": {
+      "name": "Volledige Business Fitness",
+      "description": "De complete 7 Flows-ervaring. 15 modi over alle vier frameworks in 6 weken.",
+      "schedule": {
+        "0": "Breng je bedrijfsmodel in kaart.",
+        "1": "Test je riskantste aanname.",
+        "2": "Rangschik en committeer aan prioriteiten.",
+        "3": "Ontwerp je weekritme.",
+        "4": "Verbeter de vindbaarheid van informatie.",
+        "5": "Oefen asynchrone communicatie.",
+        "6": "Neem je eerste gestructureerde async-beslissing.",
+        "7": "Zet AI-samenwerking op.",
+        "8": "Breng mens- vs. AI-taken in kaart.",
+        "9": "Volg uitvoering met zichtbaarheid.",
+        "10": "Kwaliteitspoort voor je werk.",
+        "11": "Vang marktsignalen op.",
+        "12": "Kalibreer AI-vertrouwensniveaus.",
+        "13": "Maak onzichtbaar werk zichtbaar.",
+        "14": "Afsluitende validatiereview."
+      }
+    }
+  },
+  "flowNames": {
+    "Align": "Uitlijnen",
+    "Communicate": "Communiceren",
+    "Connect": "Verbinden",
+    "Context": "Context",
+    "Coordinate": "Coördineren",
+    "Culture": "Cultuur",
+    "Execute": "Uitvoeren",
+    "Execution": "Uitvoering",
+    "Govern": "Besturen",
+    "Inform": "Informeren",
+    "Knowledge": "Kennis",
+    "Monitor": "Monitoren",
+    "Quality": "Kwaliteit",
+    "Recognize": "Erkennen",
+    "Scale": "Opschalen",
+    "Strategy": "Strategie",
+    "Structure": "Structuur",
+    "Trust": "Vertrouwen",
+    "Validation": "Validatie"
   }
 }

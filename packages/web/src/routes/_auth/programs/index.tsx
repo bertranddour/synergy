@@ -74,7 +74,7 @@ function ProgramCatalog() {
               <span className="text-xs uppercase tracking-[0.3em] text-[var(--color-synergy)]">
                 {t('programs.activeProgram')}
               </span>
-              <h2 className="font-display mt-1 text-xl">{activeQuery.data.program.name}</h2>
+              <h2 className="font-display mt-1 text-xl">{t(`programContent.${activeQuery.data.program.slug}.name`)}</h2>
             </div>
             <span className="text-sm text-[var(--text-tertiary)]">
               {t('programs.dayNumber', { day: activeQuery.data.userProgram.currentDay })}
@@ -93,7 +93,7 @@ function ProgramCatalog() {
                   {day.completed ? <Icon name="check" size="xs" /> : day.day}
                 </span>
                 <span className={day.completed ? 'text-[var(--text-tertiary)] line-through' : ''}>
-                  {day.modeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                  {t(`modeContent.${day.modeSlug}.name`)}
                 </span>
                 <span className="ml-auto text-xs text-[var(--text-tertiary)]">{day.date}</span>
               </div>
@@ -113,12 +113,14 @@ function ProgramCatalog() {
         ) : (
           programsQuery.data?.programs.map((program) => (
             <div key={program.slug} className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-              <h3 className="font-display text-lg">{program.name}</h3>
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">{program.description}</p>
+              <h3 className="font-display text-lg">{t(`programContent.${program.slug}.name`)}</h3>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                {t(`programContent.${program.slug}.description`)}
+              </p>
               <div className="mt-3 flex items-center gap-3 text-xs text-[var(--text-tertiary)]">
                 <span>{t('common.days', { count: program.durationDays })}</span>
                 <span>·</span>
-                <span>{program.frameworksRequired.join(', ')}</span>
+                <span>{program.frameworksRequired.map((fw) => t(`frameworks.${fw}.name`)).join(', ')}</span>
               </div>
               <button
                 type="button"
