@@ -7,6 +7,7 @@ interface SSEEvent {
   name?: string
   conversationId?: string
   message?: string
+  suggestions?: Array<{ label: string; slug: string }>
 }
 
 interface UseAliciaStreamResult {
@@ -14,6 +15,7 @@ interface UseAliciaStreamResult {
   isStreaming: boolean
   error: string | null
   conversationId: string | null
+  suggestions: Array<{ label: string; slug: string }>
   send: (params: { message: string; surface: string; conversationId?: string; sessionId?: string }) => void
   reset: () => void
 }
@@ -27,6 +29,7 @@ export function useAliciaStream(): UseAliciaStreamResult {
   const [isStreaming, setIsStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [conversationId, setConversationId] = useState<string | null>(null)
+  const [suggestions, setSuggestions] = useState<Array<{ label: string; slug: string }>>([])
   const abortRef = useRef<AbortController | null>(null)
   const token = useAuthStore((s) => s.token)
 
@@ -40,6 +43,7 @@ export function useAliciaStream(): UseAliciaStreamResult {
       setText('')
       setIsStreaming(true)
       setError(null)
+      setSuggestions([])
 
       try {
         const res = await fetch('/api/coach/stream', {
@@ -90,6 +94,7 @@ export function useAliciaStream(): UseAliciaStreamResult {
                   break
                 case 'done':
                   setConversationId(event.conversationId ?? null)
+                  setSuggestions(event.suggestions ?? [])
                   break
                 case 'error':
                   setError(event.message ?? 'Unknown error')
@@ -117,7 +122,8 @@ export function useAliciaStream(): UseAliciaStreamResult {
     setIsStreaming(false)
     setError(null)
     setConversationId(null)
+    setSuggestions([])
   }, [])
 
-  return { text, isStreaming, error, conversationId, send, reset }
+  return { text, isStreaming, error, conversationId, suggestions, send, reset }
 }

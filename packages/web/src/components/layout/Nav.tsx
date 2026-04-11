@@ -4,7 +4,7 @@ import { useAuthStore } from '../../stores/auth'
 import { Icon, type IconName } from '../ui/Icon'
 
 const NAV_ITEMS: Array<{
-  to: '/' | '/modes' | '/coach' | '/assessments' | '/programs' | '/progress' | '/teams'
+  to: '/' | '/modes' | '/coach' | '/assessments' | '/programs' | '/progress' | '/activity' | '/teams'
   label: string
   icon: IconName
 }> = [
@@ -14,6 +14,7 @@ const NAV_ITEMS: Array<{
   { to: '/assessments', label: 'Assess', icon: 'clipboard-text' },
   { to: '/programs', label: 'Programs', icon: 'book-open-text' },
   { to: '/progress', label: 'Progress', icon: 'chart-line-up' },
+  { to: '/activity', label: 'Activity', icon: 'list-bullets' },
   { to: '/teams', label: 'Teams', icon: 'users-three' },
 ]
 

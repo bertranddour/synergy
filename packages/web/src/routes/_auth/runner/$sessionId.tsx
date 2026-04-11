@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { CoachCard } from '../../../components/coach/CoachCard'
 import { FieldStep } from '../../../components/modes/FieldStep'
+import { SessionReview } from '../../../components/modes/SessionReview'
 import { Icon } from '../../../components/ui/Icon'
 import { useAliciaStream } from '../../../hooks/use-sse'
 import { useAuthStore } from '../../../stores/auth'
@@ -57,6 +58,7 @@ function ModeRunner() {
   const { text: coachText, isStreaming: coachStreaming, send: sendCoach, reset: resetCoach } = useAliciaStream()
 
   const [completed, setCompleted] = useState(false)
+  const [showReview, setShowReview] = useState(false)
 
   // Load session + mode data
   const { data, isLoading } = useQuery({
@@ -182,7 +184,15 @@ function ModeRunner() {
             </div>
           )}
 
-        <div className="wave-entrance-3 mt-8 flex gap-4">
+        <div className="wave-entrance-3 mt-8 flex flex-wrap justify-center gap-4">
+          <button
+            type="button"
+            onClick={() => setShowReview((v) => !v)}
+            className="neo-btn shadow-neo-button rounded-full px-8 py-3"
+            style={{ color: 'var(--color-synergy)' }}
+          >
+            {showReview ? 'Hide Responses' : 'Review Responses'}
+          </button>
           <button
             type="button"
             onClick={() => {
@@ -201,6 +211,15 @@ function ModeRunner() {
             Dashboard
           </button>
         </div>
+
+        {showReview && data.mode && (
+          <div className="mt-8 w-full max-w-2xl text-left">
+            <SessionReview
+              fieldsSchema={data.mode.fieldsSchema}
+              fieldsData={(data.session.fieldsData as Record<string, unknown>) ?? {}}
+            />
+          </div>
+        )}
       </div>
     )
   }

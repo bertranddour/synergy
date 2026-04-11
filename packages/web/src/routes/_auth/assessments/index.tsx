@@ -1,6 +1,7 @@
 import { FRAMEWORK_COLORS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { SparklineChart } from '../../../components/dashboard/SparklineChart'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/assessments/')({
@@ -60,7 +61,11 @@ function AssessmentCenter() {
 
       <div className="wave-entrance-2 grid gap-6 md:grid-cols-2">
         {frameworks.map((slug) => {
-          const lastAssessment = assessmentsQuery.data?.assessments.find((a) => a.status === 'completed')
+          const fwAssessments =
+            assessmentsQuery.data?.assessments.filter(
+              (a) => a.frameworkId === `fw-${slug}` && a.status === 'completed',
+            ) ?? []
+          const lastAssessment = fwAssessments[0]
 
           return (
             <div key={slug} className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
@@ -70,13 +75,23 @@ function AssessmentCenter() {
               </div>
 
               {lastAssessment?.level && (
-                <div className="mt-3">
-                  <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">Last result:</span>
-                  <span className="ml-2 text-sm font-semibold capitalize">
-                    {lastAssessment.level.replace('-', ' ')}
-                  </span>
-                  {lastAssessment.totalScore !== null && (
-                    <span className="ml-1 text-sm text-[var(--text-tertiary)]">({lastAssessment.totalScore}/35)</span>
+                <div className="mt-3 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">Last result:</span>
+                    <span className="ml-2 text-sm font-semibold capitalize">
+                      {lastAssessment.level.replace('-', ' ')}
+                    </span>
+                    {lastAssessment.totalScore !== null && (
+                      <span className="ml-1 text-sm text-[var(--text-tertiary)]">({lastAssessment.totalScore}/35)</span>
+                    )}
+                  </div>
+                  {fwAssessments.length >= 2 && (
+                    <SparklineChart
+                      data={fwAssessments.map((a) => a.totalScore ?? 0).reverse()}
+                      color={FRAMEWORK_COLORS[slug]}
+                      width={80}
+                      height={24}
+                    />
                   )}
                 </div>
               )}
@@ -94,6 +109,41 @@ function AssessmentCenter() {
           )
         })}
       </div>
+
+      {/* Assessment History */}
+      {assessmentsQuery.data &&
+        assessmentsQuery.data.assessments.filter((a) => a.status === 'completed').length > 0 && (
+          <div className="wave-entrance-3 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
+            <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Assessment History</h2>
+            <div className="mt-4 space-y-2">
+              {assessmentsQuery.data.assessments
+                .filter((a) => a.status === 'completed')
+                .map((a) => {
+                  const fwSlug = a.frameworkId.replace('fw-', '') as FrameworkSlug
+                  return (
+                    <div key={a.id} className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="h-2 w-2 rounded-full"
+                          style={{ backgroundColor: FRAMEWORK_COLORS[fwSlug] ?? 'var(--text-tertiary)' }}
+                        />
+                        <span>{FRAMEWORK_NAMES[fwSlug] ?? fwSlug}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold">
+                          {a.totalScore}/{35}
+                        </span>
+                        <span className="capitalize text-[var(--text-tertiary)]">{a.level?.replace('-', ' ')}</span>
+                        <span className="text-xs text-[var(--text-tertiary)]">
+                          {a.completedAt ? new Date(a.completedAt).toLocaleDateString() : ''}
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
+            </div>
+          </div>
+        )}
     </div>
   )
 }

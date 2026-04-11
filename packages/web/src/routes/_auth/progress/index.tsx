@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { ProgressRings } from '../../../components/dashboard/ProgressRings'
+import { SparklineChart } from '../../../components/dashboard/SparklineChart'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/progress/')({
@@ -95,10 +96,61 @@ function ProgressPage() {
         </div>
       )}
 
-      {/* History */}
-      {historyQuery.data && historyQuery.data.history.length > 0 && (
+      {/* History Sparklines */}
+      {historyQuery.data && historyQuery.data.history.length >= 2 && (
         <div className="wave-entrance-4 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Weekly History</h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Trends Over Time</h2>
+          <div className="mt-6 grid gap-6 md:grid-cols-3">
+            <div className="shadow-neo-well rounded-[1.5rem] bg-[var(--surface)] p-5">
+              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">Completion</span>
+              <div className="mt-3">
+                <SparklineChart
+                  data={historyQuery.data.history.map((h) => h.completion)}
+                  color="var(--color-core)"
+                  width={180}
+                  height={40}
+                />
+              </div>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                {historyQuery.data.history[historyQuery.data.history.length - 1]?.completion ?? 0}% this week
+              </p>
+            </div>
+            <div className="shadow-neo-well rounded-[1.5rem] bg-[var(--surface)] p-5">
+              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">Consistency</span>
+              <div className="mt-3">
+                <SparklineChart
+                  data={historyQuery.data.history.map((h) => h.consistency)}
+                  color="var(--color-health-green)"
+                  width={180}
+                  height={40}
+                />
+              </div>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                {historyQuery.data.history[historyQuery.data.history.length - 1]?.consistency ?? 0} week streak
+              </p>
+            </div>
+            <div className="shadow-neo-well rounded-[1.5rem] bg-[var(--surface)] p-5">
+              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">Growth</span>
+              <div className="mt-3">
+                <SparklineChart
+                  data={historyQuery.data.history.map((h) => h.growth)}
+                  color="var(--color-synergy)"
+                  width={180}
+                  height={40}
+                />
+              </div>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                {historyQuery.data.history[historyQuery.data.history.length - 1]?.growth ?? 0}% improving
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modes per week */}
+      {historyQuery.data && historyQuery.data.history.length > 0 && (
+        <div className="wave-entrance-5 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Weekly Activity</h2>
           <div className="mt-4 space-y-2">
             {historyQuery.data.history.map((entry) => (
               <div key={entry.periodStart} className="flex items-center gap-4 text-sm">

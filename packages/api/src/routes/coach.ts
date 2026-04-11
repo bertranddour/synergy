@@ -1,12 +1,12 @@
 import type Anthropic from '@anthropic-ai/sdk'
 import { coachMessageSchema } from '@synergy/shared'
-import { and, eq } from 'drizzle-orm'
+import { and, desc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { runAliciaLoop } from '../agents/alicia/loop.js'
 import { CROSS_FRAMEWORK_PROMPT } from '../agents/alicia/prompts/cross-fw.js'
 import { PERSONALITY_PROMPT } from '../agents/alicia/prompts/personality.js'
 import { getSurfacePrompt } from '../agents/alicia/prompts/surfaces.js'
-import { proactiveObservations } from '../db/schema.js'
+import { coachConversations, proactiveObservations } from '../db/schema.js'
 import type { Env } from '../env.js'
 import { createAnthropicClient } from '../lib/anthropic.js'
 import { createDb } from '../lib/db.js'
@@ -85,9 +85,46 @@ coachRoutes.post('/stream', async (c) => {
             await aliciaDO.addAssistantMessage(result.fullResponse)
           }
 
+          // Persist to D1 for conversation history
+          const now = new Date()
+          const nowTs = Date.now()
+          const messagesJson = [
+            ...anthropicMessages.map((m) => ({
+              role: (m.role === 'assistant' ? 'alicia' : 'user') as 'user' | 'alicia',
+              content: String(m.content),
+              timestamp: nowTs,
+            })),
+            ...(result.fullResponse
+              ? [{ role: 'alicia' as const, content: result.fullResponse, timestamp: nowTs }]
+              : []),
+          ]
+
+          if (conversationId) {
+            await db
+              .update(coachConversations)
+              .set({ messages: messagesJson, updatedAt: now })
+              .where(and(eq(coachConversations.id, responseConversationId), eq(coachConversations.userId, userId)))
+          } else {
+            await db.insert(coachConversations).values({
+              id: responseConversationId,
+              userId,
+              messages: messagesJson,
+              context: {},
+              createdAt: now,
+              updatedAt: now,
+            })
+          }
+
+          // Extract suggestions from tool calls
+          const suggestions = result.toolsUsed.includes('suggest_mode')
+            ? [{ label: 'View suggested mode', slug: 'validation' }]
+            : []
+
           // Send done event
           controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ type: 'done', conversationId: responseConversationId })}\n\n`),
+            encoder.encode(
+              `data: ${JSON.stringify({ type: 'done', conversationId: responseConversationId, suggestions })}\n\n`,
+            ),
           )
 
           controller.close()
@@ -105,6 +142,65 @@ coachRoutes.post('/stream', async (c) => {
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
       },
+    })
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// ─── List Conversations ─────────────────────────────────────────────────────
+
+coachRoutes.get('/conversations', async (c) => {
+  try {
+    const userId = c.get('userId')
+    const db = createDb(c.env.DB)
+
+    const conversations = await db
+      .select()
+      .from(coachConversations)
+      .where(eq(coachConversations.userId, userId))
+      .orderBy(desc(coachConversations.updatedAt))
+      .limit(20)
+
+    return c.json({
+      conversations: conversations.map((conv) => {
+        const msgs = conv.messages as Array<{ role: string; content: string }>
+        const firstUserMsg = msgs.find((m) => m.role === 'user')
+        return {
+          id: conv.id,
+          preview: firstUserMsg?.content.slice(0, 80) ?? 'New conversation',
+          messageCount: msgs.length,
+          updatedAt: conv.updatedAt.toISOString(),
+        }
+      }),
+    })
+  } catch (err) {
+    console.error('Route error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// ─── Get Conversation Messages ──────────────────────────────────────────────
+
+coachRoutes.get('/conversations/:id', async (c) => {
+  try {
+    const userId = c.get('userId')
+    const conversationId = c.req.param('id')
+    const db = createDb(c.env.DB)
+
+    const conv = await db.query.coachConversations.findFirst({
+      where: and(eq(coachConversations.id, conversationId), eq(coachConversations.userId, userId)),
+    })
+
+    if (!conv) {
+      return c.json({ error: 'Conversation not found' }, 404)
+    }
+
+    return c.json({
+      id: conv.id,
+      messages: conv.messages as Array<{ role: string; content: string }>,
+      updatedAt: conv.updatedAt.toISOString(),
     })
   } catch (err) {
     console.error('Route error:', err)

@@ -1,3 +1,6 @@
+import { Link } from '@tanstack/react-router'
+import { Icon, type IconName } from '../ui/Icon'
+
 interface HealthCardProps {
   name: string
   score: number
@@ -5,8 +8,6 @@ interface HealthCardProps {
   color: 'green' | 'yellow' | 'orange' | 'red'
   topMetrics: Array<{ name: string; value: number; unit: string }>
 }
-
-import { Icon, type IconName } from '../ui/Icon'
 
 const TREND_ICONS: Record<string, IconName> = {
   improving: 'trend-up',
@@ -23,7 +24,11 @@ const COLOR_MAP = {
 
 export function HealthCard({ name, score, trend, color, topMetrics }: HealthCardProps) {
   return (
-    <div className="shadow-neo-well wave-card-hover rounded-[1.8rem] bg-[var(--surface)] p-6">
+    <Link
+      to="/health/$category"
+      params={{ category: name }}
+      className="shadow-neo-well wave-card-hover block rounded-[1.8rem] bg-[var(--surface)] p-6 transition-colors"
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
@@ -72,6 +77,6 @@ export function HealthCard({ name, score, trend, color, topMetrics }: HealthCard
           ))}
         </div>
       )}
-    </div>
+    </Link>
   )
 }

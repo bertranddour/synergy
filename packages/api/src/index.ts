@@ -3,6 +3,7 @@ import { cors } from 'hono/cors'
 import type { Env } from './env.js'
 import { auth } from './middleware/auth.js'
 import { coachRateLimit, magicLinkRateLimit, rateLimit } from './middleware/rate-limit.js'
+import { activityRoutes } from './routes/activity.js'
 import { assessmentRoutes } from './routes/assessments.js'
 import { authRoutes } from './routes/auth.js'
 import { coachRoutes } from './routes/coach.js'
@@ -54,6 +55,7 @@ app.use('/api/assessments/*', auth())
 app.use('/api/progress/*', auth())
 app.use('/api/programs/*', auth())
 app.use('/api/teams/*', auth())
+app.use('/api/activity/*', auth())
 
 app.route('/api/users', userRoutes)
 app.route('/api/modes', modeRoutes)
@@ -64,6 +66,7 @@ app.route('/api/assessments', assessmentRoutes)
 app.route('/api/progress', progressRoutes)
 app.route('/api/programs', programRoutes)
 app.route('/api/teams', teamRoutes)
+app.route('/api/activity', activityRoutes)
 
 // 404 for unmatched API routes
 app.all('/api/*', (c) => c.json({ error: 'Not found' }, 404))

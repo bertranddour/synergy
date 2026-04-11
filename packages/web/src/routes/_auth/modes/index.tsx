@@ -26,6 +26,24 @@ function ModeLibrary() {
   const token = useAuthStore((s) => s.token)
   const [activeFilter, setActiveFilter] = useState<FrameworkSlug | null>(null)
   const [search, setSearch] = useState('')
+  const [showRecommended, setShowRecommended] = useState(false)
+
+  // Fetch health data for recommended modes (cached 5min, same as dashboard)
+  const healthQuery = useQuery({
+    queryKey: ['health'],
+    queryFn: async () => {
+      const res = await fetch('/api/health', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) return null
+      return res.json() as Promise<{
+        categories: Array<{ recommendedModes: string[] }>
+      }>
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const recommendedSlugs = new Set(healthQuery.data?.categories.flatMap((c) => c.recommendedModes) ?? [])
 
   const { data, isLoading } = useQuery({
     queryKey: ['modes', activeFilter, search],
@@ -76,6 +94,16 @@ function ModeLibrary() {
           >
             All
           </button>
+          <button
+            type="button"
+            onClick={() => setShowRecommended((v) => !v)}
+            className={`neo-btn rounded-full px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors ${
+              showRecommended ? 'shadow-neo-button font-semibold' : 'text-[var(--text-tertiary)]'
+            }`}
+            style={showRecommended ? { color: 'var(--color-synergy)' } : undefined}
+          >
+            Recommended
+          </button>
           {frameworkSlugs.map((slug) => (
             <button
               key={slug}
@@ -107,19 +135,22 @@ function ModeLibrary() {
         </div>
       ) : (
         <div className="wave-entrance-3 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {data?.modes.map((mode) => (
-            <ModeCard
-              key={mode.id}
-              slug={mode.slug}
-              name={mode.name}
-              purpose={mode.purpose}
-              flowName={mode.flowName}
-              timeEstimateMinutes={mode.timeEstimateMinutes}
-              frameworkSlug={mode.frameworkSlug}
-              frameworkName={mode.frameworkName}
-              frameworkColor={mode.frameworkColor}
-            />
-          ))}
+          {data?.modes
+            .filter((mode) => !showRecommended || recommendedSlugs.has(mode.slug))
+            .map((mode) => (
+              <ModeCard
+                key={mode.id}
+                slug={mode.slug}
+                name={mode.name}
+                purpose={mode.purpose}
+                flowName={mode.flowName}
+                timeEstimateMinutes={mode.timeEstimateMinutes}
+                frameworkSlug={mode.frameworkSlug}
+                frameworkName={mode.frameworkName}
+                frameworkColor={mode.frameworkColor}
+                isRecommended={recommendedSlugs.has(mode.slug)}
+              />
+            ))}
         </div>
       )}
     </div>

@@ -43,7 +43,7 @@ function VerifyPage() {
         }
 
         setAuth(data.token, data.user)
-        void navigate({ to: '/' })
+        void navigate({ to: data.user.onboardingCompleted ? '/' : '/onboarding' })
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Verification failed')
       }

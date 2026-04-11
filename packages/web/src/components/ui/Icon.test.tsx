@@ -21,6 +21,7 @@ const ALL_ICON_NAMES: IconName[] = [
   'arrow-left',
   'arrow-right',
   'check',
+  'list-bullets',
 ]
 
 describe('ICON_PATHS registry', () => {
@@ -35,8 +36,8 @@ describe('ICON_PATHS registry', () => {
     }
   })
 
-  it('has exactly 17 icons', () => {
-    expect(Object.keys(ICON_PATHS)).toHaveLength(17)
+  it('has exactly 18 icons', () => {
+    expect(Object.keys(ICON_PATHS)).toHaveLength(18)
   })
 })
 

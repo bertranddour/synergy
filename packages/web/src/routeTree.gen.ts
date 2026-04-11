@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
@@ -20,15 +21,22 @@ import { Route as AuthProgramsIndexRouteImport } from './routes/_auth/programs/i
 import { Route as AuthModesIndexRouteImport } from './routes/_auth/modes/index'
 import { Route as AuthCoachIndexRouteImport } from './routes/_auth/coach/index'
 import { Route as AuthAssessmentsIndexRouteImport } from './routes/_auth/assessments/index'
+import { Route as AuthActivityIndexRouteImport } from './routes/_auth/activity/index'
 import { Route as AuthTeamsIdRouteImport } from './routes/_auth/teams/$id'
 import { Route as AuthRunnerSessionIdRouteImport } from './routes/_auth/runner/$sessionId'
 import { Route as AuthProgramsActiveRouteImport } from './routes/_auth/programs/active'
 import { Route as AuthModesSlugRouteImport } from './routes/_auth/modes/$slug'
+import { Route as AuthHealthCategoryRouteImport } from './routes/_auth/health/$category'
 import { Route as AuthAssessmentsIdRouteImport } from './routes/_auth/assessments/$id'
 
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -80,6 +88,11 @@ const AuthAssessmentsIndexRoute = AuthAssessmentsIndexRouteImport.update({
   path: '/assessments/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthActivityIndexRoute = AuthActivityIndexRouteImport.update({
+  id: '/activity/',
+  path: '/activity/',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthTeamsIdRoute = AuthTeamsIdRouteImport.update({
   id: '/teams/$id',
   path: '/teams/$id',
@@ -100,6 +113,11 @@ const AuthModesSlugRoute = AuthModesSlugRouteImport.update({
   path: '/modes/$slug',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthHealthCategoryRoute = AuthHealthCategoryRouteImport.update({
+  id: '/health/$category',
+  path: '/health/$category',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthAssessmentsIdRoute = AuthAssessmentsIdRouteImport.update({
   id: '/assessments/$id',
   path: '/assessments/$id',
@@ -109,12 +127,15 @@ const AuthAssessmentsIdRoute = AuthAssessmentsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/verify': typeof VerifyRoute
   '/assessments/$id': typeof AuthAssessmentsIdRoute
+  '/health/$category': typeof AuthHealthCategoryRoute
   '/modes/$slug': typeof AuthModesSlugRoute
   '/programs/active': typeof AuthProgramsActiveRoute
   '/runner/$sessionId': typeof AuthRunnerSessionIdRoute
   '/teams/$id': typeof AuthTeamsIdRoute
+  '/activity/': typeof AuthActivityIndexRoute
   '/assessments/': typeof AuthAssessmentsIndexRoute
   '/coach/': typeof AuthCoachIndexRoute
   '/modes/': typeof AuthModesIndexRoute
@@ -125,13 +146,16 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/verify': typeof VerifyRoute
   '/': typeof AuthIndexRoute
   '/assessments/$id': typeof AuthAssessmentsIdRoute
+  '/health/$category': typeof AuthHealthCategoryRoute
   '/modes/$slug': typeof AuthModesSlugRoute
   '/programs/active': typeof AuthProgramsActiveRoute
   '/runner/$sessionId': typeof AuthRunnerSessionIdRoute
   '/teams/$id': typeof AuthTeamsIdRoute
+  '/activity': typeof AuthActivityIndexRoute
   '/assessments': typeof AuthAssessmentsIndexRoute
   '/coach': typeof AuthCoachIndexRoute
   '/modes': typeof AuthModesIndexRoute
@@ -144,13 +168,16 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/verify': typeof VerifyRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/assessments/$id': typeof AuthAssessmentsIdRoute
+  '/_auth/health/$category': typeof AuthHealthCategoryRoute
   '/_auth/modes/$slug': typeof AuthModesSlugRoute
   '/_auth/programs/active': typeof AuthProgramsActiveRoute
   '/_auth/runner/$sessionId': typeof AuthRunnerSessionIdRoute
   '/_auth/teams/$id': typeof AuthTeamsIdRoute
+  '/_auth/activity/': typeof AuthActivityIndexRoute
   '/_auth/assessments/': typeof AuthAssessmentsIndexRoute
   '/_auth/coach/': typeof AuthCoachIndexRoute
   '/_auth/modes/': typeof AuthModesIndexRoute
@@ -164,12 +191,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/onboarding'
     | '/verify'
     | '/assessments/$id'
+    | '/health/$category'
     | '/modes/$slug'
     | '/programs/active'
     | '/runner/$sessionId'
     | '/teams/$id'
+    | '/activity/'
     | '/assessments/'
     | '/coach/'
     | '/modes/'
@@ -180,13 +210,16 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/onboarding'
     | '/verify'
     | '/'
     | '/assessments/$id'
+    | '/health/$category'
     | '/modes/$slug'
     | '/programs/active'
     | '/runner/$sessionId'
     | '/teams/$id'
+    | '/activity'
     | '/assessments'
     | '/coach'
     | '/modes'
@@ -198,13 +231,16 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/login'
+    | '/onboarding'
     | '/verify'
     | '/_auth/'
     | '/_auth/assessments/$id'
+    | '/_auth/health/$category'
     | '/_auth/modes/$slug'
     | '/_auth/programs/active'
     | '/_auth/runner/$sessionId'
     | '/_auth/teams/$id'
+    | '/_auth/activity/'
     | '/_auth/assessments/'
     | '/_auth/coach/'
     | '/_auth/modes/'
@@ -217,6 +253,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
   VerifyRoute: typeof VerifyRoute
 }
 
@@ -227,6 +264,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -299,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAssessmentsIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/activity/': {
+      id: '/_auth/activity/'
+      path: '/activity'
+      fullPath: '/activity/'
+      preLoaderRoute: typeof AuthActivityIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/teams/$id': {
       id: '/_auth/teams/$id'
       path: '/teams/$id'
@@ -327,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthModesSlugRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/health/$category': {
+      id: '/_auth/health/$category'
+      path: '/health/$category'
+      fullPath: '/health/$category'
+      preLoaderRoute: typeof AuthHealthCategoryRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/assessments/$id': {
       id: '/_auth/assessments/$id'
       path: '/assessments/$id'
@@ -340,10 +398,12 @@ declare module '@tanstack/react-router' {
 interface AuthRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
   AuthAssessmentsIdRoute: typeof AuthAssessmentsIdRoute
+  AuthHealthCategoryRoute: typeof AuthHealthCategoryRoute
   AuthModesSlugRoute: typeof AuthModesSlugRoute
   AuthProgramsActiveRoute: typeof AuthProgramsActiveRoute
   AuthRunnerSessionIdRoute: typeof AuthRunnerSessionIdRoute
   AuthTeamsIdRoute: typeof AuthTeamsIdRoute
+  AuthActivityIndexRoute: typeof AuthActivityIndexRoute
   AuthAssessmentsIndexRoute: typeof AuthAssessmentsIndexRoute
   AuthCoachIndexRoute: typeof AuthCoachIndexRoute
   AuthModesIndexRoute: typeof AuthModesIndexRoute
@@ -356,10 +416,12 @@ interface AuthRouteChildren {
 const AuthRouteChildren: AuthRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
   AuthAssessmentsIdRoute: AuthAssessmentsIdRoute,
+  AuthHealthCategoryRoute: AuthHealthCategoryRoute,
   AuthModesSlugRoute: AuthModesSlugRoute,
   AuthProgramsActiveRoute: AuthProgramsActiveRoute,
   AuthRunnerSessionIdRoute: AuthRunnerSessionIdRoute,
   AuthTeamsIdRoute: AuthTeamsIdRoute,
+  AuthActivityIndexRoute: AuthActivityIndexRoute,
   AuthAssessmentsIndexRoute: AuthAssessmentsIndexRoute,
   AuthCoachIndexRoute: AuthCoachIndexRoute,
   AuthModesIndexRoute: AuthModesIndexRoute,
@@ -374,6 +436,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
   VerifyRoute: VerifyRoute,
 }
 export const routeTree = rootRouteImport

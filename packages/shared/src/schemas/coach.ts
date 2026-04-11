@@ -48,6 +48,14 @@ export const sseToolCallEventSchema = z.object({
 export const sseDoneEventSchema = z.object({
   type: z.literal('done'),
   conversationId: z.string(),
+  suggestions: z
+    .array(
+      z.object({
+        label: z.string(),
+        slug: z.string(),
+      }),
+    )
+    .optional(),
 })
 
 export const sseErrorEventSchema = z.object({

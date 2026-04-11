@@ -10,6 +10,7 @@ interface ModeCardProps {
   frameworkSlug: string
   frameworkName: string
   frameworkColor: string
+  isRecommended?: boolean
 }
 
 export function ModeCard({
@@ -20,6 +21,7 @@ export function ModeCard({
   timeEstimateMinutes,
   frameworkName,
   frameworkColor,
+  isRecommended,
 }: ModeCardProps) {
   return (
     <Link
@@ -46,6 +48,11 @@ export function ModeCard({
         <span className="inline-flex items-center gap-1">
           <Icon name="timer" size="xs" /> {timeEstimateMinutes} min
         </span>
+        {isRecommended && (
+          <span className="rounded-full bg-[var(--color-synergy)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--color-synergy)]">
+            Recommended
+          </span>
+        )}
       </div>
     </Link>
   )

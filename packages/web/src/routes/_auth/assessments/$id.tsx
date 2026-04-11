@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { ScenarioBreakdown } from '../../../components/assessments/ScenarioBreakdown'
 import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
@@ -144,6 +145,12 @@ function ActiveAssessment() {
                 </p>
               ))}
             </div>
+          </div>
+        )}
+
+        {assessmentQuery.data?.assessment.responses && assessmentQuery.data.assessment.responses.length > 0 && (
+          <div className="wave-entrance-4 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
+            <ScenarioBreakdown responses={assessmentQuery.data.assessment.responses} />
           </div>
         )}
 

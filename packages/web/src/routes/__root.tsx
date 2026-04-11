@@ -7,7 +7,7 @@ export const Route = createRootRoute({
   component: RootLayout,
 })
 
-const PUBLIC_ROUTES = ['/login', '/verify']
+const PUBLIC_ROUTES = ['/login', '/verify', '/onboarding']
 
 function RootLayout() {
   const { token } = useAuthStore()

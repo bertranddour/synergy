@@ -1,7 +1,9 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { ChatBubble } from '../../../components/coach/ChatBubble'
 import { useAliciaStream } from '../../../hooks/use-sse'
+import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/coach/')({
   component: CoachChat,
@@ -13,26 +15,54 @@ interface ChatMessage {
   content: string
 }
 
+interface ConversationPreview {
+  id: string
+  preview: string
+  messageCount: number
+  updatedAt: string
+}
+
 function CoachChat() {
+  const token = useAuthStore((s) => s.token)
+  const queryClient = useQueryClient()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const { text, isStreaming, error, conversationId, send } = useAliciaStream()
+  const { text, isStreaming, error, conversationId, suggestions, send, reset } = useAliciaStream()
+
+  // Fetch conversation list
+  const conversationsQuery = useQuery({
+    queryKey: ['coach-conversations'],
+    queryFn: async () => {
+      const res = await fetch('/api/coach/conversations', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Failed to fetch')
+      return res.json() as Promise<{ conversations: ConversationPreview[] }>
+    },
+  })
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: 'smooth',
-    })
-  }, [])
+    if (messages.length > 0 || text) {
+      scrollRef.current?.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [messages, text])
 
-  // When streaming completes, add Alicia's message to history
+  // When streaming completes, add Alicia's message to history and refresh conversations
   useEffect(() => {
     if (!isStreaming && text) {
       setMessages((prev) => [...prev, { id: `alicia-${Date.now()}`, role: 'alicia', content: text }])
+      if (conversationId) {
+        setActiveConversationId(conversationId)
+      }
+      void queryClient.invalidateQueries({ queryKey: ['coach-conversations'] })
     }
-  }, [isStreaming, text])
+  }, [isStreaming, text, conversationId, queryClient])
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,15 +71,44 @@ function CoachChat() {
     const userMessage = input.trim()
     setInput('')
 
-    // Add user message to history
     setMessages((prev) => [...prev, { id: `user-${Date.now()}`, role: 'user', content: userMessage }])
 
-    // Stream Alicia's response
     send({
       message: userMessage,
       surface: 'chat',
-      conversationId: conversationId ?? undefined,
+      conversationId: activeConversationId ?? undefined,
     })
+  }
+
+  const loadConversation = async (convId: string) => {
+    try {
+      const res = await fetch(`/api/coach/conversations/${convId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Failed to load')
+      const data = (await res.json()) as {
+        id: string
+        messages: Array<{ role: string; content: string }>
+      }
+
+      setActiveConversationId(data.id)
+      reset()
+      setMessages(
+        data.messages.map((m, i) => ({
+          id: `${m.role}-${i}`,
+          role: m.role === 'assistant' ? ('alicia' as const) : ('user' as const),
+          content: m.content,
+        })),
+      )
+    } catch {
+      // Silently fail — keep current state
+    }
+  }
+
+  const startNewChat = () => {
+    setActiveConversationId(null)
+    setMessages([])
+    reset()
   }
 
   return (
@@ -59,6 +118,37 @@ function CoachChat() {
         <h1 className="font-display text-2xl tracking-tight">Talk to Alicia</h1>
         <p className="text-sm text-[var(--text-tertiary)]">Your business coaching colleague</p>
       </div>
+
+      {/* Conversation tabs */}
+      {conversationsQuery.data && conversationsQuery.data.conversations.length > 0 && (
+        <div className="mb-3 flex gap-2 overflow-x-auto scrollbar-hide">
+          <button
+            type="button"
+            onClick={startNewChat}
+            className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+              !activeConversationId
+                ? 'shadow-neo-embossed text-[var(--text-primary)]'
+                : 'shadow-neo-button text-[var(--text-tertiary)]'
+            }`}
+          >
+            New chat
+          </button>
+          {conversationsQuery.data.conversations.slice(0, 8).map((conv) => (
+            <button
+              key={conv.id}
+              type="button"
+              onClick={() => void loadConversation(conv.id)}
+              className={`shrink-0 rounded-full px-4 py-1.5 text-xs transition-all ${
+                activeConversationId === conv.id
+                  ? 'shadow-neo-embossed font-semibold text-[var(--text-primary)]'
+                  : 'shadow-neo-button text-[var(--text-tertiary)]'
+              }`}
+            >
+              {conv.preview.length > 30 ? `${conv.preview.slice(0, 30)}...` : conv.preview}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Chat area */}
       <div
@@ -82,9 +172,17 @@ function CoachChat() {
           </div>
         )}
 
-        {messages.map((msg) => (
-          <ChatBubble key={msg.id} sender={msg.role} content={msg.content} />
+        {messages.map((msg, i) => (
+          <ChatBubble
+            key={msg.id}
+            sender={msg.role}
+            content={msg.content}
+            suggestions={msg.role === 'alicia' && i === messages.length - 1 && !isStreaming ? suggestions : undefined}
+          />
         ))}
+
+        {/* Typing indicator */}
+        {isStreaming && !text && <ChatBubble sender="alicia" content="" isTyping />}
 
         {/* Streaming response */}
         {isStreaming && text && <ChatBubble sender="alicia" content={text} isStreaming />}
