@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Icon, type IconName } from '../ui/Icon'
 
 interface HealthCardProps {
@@ -23,6 +24,8 @@ const COLOR_MAP = {
 }
 
 export function HealthCard({ name, score, trend, color, topMetrics }: HealthCardProps) {
+  const { t } = useTranslation()
+
   return (
     <Link
       to="/health/$category"
@@ -32,7 +35,7 @@ export function HealthCard({ name, score, trend, color, topMetrics }: HealthCard
       {/* Header */}
       <div className="flex items-center justify-between">
         <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-          {name.replace('-', ' ')} Health
+          {name.replace('-', ' ')} {t('health.suffix')}
         </span>
         <span
           style={{
@@ -49,7 +52,7 @@ export function HealthCard({ name, score, trend, color, topMetrics }: HealthCard
         <span className="font-body text-4xl font-bold" style={{ color: COLOR_MAP[color] }}>
           {score}
         </span>
-        <span className="text-sm text-[var(--text-tertiary)]">/100</span>
+        <span className="text-sm text-[var(--text-tertiary)]">{t('health.outOf100')}</span>
       </div>
 
       {/* Progress bar */}

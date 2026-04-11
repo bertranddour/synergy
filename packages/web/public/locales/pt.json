@@ -1,0 +1,284 @@
+{
+  "common": {
+    "appName": "Synergy",
+    "appTagline": "7 Flows",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "back": "Voltar",
+    "continue": "Continuar",
+    "cancel": "Cancelar",
+    "create": "Criar",
+    "save": "Guardar",
+    "send": "Enviar",
+    "sending": "A enviar...",
+    "retry": "Tentar novamente",
+    "dismiss": "Dispensar",
+    "loading": "A carregar...",
+    "min": "{{count}} min",
+    "days": "{{count}} dias",
+    "starting": "A iniciar...",
+    "settingUp": "A configurar...",
+    "yes": "Sim",
+    "no": "Não",
+    "complete": "Concluir",
+    "next": "Seguinte",
+    "getStarted": "Começar",
+    "exit": "Sair"
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "modes": "Modos",
+    "coach": "Alicia",
+    "assess": "Avaliar",
+    "programs": "Programas",
+    "progress": "Progresso",
+    "activity": "Atividade",
+    "teams": "Equipas",
+    "settings": "Definições",
+    "mainNavigation": "Navegação principal",
+    "mobileNavigation": "Navegação mobile"
+  },
+  "login": {
+    "title": "7 Flows Synergy",
+    "subtitle": "O seu sistema de fitness empresarial",
+    "emailLabel": "Email",
+    "emailPlaceholder": "voce@empresa.com",
+    "sendMagicLink": "Enviar link mágico",
+    "checkEmail": "Verifique o seu email",
+    "magicLinkSent": "Enviámos um link mágico para",
+    "differentEmail": "Usar outro email",
+    "genericError": "Algo correu mal",
+    "emailSentAria": "Email enviado"
+  },
+  "verify": {
+    "missingToken": "Token de verificação em falta",
+    "failed": "A verificação falhou",
+    "verifying": "A verificar o seu link mágico...",
+    "backToLogin": "Voltar ao login"
+  },
+  "onboarding": {
+    "welcome": "Bem-vindo ao Synergy",
+    "step1": "Vamos conhecê-lo melhor",
+    "step2": "Em que fase está da sua jornada?",
+    "step3": "Que frameworks quer acompanhar?",
+    "nameLabel": "Como devemos chamá-lo?",
+    "namePlaceholder": "O seu nome"
+  },
+  "dashboard": {
+    "sparklineTrend": "Tendência da métrica",
+    "sparklineChart": "Gráfico de tendência",
+    "welcomeBack": "Bem-vindo de volta, {{name}}",
+    "healthGlance": "A saúde do seu negócio num relance",
+    "browseModes": "Explorar Modos",
+    "fromAlicia": "Da Alicia",
+    "activateHint": "Ative um framework nas Definições para começar a acompanhar a saúde."
+  },
+  "modes": {
+    "title": "Biblioteca de Modos",
+    "subtitle": "29 modos em 4 frameworks. Encontre o treino certo para o seu negócio.",
+    "searchPlaceholder": "Pesquisar modos...",
+    "all": "Todos",
+    "recommended": "Recomendados",
+    "noResults": "Nenhum modo corresponde a \"{{search}}\"",
+    "activateHint": "Ative um framework nas Definições para ver os modos.",
+    "notFound": "Modo não encontrado",
+    "backToLibrary": "Voltar à Biblioteca de Modos",
+    "whenToUse": "Quando usar",
+    "fieldsCount": "Campos ({{count}})",
+    "example": "Exemplo: {{example}}",
+    "doneSignal": "Sinal de Conclusão",
+    "timeEstimate": "Tempo Estimado",
+    "connectedModes": "Modos Relacionados",
+    "recentSessions": "Sessões Recentes",
+    "startMode": "Iniciar {{name}}"
+  },
+  "runner": {
+    "modeComplete": "{{name}} Concluído",
+    "nextSuggested": "Próximo modo sugerido",
+    "hideResponses": "Ocultar Respostas",
+    "reviewResponses": "Rever Respostas",
+    "backToLibrary": "Voltar à Biblioteca",
+    "dashboard": "Painel",
+    "goToField": "Ir para o campo {{index}}",
+    "goToFieldCurrent": "Ir para o campo {{index}} (atual)",
+    "yourResponses": "As Suas Respostas"
+  },
+  "fields": {
+    "fieldOf": "Campo {{current}} de {{total}}",
+    "enterPlaceholder": "Introduza {{name}}...",
+    "structuredPlaceholder": "Introduza dados estruturados para {{name}}...\n\nExemplo:\n- Item 1: valor\n- Item 2: valor"
+  },
+  "coach": {
+    "title": "Falar com a Alicia",
+    "subtitle": "A sua colega de coaching empresarial",
+    "newChat": "Nova conversa",
+    "greeting": "Olá! Em que vamos trabalhar?",
+    "greetingSub": "Conheço o seu negócio. Pergunte-me o que quiser \u2014 estratégia, validação, equipa, crescimento, colaboração com IA.",
+    "placeholder": "Pergunte o que quiser à Alicia...",
+    "continue": "Continuar",
+    "dismissAria": "Dispensar coaching"
+  },
+  "assessments": {
+    "title": "Centro de Avaliação",
+    "subtitle": "Diagnósticos baseados em cenários. Sem autoavaliações \u2014 situações reais com escolhas reais.",
+    "lastResult": "Último resultado:",
+    "startAssessment": "Iniciar Avaliação",
+    "history": "Histórico de Avaliações",
+    "scenarioOf": "Cenário {{current}} de {{total}}",
+    "assessmentComplete": "Avaliação Concluída",
+    "aliciaDebrief": "Análise da Alicia",
+    "recommendedModes": "Modos Recomendados",
+    "noScenarios": "Não há cenários disponíveis para esta avaliação.",
+    "backToAssessments": "Voltar às Avaliações",
+    "scenarioBreakdown": "Detalhe por Cenário",
+    "answer": "Resposta: ",
+    "scoreOf5": "{{score}}/5",
+    "failedToLoad": "Não foi possível carregar a avaliação"
+  },
+  "health": {
+    "suffix": "Saúde",
+    "categoryNotFound": "Categoria não encontrada",
+    "backToDashboard": "Voltar ao Painel",
+    "outOf100": "/100",
+    "metrics": "Métricas",
+    "recentSessions": "Sessões Recentes",
+    "recommendedModes": "Modos Recomendados"
+  },
+  "progress": {
+    "title": "Progresso",
+    "subtitle": "Os seus anéis de fitness empresarial. Conclusão, consistência, crescimento.",
+    "completion": "Conclusão",
+    "modesThisPeriod": "modos neste período",
+    "streak": "Sequência",
+    "consecutiveWeeks": "semanas consecutivas",
+    "growth": "Crescimento",
+    "metricsImproving": "métricas a melhorar",
+    "trendsOverTime": "Tendências ao Longo do Tempo",
+    "percentThisWeek": "{{value}}% esta semana",
+    "weekStreak": "{{value}} semanas seguidas",
+    "percentImproving": "{{value}}% a melhorar",
+    "consistency": "Consistência",
+    "weeklyActivity": "Atividade Semanal",
+    "modesCount": "{{count}} modos",
+    "progressRings": "Anéis de Progresso",
+    "progressRingsAria": "Anéis de progresso mostrando conclusão, consistência e crescimento"
+  },
+  "activity": {
+    "title": "Atividade",
+    "subtitle": "A sua cronologia de fitness empresarial. Sessões, avaliações, coaching.",
+    "empty": "Ainda sem atividade. Inicie um modo para ver a sua cronologia.",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "thisWeek": "Esta Semana",
+    "earlier": "Anteriores"
+  },
+  "programs": {
+    "title": "Programas de Treino",
+    "subtitle": "Sequências guiadas de múltiplos modos. Não é \"faça o que quiser.\" Construção estruturada de competências.",
+    "activeProgram": "Programa Ativo",
+    "dayOf": "Dia {{current}} de {{total}}",
+    "dayNumber": "Dia {{day}}",
+    "modesCompleted": "{{completed}}/{{total}} modos concluídos",
+    "schedule": "Calendário",
+    "noPrograms": "Ainda não há programas de treino disponíveis.",
+    "finishCurrent": "Termine o programa atual primeiro",
+    "enroll": "Inscrever-se",
+    "noActive": "Nenhum programa ativo. Consulte o catálogo para se inscrever.",
+    "programCatalog": "Catálogo de Programas"
+  },
+  "teams": {
+    "title": "Equipas",
+    "subtitle": "Saúde coletiva, progresso partilhado, coaching ao nível da equipa.",
+    "createTeam": "Criar Equipa",
+    "newTeam": "Nova Equipa",
+    "teamNamePlaceholder": "Nome da equipa",
+    "failedToLoad": "Não foi possível carregar as equipas",
+    "emptyState": "Crie uma equipa para começar a acompanhar a saúde coletiva e o progresso.",
+    "membersCount": "Membros ({{count}})"
+  },
+  "settings": {
+    "title": "Definições",
+    "profile": "Perfil",
+    "name": "Nome",
+    "email": "Email",
+    "stage": "Fase",
+    "frameworks": "Frameworks",
+    "frameworksHint": "Ative frameworks para desbloquear modos, acompanhamento de saúde e coaching.",
+    "appearance": "Aparência",
+    "language": "Idioma",
+    "account": "Conta",
+    "signOut": "Terminar sessão",
+    "exportData": "Exportar dados",
+    "deleteAccount": "Eliminar conta",
+    "deleteConfirm": "Isto vai eliminar permanentemente a sua conta e todos os dados. Tem a certeza?",
+    "themeLight": "Claro",
+    "themeDark": "Escuro",
+    "themeSystem": "Sistema"
+  },
+  "frameworks": {
+    "core": {
+      "name": "Core X",
+      "description": "Construção de negócios orientada pela validação. Teste pressupostos, capte insights, construa propostas de valor."
+    },
+    "air": {
+      "name": "Air X",
+      "description": "Trabalho flexível e assíncrono. Fluxo de informação, ritmos de equipa, cultura remota."
+    },
+    "max": {
+      "name": "Max X",
+      "description": "Escalar sem burocracia. Estrutura organizacional, alinhamento entre equipas, qualidade em escala."
+    },
+    "synergy": {
+      "name": "Synergy X",
+      "description": "Colaboração humano-IA. Integração de colegas IA, calibração de confiança, protocolos de decisão."
+    }
+  },
+  "stages": {
+    "solo": {
+      "label": "Fundador Solo",
+      "description": "Só eu, a construir e validar"
+    },
+    "small-team": {
+      "label": "Equipa Pequena",
+      "description": "2-10 pessoas, à procura de product-market fit"
+    },
+    "growing": {
+      "label": "Em Crescimento",
+      "description": "10-50 pessoas, a escalar o que funciona"
+    },
+    "scaling": {
+      "label": "A Escalar",
+      "description": "50+ pessoas, a construir para escala"
+    }
+  },
+  "maturity": {
+    "standing-still": "Parado",
+    "crawling": "A Gatinhar",
+    "walking": "A Andar",
+    "running": "A Correr",
+    "flying": "A Voar"
+  },
+  "nudge": {
+    "dismiss": "Dispensar",
+    "openMode": "Abrir {{name}}"
+  },
+  "frameworkToggle": {
+    "activeHint": "Ativo \u2014 modos e acompanhamento de saúde ativados",
+    "tapToActivate": "Toque para ativar"
+  },
+  "errors": {
+    "genericError": "Algo correu mal",
+    "failedToFetch": "Não foi possível obter os dados",
+    "failedToStart": "Não foi possível iniciar",
+    "failedToUpdate": "Não foi possível atualizar",
+    "internalServerError": "Erro interno do servidor",
+    "userNotFound": "Utilizador não encontrado",
+    "conversationNotFound": "Conversa não encontrada",
+    "invalidData": "Dados inválidos",
+    "frameworkNotFound": "Framework não encontrado",
+    "assessmentNotFound": "Avaliação não encontrada",
+    "assessmentAlreadyCompleted": "Avaliação já concluída",
+    "alreadyEnrolled": "Já inscrito num programa ativo",
+    "noActiveProgram": "Nenhum programa ativo"
+  }
+}

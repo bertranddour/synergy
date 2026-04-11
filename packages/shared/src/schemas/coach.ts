@@ -5,6 +5,7 @@ export const coachMessageSchema = z.object({
   conversationId: z.string().optional(),
   sessionId: z.string().optional(),
   surface: z.enum(['dashboard', 'mode-runner', 'chat', 'assessment', 'composability']),
+  locale: z.enum(['en', 'fr', 'es', 'pt', 'it', 'de', 'nl']).optional(),
 })
 
 export const coachResponseSchema = z.object({

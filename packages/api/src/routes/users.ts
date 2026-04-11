@@ -54,6 +54,7 @@ userRoutes.get('/me', async (c) => {
         stage: user.stage,
         teamSize: user.teamSize,
         onboardingCompleted: user.onboardingCompleted,
+        locale: user.locale,
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
       },
@@ -100,6 +101,7 @@ userRoutes.patch('/me', async (c) => {
       stage: updated.stage,
       teamSize: updated.teamSize,
       onboardingCompleted: updated.onboardingCompleted,
+      locale: updated.locale,
       createdAt: updated.createdAt.toISOString(),
       updatedAt: updated.updatedAt.toISOString(),
     })
@@ -252,6 +254,7 @@ userRoutes.get('/me/export', async (c) => {
           stage: user.stage,
           teamSize: user.teamSize,
           onboardingCompleted: user.onboardingCompleted,
+          locale: user.locale,
           createdAt: user.createdAt.toISOString(),
           updatedAt: user.updatedAt.toISOString(),
         }

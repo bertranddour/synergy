@@ -21,6 +21,7 @@ describe('auth store', () => {
       stage: 'solo',
       teamSize: 1,
       onboardingCompleted: false,
+      locale: 'en',
     }
 
     useAuthStore.getState().setAuth('jwt-token', user)
@@ -39,6 +40,7 @@ describe('auth store', () => {
       stage: 'solo',
       teamSize: 1,
       onboardingCompleted: false,
+      locale: 'en',
     })
 
     useAuthStore.getState().clearAuth()
@@ -57,6 +59,7 @@ describe('auth store', () => {
       stage: 'solo',
       teamSize: 1,
       onboardingCompleted: false,
+      locale: 'en',
     })
 
     useAuthStore.getState().updateUser({ name: 'New Name', stage: 'small-team' })

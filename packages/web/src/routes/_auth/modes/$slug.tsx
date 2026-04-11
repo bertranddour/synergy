@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
@@ -43,6 +44,7 @@ interface ModeDetailData {
 }
 
 function ModeDetail() {
+  const { t } = useTranslation()
   const { slug } = Route.useParams()
   const token = useAuthStore((s) => s.token)
   const navigate = useNavigate()
@@ -84,7 +86,7 @@ function ModeDetail() {
   if (!data) {
     return (
       <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-        <p className="text-[var(--text-secondary)]">Mode not found</p>
+        <p className="text-[var(--text-secondary)]">{t('modes.notFound')}</p>
       </div>
     )
   }
@@ -98,7 +100,7 @@ function ModeDetail() {
         to="/modes"
         className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
       >
-        <Icon name="arrow-left" size="sm" /> Back to Mode Library
+        <Icon name="arrow-left" size="sm" /> {t('modes.backToLibrary')}
       </Link>
 
       {/* Header */}
@@ -119,14 +121,14 @@ function ModeDetail() {
 
       {/* Trigger */}
       <div className="wave-entrance-2 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">When to use</h2>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('modes.whenToUse')}</h2>
         <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">{mode.trigger}</p>
       </div>
 
       {/* Fields */}
       <div className="wave-entrance-3 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
         <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-          Fields ({mode.fieldsSchema.length})
+          {t('modes.fieldsCount', { count: mode.fieldsSchema.length })}
         </h2>
         <div className="mt-4 space-y-4">
           {mode.fieldsSchema.map((field, i) => (
@@ -140,7 +142,9 @@ function ModeDetail() {
               </div>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">{field.description}</p>
               {field.example && (
-                <p className="mt-1 text-xs italic text-[var(--text-tertiary)]">Example: {field.example}</p>
+                <p className="mt-1 text-xs italic text-[var(--text-tertiary)]">
+                  {t('modes.example', { example: field.example })}
+                </p>
               )}
             </div>
           ))}
@@ -149,20 +153,22 @@ function ModeDetail() {
 
       {/* Done Signal */}
       <div className="wave-entrance-4 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Done Signal</h2>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('modes.doneSignal')}</h2>
         <p className="mt-3 font-semibold italic text-[var(--text-secondary)]">"{mode.doneSignal}"</p>
       </div>
 
       {/* Meta: time, metrics, composability */}
       <div className="wave-entrance-5 grid gap-6 md:grid-cols-2">
         <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Time Estimate</h2>
-          <p className="mt-3 text-2xl font-bold">{mode.timeEstimateMinutes} min</p>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('modes.timeEstimate')}</h2>
+          <p className="mt-3 text-2xl font-bold">{t('common.min', { count: mode.timeEstimateMinutes })}</p>
         </div>
 
         {mode.composabilityHooks.length > 0 && (
           <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-            <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Connected Modes</h2>
+            <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+              {t('modes.connectedModes')}
+            </h2>
             <div className="mt-3 space-y-2">
               {mode.composabilityHooks.map((hook, i) => (
                 <div key={i} className="text-sm">
@@ -186,7 +192,9 @@ function ModeDetail() {
       {/* Recent Sessions */}
       {recentSessions.length > 0 && (
         <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Recent Sessions</h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            {t('modes.recentSessions')}
+          </h2>
           <div className="mt-3 space-y-2">
             {recentSessions.map((session) => (
               <div key={session.id} className="flex items-center justify-between text-sm">
@@ -217,7 +225,7 @@ function ModeDetail() {
           className="neo-btn shadow-neo-button rounded-full px-12 py-4 text-lg font-semibold disabled:opacity-50"
           style={mode.framework ? { color: mode.framework.color } : undefined}
         >
-          {startSession.isPending ? 'Starting...' : `Start ${mode.name}`}
+          {startSession.isPending ? t('common.starting') : t('modes.startMode', { name: mode.name })}
         </button>
       </div>
     </div>

@@ -25,7 +25,7 @@ coachRoutes.post('/stream', async (c) => {
       return c.json({ error: 'Invalid data', details: parsed.error.flatten() }, 400)
     }
 
-    const { message, conversationId, surface } = parsed.data
+    const { message, conversationId, surface, locale } = parsed.data
     const db = createDb(c.env.DB)
 
     // Get Alicia DO stub via RPC — fully typed, no fetch() needed
@@ -41,7 +41,19 @@ coachRoutes.post('/stream', async (c) => {
     }
 
     // Build system prompt from layers
-    const systemPrompt = `${PERSONALITY_PROMPT}\n\n${CROSS_FRAMEWORK_PROMPT}\n\n${getSurfacePrompt(surface)}`
+    const LANGUAGE_NAMES: Record<string, string> = {
+      fr: 'French',
+      es: 'Spanish',
+      pt: 'Portuguese',
+      it: 'Italian',
+      de: 'German',
+      nl: 'Dutch',
+    }
+    const langInstruction =
+      locale && locale !== 'en' && LANGUAGE_NAMES[locale]
+        ? `\n\nIMPORTANT: Respond in ${LANGUAGE_NAMES[locale]}. Maintain your personality and coaching style in this language.`
+        : ''
+    const systemPrompt = `${PERSONALITY_PROMPT}\n\n${CROSS_FRAMEWORK_PROMPT}\n\n${getSurfacePrompt(surface)}${langInstruction}`
 
     // Get conversation history via RPC
     const historyMessages = await aliciaDO.getConversationHistory()

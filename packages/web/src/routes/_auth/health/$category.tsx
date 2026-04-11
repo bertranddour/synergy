@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { SparklineChart } from '../../../components/dashboard/SparklineChart'
 import { Icon, type IconName } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
@@ -43,6 +44,7 @@ interface HealthDetailData {
 }
 
 function HealthDetail() {
+  const { t } = useTranslation()
   const { category } = Route.useParams()
   const token = useAuthStore((s) => s.token)
 
@@ -68,7 +70,7 @@ function HealthDetail() {
   if (!data) {
     return (
       <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-        <p className="text-[var(--text-secondary)]">Category not found</p>
+        <p className="text-[var(--text-secondary)]">{t('health.categoryNotFound')}</p>
       </div>
     )
   }
@@ -88,14 +90,14 @@ function HealthDetail() {
         to="/"
         className="wave-entrance-1 inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
       >
-        <Icon name="arrow-left" size="sm" /> Back to Dashboard
+        <Icon name="arrow-left" size="sm" /> {t('health.backToDashboard')}
       </Link>
 
       {/* Header */}
       <div className="wave-entrance-1 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-            {data.category.replace(/-/g, ' ')} Health
+            {data.category.replace(/-/g, ' ')} {t('health.suffix')}
           </span>
           <span style={{ color: trendColor }}>
             <Icon name={TREND_ICONS[data.trend] ?? 'equals'} size="md" />
@@ -105,7 +107,7 @@ function HealthDetail() {
           <span className="font-body text-5xl font-bold" style={{ color: accentColor }}>
             {data.score}
           </span>
-          <span className="text-lg text-[var(--text-tertiary)]">/100</span>
+          <span className="text-lg text-[var(--text-tertiary)]">{t('health.outOf100')}</span>
         </div>
         <div className="shadow-neo-inset mt-4 h-3 overflow-hidden rounded-full">
           <div
@@ -122,7 +124,7 @@ function HealthDetail() {
       {/* Metrics with sparklines */}
       {data.metrics.length > 0 && (
         <div className="wave-entrance-2">
-          <h2 className="mb-4 text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Metrics</h2>
+          <h2 className="mb-4 text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('health.metrics')}</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {data.metrics.map((m) => (
               <div key={m.name} className="shadow-neo-well rounded-[1.5rem] bg-[var(--surface)] p-5">
@@ -149,7 +151,9 @@ function HealthDetail() {
       {/* Recent sessions */}
       {data.recentSessions.length > 0 && (
         <div className="wave-entrance-3 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Recent Sessions</h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            {t('health.recentSessions')}
+          </h2>
           <div className="mt-3 space-y-2">
             {data.recentSessions.map((s) => (
               <div key={s.id} className="flex items-center justify-between text-sm">
@@ -172,7 +176,9 @@ function HealthDetail() {
       {/* Recommended modes */}
       {data.recommendations.length > 0 && (
         <div className="wave-entrance-4 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Recommended Modes</h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            {t('health.recommendedModes')}
+          </h2>
           <div className="mt-3 flex flex-wrap gap-2">
             {data.recommendations.map((slug) => (
               <Link

@@ -16,7 +16,13 @@ interface UseAliciaStreamResult {
   error: string | null
   conversationId: string | null
   suggestions: Array<{ label: string; slug: string }>
-  send: (params: { message: string; surface: string; conversationId?: string; sessionId?: string }) => void
+  send: (params: {
+    message: string
+    surface: string
+    conversationId?: string
+    sessionId?: string
+    locale?: string
+  }) => void
   reset: () => void
 }
 
@@ -34,7 +40,13 @@ export function useAliciaStream(): UseAliciaStreamResult {
   const token = useAuthStore((s) => s.token)
 
   const send = useCallback(
-    async (params: { message: string; surface: string; conversationId?: string; sessionId?: string }) => {
+    async (params: {
+      message: string
+      surface: string
+      conversationId?: string
+      sessionId?: string
+      locale?: string
+    }) => {
       // Abort previous stream if still active
       abortRef.current?.abort()
       const controller = new AbortController()

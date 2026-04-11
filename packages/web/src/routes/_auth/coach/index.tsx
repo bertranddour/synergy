@@ -1,9 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChatBubble } from '../../../components/coach/ChatBubble'
 import { useAliciaStream } from '../../../hooks/use-sse'
 import { useAuthStore } from '../../../stores/auth'
+import { useLocaleStore } from '../../../stores/locale'
 
 export const Route = createFileRoute('/_auth/coach/')({
   component: CoachChat,
@@ -23,7 +25,9 @@ interface ConversationPreview {
 }
 
 function CoachChat() {
+  const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
+  const locale = useLocaleStore((s) => s.locale)
   const queryClient = useQueryClient()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
@@ -77,6 +81,7 @@ function CoachChat() {
       message: userMessage,
       surface: 'chat',
       conversationId: activeConversationId ?? undefined,
+      locale,
     })
   }
 
@@ -115,8 +120,8 @@ function CoachChat() {
     <div className="flex h-[calc(100vh-8rem)] flex-col">
       {/* Header */}
       <div className="wave-entrance-1 mb-4">
-        <h1 className="font-display text-2xl tracking-tight">Talk to Alicia</h1>
-        <p className="text-sm text-[var(--text-tertiary)]">Your business coaching colleague</p>
+        <h1 className="font-display text-2xl tracking-tight">{t('coach.title')}</h1>
+        <p className="text-sm text-[var(--text-tertiary)]">{t('coach.subtitle')}</p>
       </div>
 
       {/* Conversation tabs */}
@@ -131,7 +136,7 @@ function CoachChat() {
                 : 'shadow-neo-button text-[var(--text-tertiary)]'
             }`}
           >
-            New chat
+            {t('coach.newChat')}
           </button>
           {conversationsQuery.data.conversations.slice(0, 8).map((conv) => (
             <button
@@ -164,10 +169,8 @@ function CoachChat() {
               >
                 A
               </div>
-              <p className="mt-4 font-display text-xl">Hey! What are we working on?</p>
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                I know your business. Ask me anything — strategy, validation, team, scaling, AI collaboration.
-              </p>
+              <p className="mt-4 font-display text-xl">{t('coach.greeting')}</p>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">{t('coach.greetingSub')}</p>
             </div>
           </div>
         )}
@@ -201,7 +204,7 @@ function CoachChat() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask Alicia anything..."
+          placeholder={t('coach.placeholder')}
           disabled={isStreaming}
           className="input-embossed flex-1 px-6 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:opacity-50"
         />
@@ -211,7 +214,7 @@ function CoachChat() {
           className="neo-btn shadow-neo-button rounded-full px-8 py-3 font-semibold transition-opacity disabled:opacity-40"
           style={{ color: 'var(--color-synergy)' }}
         >
-          {isStreaming ? '...' : 'Send'}
+          {isStreaming ? '...' : t('common.send')}
         </button>
       </form>
     </div>

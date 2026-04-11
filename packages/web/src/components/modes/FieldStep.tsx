@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface FieldStepProps {
   index: number
@@ -26,6 +27,7 @@ export function FieldStep({
   onSubmit,
   isLast,
 }: FieldStepProps) {
+  const { t } = useTranslation()
   const [inputValue, setInputValue] = useState<string>(typeof value === 'string' ? value : '')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -38,9 +40,7 @@ export function FieldStep({
       {/* Progress indicator */}
       <div className="mb-8">
         <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)]">
-          <span className="uppercase tracking-[0.3em]">
-            Field {index + 1} of {total}
-          </span>
+          <span className="uppercase tracking-[0.3em]">{t('fields.fieldOf', { current: index + 1, total })}</span>
           <span>{Math.round(((index + 1) / total) * 100)}%</span>
         </div>
         <div className="shadow-neo-inset mt-2 h-2 overflow-hidden rounded-full">
@@ -57,7 +57,7 @@ export function FieldStep({
       {/* Field header */}
       <h2 className="font-display text-2xl md:text-3xl">{name}</h2>
       <p className="mt-3 text-[var(--text-secondary)]">{description}</p>
-      {example && <p className="mt-2 text-sm italic text-[var(--text-tertiary)]">Example: {example}</p>}
+      {example && <p className="mt-2 text-sm italic text-[var(--text-tertiary)]">{t('modes.example', { example })}</p>}
 
       {/* Input */}
       <div className="mt-8">
@@ -82,7 +82,7 @@ export function FieldStep({
             onChange={(e) => setInputValue(e.target.value)}
             rows={6}
             className="shadow-neo-inset w-full resize-none rounded-[1.2rem] bg-[var(--surface)] p-6 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none"
-            placeholder={`Enter ${name.toLowerCase()}...`}
+            placeholder={t('fields.enterPlaceholder', { name: name.toLowerCase() })}
           />
         ) : type === 'number' ? (
           <input
@@ -94,7 +94,7 @@ export function FieldStep({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="input-embossed w-full px-6 py-4 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
-            placeholder={`Enter ${name.toLowerCase()}...`}
+            placeholder={t('fields.enterPlaceholder', { name: name.toLowerCase() })}
           />
         ) : type === 'toggle' ? (
           <div className="flex items-center gap-4">
@@ -113,7 +113,9 @@ export function FieldStep({
                 }`}
               />
             </button>
-            <span className="text-[var(--text-secondary)]">{inputValue === 'true' ? 'Yes' : 'No'}</span>
+            <span className="text-[var(--text-secondary)]">
+              {inputValue === 'true' ? t('common.yes') : t('common.no')}
+            </span>
           </div>
         ) : type === 'structured' ? (
           <textarea
@@ -122,7 +124,7 @@ export function FieldStep({
             rows={8}
             aria-label={name}
             className="shadow-neo-inset w-full resize-none rounded-[1.2rem] bg-[var(--surface)] p-6 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none"
-            placeholder={`Enter structured data for ${name.toLowerCase()}...\n\nExample:\n- Item 1: value\n- Item 2: value`}
+            placeholder={t('fields.structuredPlaceholder', { name: name.toLowerCase() })}
           />
         ) : (
           <input
@@ -131,7 +133,7 @@ export function FieldStep({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="input-embossed w-full px-6 py-4 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
-            placeholder={`Enter ${name.toLowerCase()}...`}
+            placeholder={t('fields.enterPlaceholder', { name: name.toLowerCase() })}
           />
         )}
       </div>
@@ -143,7 +145,7 @@ export function FieldStep({
           disabled={!inputValue}
           className="neo-btn shadow-neo-button rounded-full px-10 py-3.5 font-semibold transition-opacity disabled:opacity-40"
         >
-          {isLast ? 'Complete' : 'Next'}
+          {isLast ? t('common.complete') : t('common.next')}
         </button>
       </div>
     </form>

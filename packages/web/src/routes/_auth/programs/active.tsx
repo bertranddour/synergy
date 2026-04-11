@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
@@ -8,6 +9,7 @@ export const Route = createFileRoute('/_auth/programs/active')({
 })
 
 function ActiveProgram() {
+  const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
 
   const activeQuery = useQuery({
@@ -39,15 +41,15 @@ function ActiveProgram() {
     return (
       <div className="space-y-8">
         <div className="wave-entrance-1">
-          <h1 className="font-display text-3xl tracking-tight">Active Program</h1>
+          <h1 className="font-display text-3xl tracking-tight">{t('programs.activeProgram')}</h1>
         </div>
         <div className="shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-          <p className="text-[var(--text-secondary)]">No active program. Browse the catalog to enroll.</p>
+          <p className="text-[var(--text-secondary)]">{t('programs.noActive')}</p>
           <Link
             to="/programs"
             className="neo-btn shadow-neo-button mt-4 inline-block rounded-full px-8 py-3 font-semibold"
           >
-            Program Catalog
+            {t('programs.programCatalog')}
           </Link>
         </div>
       </div>
@@ -62,7 +64,7 @@ function ActiveProgram() {
       <div className="wave-entrance-1">
         <Link to="/programs" className="text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
           <span className="inline-flex items-center gap-1">
-            <Icon name="arrow-left" size="sm" /> Programs
+            <Icon name="arrow-left" size="sm" /> {t('nav.programs')}
           </span>
         </Link>
         <h1 className="font-display mt-2 text-3xl tracking-tight">{program.name}</h1>
@@ -72,9 +74,9 @@ function ActiveProgram() {
       {/* Progress */}
       <div className="wave-entrance-2 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
         <div className="flex items-center justify-between">
-          <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Progress</span>
+          <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('progress.title')}</span>
           <span className="text-sm text-[var(--text-secondary)]">
-            Day {userProgram.currentDay} of {program.durationDays}
+            {t('programs.dayOf', { current: userProgram.currentDay, total: program.durationDays })}
           </span>
         </div>
         <div className="shadow-neo-inset mt-3 h-3 overflow-hidden rounded-full">
@@ -87,13 +89,13 @@ function ActiveProgram() {
           />
         </div>
         <p className="mt-2 text-sm text-[var(--text-tertiary)]">
-          {completedCount}/{schedule.length} modes completed
+          {t('programs.modesCompleted', { completed: completedCount, total: schedule.length })}
         </p>
       </div>
 
       {/* Schedule */}
       <div className="wave-entrance-3 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Schedule</h2>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('programs.schedule')}</h2>
         <div className="mt-4 space-y-3">
           {schedule.map((day) => (
             <div key={day.day} className="flex items-center gap-4 text-sm">

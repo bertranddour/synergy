@@ -9,6 +9,7 @@ interface AuthUser {
   stage: string
   teamSize: number
   onboardingCompleted: boolean
+  locale: string
 }
 
 interface AuthState {

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { HealthCard } from '../../components/dashboard/HealthCard'
 import { NudgeCard } from '../../components/dashboard/NudgeCard'
 import { ProgressRings } from '../../components/dashboard/ProgressRings'
@@ -31,6 +32,7 @@ interface ProgressData {
 }
 
 function Dashboard() {
+  const { t } = useTranslation()
   const { user, token } = useAuthStore()
 
   const healthQuery = useQuery({
@@ -79,20 +81,24 @@ function Dashboard() {
       {/* Header */}
       <div className="wave-entrance-1 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl tracking-tight md:text-4xl">Welcome back, {user?.name}</h1>
+          <h1 className="font-display text-3xl tracking-tight md:text-4xl">
+            {t('dashboard.welcomeBack', { name: user?.name })}
+          </h1>
           <p className="mt-2 text-[var(--text-secondary)]">
-            {healthQuery.data?.biggestRisk ?? 'Your business health at a glance'}
+            {healthQuery.data?.biggestRisk ?? t('dashboard.healthGlance')}
           </p>
         </div>
         <Link to="/modes" className="neo-btn shadow-neo-button rounded-full px-6 py-3 text-sm font-semibold">
-          Browse Modes
+          {t('dashboard.browseModes')}
         </Link>
       </div>
 
       {/* Alicia's Nudges */}
       {nudgesQuery.data && nudgesQuery.data.observations.length > 0 && (
         <div className="wave-entrance-2 space-y-3">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">From Alicia</h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            {t('dashboard.fromAlicia')}
+          </h2>
           {nudgesQuery.data.observations.map((obs) => (
             <NudgeCard
               key={obs.id}
@@ -128,14 +134,12 @@ function Dashboard() {
         </div>
       ) : healthQuery.data?.categories.length === 0 ? (
         <div className="wave-entrance-4 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-          <p className="text-lg text-[var(--text-secondary)]">
-            Activate a framework in Settings to start tracking health.
-          </p>
+          <p className="text-lg text-[var(--text-secondary)]">{t('dashboard.activateHint')}</p>
           <Link
             to="/modes"
             className="neo-btn shadow-neo-button mt-4 inline-block rounded-full px-8 py-3 font-semibold"
           >
-            Get Started
+            {t('common.getStarted')}
           </Link>
         </div>
       ) : (

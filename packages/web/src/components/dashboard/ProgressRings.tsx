@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface ProgressRingsProps {
   completion: number // 0-100
   consistency: number // streak weeks
@@ -52,6 +54,7 @@ function TrackRing({ radius, strokeWidth }: { radius: number; strokeWidth: numbe
 }
 
 export function ProgressRings({ completion, consistency, growth }: ProgressRingsProps) {
+  const { t } = useTranslation()
   const size = 200
 
   // Normalize consistency to 0-100 (max 12 weeks = 100%)
@@ -59,7 +62,7 @@ export function ProgressRings({ completion, consistency, growth }: ProgressRings
 
   return (
     <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-      <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Progress Rings</p>
+      <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('progress.progressRings')}</p>
 
       <div className="mt-6 flex items-center justify-center gap-8">
         {/* Rings SVG */}
@@ -68,9 +71,9 @@ export function ProgressRings({ completion, consistency, growth }: ProgressRings
           height={size}
           viewBox={`0 0 ${size} ${size}`}
           role="img"
-          aria-label="Progress rings showing completion, consistency, and growth"
+          aria-label={t('progress.progressRingsAria')}
         >
-          <title>Progress Rings</title>
+          <title>{t('progress.progressRings')}</title>
           {/* Outer ring: Completion (blue) */}
           <TrackRing radius={95} strokeWidth={12} />
           <Ring radius={95} strokeWidth={12} progress={completion} color="var(--color-core)" />
@@ -91,21 +94,21 @@ export function ProgressRings({ completion, consistency, growth }: ProgressRings
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: 'var(--color-core)' }} />
               <span className="text-sm font-semibold">{completion}%</span>
             </div>
-            <span className="text-xs text-[var(--text-tertiary)]">Completion</span>
+            <span className="text-xs text-[var(--text-tertiary)]">{t('progress.completion')}</span>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: 'var(--color-health-green)' }} />
               <span className="text-sm font-semibold">{consistency}w</span>
             </div>
-            <span className="text-xs text-[var(--text-tertiary)]">Streak</span>
+            <span className="text-xs text-[var(--text-tertiary)]">{t('progress.streak')}</span>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: 'var(--color-synergy)' }} />
               <span className="text-sm font-semibold">{growth}%</span>
             </div>
-            <span className="text-xs text-[var(--text-tertiary)]">Growth</span>
+            <span className="text-xs text-[var(--text-tertiary)]">{t('progress.growth')}</span>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Icon } from '../ui/Icon'
 
 interface ModeCardProps {
@@ -23,6 +24,7 @@ export function ModeCard({
   frameworkColor,
   isRecommended,
 }: ModeCardProps) {
+  const { t } = useTranslation()
   return (
     <Link
       to="/modes/$slug"
@@ -46,11 +48,11 @@ export function ModeCard({
       {/* Footer */}
       <div className="mt-4 flex items-center gap-4 text-xs text-[var(--text-tertiary)]">
         <span className="inline-flex items-center gap-1">
-          <Icon name="timer" size="xs" /> {timeEstimateMinutes} min
+          <Icon name="timer" size="xs" /> {t('common.min', { count: timeEstimateMinutes })}
         </span>
         {isRecommended && (
           <span className="rounded-full bg-[var(--color-synergy)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--color-synergy)]">
-            Recommended
+            {t('modes.recommended')}
           </span>
         )}
       </div>

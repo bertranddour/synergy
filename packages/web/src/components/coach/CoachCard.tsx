@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface CoachCardProps {
   message: string
   isStreaming: boolean
@@ -5,6 +7,7 @@ interface CoachCardProps {
 }
 
 export function CoachCard({ message, isStreaming, onDismiss }: CoachCardProps) {
+  const { t } = useTranslation()
   return (
     <div className="wave-entrance-1 mt-6 rounded-[1.5rem] border-l-4 border-[var(--color-synergy)] bg-[var(--surface)] p-5 shadow-neo-well">
       <div className="flex items-start gap-3">
@@ -25,9 +28,9 @@ export function CoachCard({ message, isStreaming, onDismiss }: CoachCardProps) {
             type="button"
             onClick={onDismiss}
             className="shrink-0 text-xs text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
-            aria-label="Dismiss coaching"
+            aria-label={t('coach.dismissAria')}
           >
-            Continue
+            {t('coach.continue')}
           </button>
         )}
       </div>

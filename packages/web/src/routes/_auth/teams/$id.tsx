@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
@@ -8,6 +9,7 @@ export const Route = createFileRoute('/_auth/teams/$id')({
 })
 
 function TeamDashboard() {
+  const { t } = useTranslation()
   const { id } = Route.useParams()
   const token = useAuthStore((s) => s.token)
 
@@ -55,7 +57,7 @@ function TeamDashboard() {
       <div className="wave-entrance-1">
         <Link to="/teams" className="text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
           <span className="inline-flex items-center gap-1">
-            <Icon name="arrow-left" size="sm" /> Teams
+            <Icon name="arrow-left" size="sm" /> {t('teams.title')}
           </span>
         </Link>
         <h1 className="font-display mt-2 text-3xl tracking-tight">{team?.name}</h1>
@@ -78,7 +80,9 @@ function TeamDashboard() {
 
       {/* Members */}
       <div className="wave-entrance-3 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Members ({members.length})</h2>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+          {t('teams.membersCount', { count: members.length })}
+        </h2>
         <div className="mt-4 space-y-3">
           {members.map((m) => (
             <div key={m.userId} className="flex items-center justify-between shadow-neo-embossed rounded-xl p-4">

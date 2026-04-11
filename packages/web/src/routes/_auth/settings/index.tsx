@@ -1,16 +1,21 @@
-import { FRAMEWORK_COLORS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
+import { FRAMEWORK_COLORS, type FrameworkSlug } from '@synergy/shared'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { useThemeStore } from '../../../hooks/use-theme'
+import { SUPPORTED_LANGUAGES } from '../../../i18n/languages'
 import { useAuthStore } from '../../../stores/auth'
+import { useLocaleStore } from '../../../stores/locale'
 
 export const Route = createFileRoute('/_auth/settings/')({
   component: SettingsPage,
 })
 
 function SettingsPage() {
+  const { t } = useTranslation()
   const { user, token, updateUser, clearAuth } = useAuthStore()
   const { theme, setTheme } = useThemeStore()
+  const { locale, setLocale } = useLocaleStore()
   const queryClient = useQueryClient()
 
   const frameworksQuery = useQuery({
@@ -49,7 +54,7 @@ function SettingsPage() {
   })
 
   const updateProfile = useMutation({
-    mutationFn: async (data: { name?: string; stage?: string; teamSize?: number }) => {
+    mutationFn: async (data: { name?: string; stage?: string; teamSize?: number; locale?: string }) => {
       const res = await fetch('/api/users/me', {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -66,18 +71,21 @@ function SettingsPage() {
   const allFrameworks = Object.keys(FRAMEWORK_COLORS) as FrameworkSlug[]
   const activeSet = new Set(frameworksQuery.data?.frameworks.filter((f) => f.active).map((f) => f.slug) ?? [])
 
+  const THEME_KEYS = ['light', 'dark', 'system'] as const
+  const STAGE_KEYS = ['solo', 'small-team', 'growing', 'scaling'] as const
+
   return (
     <div className="space-y-8">
       <div className="wave-entrance-1">
-        <h1 className="font-display text-3xl tracking-tight">Settings</h1>
+        <h1 className="font-display text-3xl tracking-tight">{t('settings.title')}</h1>
       </div>
 
       {/* Profile */}
       <section className="wave-entrance-2 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Profile</h2>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('settings.profile')}</h2>
         <div className="mt-4 space-y-4">
           <div>
-            <label className="mb-1 block text-sm text-[var(--text-secondary)]">Name</label>
+            <label className="mb-1 block text-sm text-[var(--text-secondary)]">{t('settings.name')}</label>
             <input
               type="text"
               defaultValue={user?.name}
@@ -90,24 +98,24 @@ function SettingsPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-[var(--text-secondary)]">Email</label>
+            <label className="mb-1 block text-sm text-[var(--text-secondary)]">{t('settings.email')}</label>
             <p className="text-[var(--text-primary)]">{user?.email}</p>
           </div>
           <div>
-            <label className="mb-1 block text-sm text-[var(--text-secondary)]">Stage</label>
+            <label className="mb-1 block text-sm text-[var(--text-secondary)]">{t('settings.stage')}</label>
             <div className="flex gap-2">
-              {(['solo', 'small-team', 'growing', 'scaling'] as const).map((stage) => (
+              {STAGE_KEYS.map((stage) => (
                 <button
                   key={stage}
                   type="button"
                   onClick={() => updateProfile.mutate({ stage })}
-                  className={`neo-btn rounded-full px-4 py-2 text-xs capitalize ${
+                  className={`neo-btn rounded-full px-4 py-2 text-xs ${
                     user?.stage === stage
                       ? 'shadow-neo-embossed font-semibold'
                       : 'shadow-neo-button text-[var(--text-tertiary)]'
                   }`}
                 >
-                  {stage.replace('-', ' ')}
+                  {t(`stages.${stage}.label`)}
                 </button>
               ))}
             </div>
@@ -117,10 +125,8 @@ function SettingsPage() {
 
       {/* Frameworks */}
       <section className="wave-entrance-3 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Frameworks</h2>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">
-          Toggle frameworks to unlock modes, health tracking, and coaching.
-        </p>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('settings.frameworks')}</h2>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('settings.frameworksHint')}</p>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {allFrameworks.map((slug) => {
             const isActive = activeSet.has(slug)
@@ -135,7 +141,7 @@ function SettingsPage() {
               >
                 <div className="flex items-center gap-3">
                   <span className="h-3 w-3 rounded-full" style={{ backgroundColor: FRAMEWORK_COLORS[slug] }} />
-                  <span className="font-semibold">{FRAMEWORK_NAMES[slug]}</span>
+                  <span className="font-semibold">{t(`frameworks.${slug}.name`)}</span>
                   <span
                     className={`ml-auto rounded-full px-3 py-0.5 text-xs ${
                       isActive
@@ -143,7 +149,7 @@ function SettingsPage() {
                         : 'text-[var(--text-tertiary)]'
                     }`}
                   >
-                    {isActive ? 'Active' : 'Inactive'}
+                    {isActive ? t('common.active') : t('common.inactive')}
                   </span>
                 </div>
               </button>
@@ -154,18 +160,44 @@ function SettingsPage() {
 
       {/* Theme */}
       <section className="wave-entrance-4 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Appearance</h2>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('settings.appearance')}</h2>
         <div className="mt-4 flex gap-3">
-          {(['light', 'dark', 'system'] as const).map((t) => (
+          {THEME_KEYS.map((themeKey) => (
             <button
-              key={t}
+              key={themeKey}
               type="button"
-              onClick={() => setTheme(t)}
-              className={`neo-btn flex-1 rounded-xl px-4 py-3 text-sm capitalize ${
-                theme === t ? 'shadow-neo-embossed font-semibold' : 'shadow-neo-button text-[var(--text-tertiary)]'
+              onClick={() => setTheme(themeKey)}
+              className={`neo-btn flex-1 rounded-xl px-4 py-3 text-sm ${
+                theme === themeKey
+                  ? 'shadow-neo-embossed font-semibold'
+                  : 'shadow-neo-button text-[var(--text-tertiary)]'
               }`}
             >
-              {t}
+              {t(`settings.theme${themeKey.charAt(0).toUpperCase()}${themeKey.slice(1)}`)}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Language */}
+      <section className="wave-entrance-4 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('settings.language')}</h2>
+        <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+          {SUPPORTED_LANGUAGES.map((lang) => (
+            <button
+              key={lang.code}
+              type="button"
+              onClick={() => {
+                setLocale(lang.code)
+                updateProfile.mutate({ locale: lang.code })
+              }}
+              className={`neo-btn rounded-xl px-4 py-3 text-sm ${
+                locale === lang.code
+                  ? 'shadow-neo-embossed font-semibold'
+                  : 'shadow-neo-button text-[var(--text-tertiary)]'
+              }`}
+            >
+              {lang.nativeName}
             </button>
           ))}
         </div>
@@ -173,7 +205,7 @@ function SettingsPage() {
 
       {/* Account */}
       <section className="wave-entrance-5 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Account</h2>
+        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('settings.account')}</h2>
         <div className="mt-4 flex gap-3">
           <button
             type="button"
@@ -183,7 +215,7 @@ function SettingsPage() {
             }}
             className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-[var(--text-secondary)]"
           >
-            Sign out
+            {t('settings.signOut')}
           </button>
           <button
             type="button"
@@ -203,12 +235,12 @@ function SettingsPage() {
             }}
             className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-[var(--text-tertiary)]"
           >
-            Export data
+            {t('settings.exportData')}
           </button>
           <button
             type="button"
             onClick={async () => {
-              if (!window.confirm('This will permanently delete your account and all data. Are you sure?')) return
+              if (!window.confirm(t('settings.deleteConfirm'))) return
               const res = await fetch('/api/users/me', {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` },
@@ -220,7 +252,7 @@ function SettingsPage() {
             }}
             className="neo-btn shadow-neo-button rounded-full px-6 py-2.5 text-sm text-[var(--color-error)]"
           >
-            Delete account
+            {t('settings.deleteAccount')}
           </button>
         </div>
       </section>

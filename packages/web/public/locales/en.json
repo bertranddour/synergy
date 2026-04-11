@@ -1,0 +1,306 @@
+{
+  "common": {
+    "appName": "Synergy",
+    "appTagline": "7 Flows",
+    "active": "Active",
+    "inactive": "Inactive",
+    "back": "Back",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "create": "Create",
+    "save": "Save",
+    "send": "Send",
+    "sending": "Sending...",
+    "retry": "Retry",
+    "dismiss": "Dismiss",
+    "loading": "Loading...",
+    "min": "{{count}} min",
+    "days": "{{count}} days",
+    "starting": "Starting...",
+    "settingUp": "Setting up...",
+    "yes": "Yes",
+    "no": "No",
+    "complete": "Complete",
+    "next": "Next",
+    "getStarted": "Get Started",
+    "exit": "Exit"
+  },
+
+  "nav": {
+    "dashboard": "Dashboard",
+    "modes": "Modes",
+    "coach": "Alicia",
+    "assess": "Assess",
+    "programs": "Programs",
+    "progress": "Progress",
+    "activity": "Activity",
+    "teams": "Teams",
+    "settings": "Settings",
+    "mainNavigation": "Main navigation",
+    "mobileNavigation": "Mobile navigation"
+  },
+
+  "login": {
+    "title": "7 Flows Synergy",
+    "subtitle": "Your business fitness system",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@company.com",
+    "sendMagicLink": "Send magic link",
+    "checkEmail": "Check your email",
+    "magicLinkSent": "We sent a magic link to",
+    "differentEmail": "Use a different email",
+    "genericError": "Something went wrong",
+    "emailSentAria": "Email sent"
+  },
+
+  "verify": {
+    "missingToken": "Missing verification token",
+    "failed": "Verification failed",
+    "verifying": "Verifying your magic link...",
+    "backToLogin": "Back to login"
+  },
+
+  "onboarding": {
+    "welcome": "Welcome to Synergy",
+    "step1": "Let's get to know you",
+    "step2": "Where are you in your journey?",
+    "step3": "Which frameworks do you want to track?",
+    "nameLabel": "What should we call you?",
+    "namePlaceholder": "Your name"
+  },
+
+  "dashboard": {
+    "sparklineTrend": "Metric trend",
+    "sparklineChart": "Sparkline chart",
+    "welcomeBack": "Welcome back, {{name}}",
+    "healthGlance": "Your business health at a glance",
+    "browseModes": "Browse Modes",
+    "fromAlicia": "From Alicia",
+    "activateHint": "Activate a framework in Settings to start tracking health."
+  },
+
+  "modes": {
+    "title": "Mode Library",
+    "subtitle": "29 modes across 4 frameworks. Find the right workout for your business.",
+    "searchPlaceholder": "Search modes...",
+    "all": "All",
+    "recommended": "Recommended",
+    "noResults": "No modes match \"{{search}}\"",
+    "activateHint": "Activate a framework in Settings to see modes.",
+    "notFound": "Mode not found",
+    "backToLibrary": "Back to Mode Library",
+    "whenToUse": "When to use",
+    "fieldsCount": "Fields ({{count}})",
+    "example": "Example: {{example}}",
+    "doneSignal": "Done Signal",
+    "timeEstimate": "Time Estimate",
+    "connectedModes": "Connected Modes",
+    "recentSessions": "Recent Sessions",
+    "startMode": "Start {{name}}"
+  },
+
+  "runner": {
+    "modeComplete": "{{name}} Complete",
+    "nextSuggested": "Next suggested mode",
+    "hideResponses": "Hide Responses",
+    "reviewResponses": "Review Responses",
+    "backToLibrary": "Back to Library",
+    "dashboard": "Dashboard",
+    "goToField": "Go to field {{index}}",
+    "goToFieldCurrent": "Go to field {{index}} (current)",
+    "yourResponses": "Your Responses"
+  },
+
+  "fields": {
+    "fieldOf": "Field {{current}} of {{total}}",
+    "enterPlaceholder": "Enter {{name}}...",
+    "structuredPlaceholder": "Enter structured data for {{name}}...\n\nExample:\n- Item 1: value\n- Item 2: value"
+  },
+
+  "coach": {
+    "title": "Talk to Alicia",
+    "subtitle": "Your business coaching colleague",
+    "newChat": "New chat",
+    "greeting": "Hey! What are we working on?",
+    "greetingSub": "I know your business. Ask me anything \u2014 strategy, validation, team, scaling, AI collaboration.",
+    "placeholder": "Ask Alicia anything...",
+    "continue": "Continue",
+    "dismissAria": "Dismiss coaching"
+  },
+
+  "assessments": {
+    "title": "Assessment Center",
+    "subtitle": "Scenario-based diagnostics. No self-ratings \u2014 real situations with real choices.",
+    "lastResult": "Last result:",
+    "startAssessment": "Start Assessment",
+    "history": "Assessment History",
+    "scenarioOf": "Scenario {{current}} of {{total}}",
+    "assessmentComplete": "Assessment Complete",
+    "aliciaDebrief": "Alicia's Debrief",
+    "recommendedModes": "Recommended Modes",
+    "noScenarios": "No scenarios available for this assessment.",
+    "backToAssessments": "Back to Assessments",
+    "scenarioBreakdown": "Scenario Breakdown",
+    "answer": "Answer: ",
+    "scoreOf5": "{{score}}/5",
+    "failedToLoad": "Failed to load assessment"
+  },
+
+  "health": {
+    "suffix": "Health",
+    "categoryNotFound": "Category not found",
+    "backToDashboard": "Back to Dashboard",
+    "outOf100": "/100",
+    "metrics": "Metrics",
+    "recentSessions": "Recent Sessions",
+    "recommendedModes": "Recommended Modes"
+  },
+
+  "progress": {
+    "title": "Progress",
+    "subtitle": "Your business fitness rings. Completion, consistency, growth.",
+    "completion": "Completion",
+    "modesThisPeriod": "modes this period",
+    "streak": "Streak",
+    "consecutiveWeeks": "consecutive weeks",
+    "growth": "Growth",
+    "metricsImproving": "metrics improving",
+    "trendsOverTime": "Trends Over Time",
+    "percentThisWeek": "{{value}}% this week",
+    "weekStreak": "{{value}} week streak",
+    "percentImproving": "{{value}}% improving",
+    "consistency": "Consistency",
+    "weeklyActivity": "Weekly Activity",
+    "modesCount": "{{count}} modes",
+    "progressRings": "Progress Rings",
+    "progressRingsAria": "Progress rings showing completion, consistency, and growth"
+  },
+
+  "activity": {
+    "title": "Activity",
+    "subtitle": "Your business fitness timeline. Sessions, assessments, coaching.",
+    "empty": "No activity yet. Start a mode to see your timeline.",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This Week",
+    "earlier": "Earlier"
+  },
+
+  "programs": {
+    "title": "Training Programs",
+    "subtitle": "Guided multi-mode sequences. Not \"do whatever.\" Structured capability building.",
+    "activeProgram": "Active Program",
+    "dayOf": "Day {{current}} of {{total}}",
+    "dayNumber": "Day {{day}}",
+    "modesCompleted": "{{completed}}/{{total}} modes completed",
+    "schedule": "Schedule",
+    "noPrograms": "No training programs available yet.",
+    "finishCurrent": "Finish current program first",
+    "enroll": "Enroll",
+    "noActive": "No active program. Browse the catalog to enroll.",
+    "programCatalog": "Program Catalog"
+  },
+
+  "teams": {
+    "title": "Teams",
+    "subtitle": "Collective health, shared progress, team-level coaching.",
+    "createTeam": "Create Team",
+    "newTeam": "New Team",
+    "teamNamePlaceholder": "Team name",
+    "failedToLoad": "Failed to load teams",
+    "emptyState": "Create a team to start tracking collective health and progress.",
+    "membersCount": "Members ({{count}})"
+  },
+
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "stage": "Stage",
+    "frameworks": "Frameworks",
+    "frameworksHint": "Toggle frameworks to unlock modes, health tracking, and coaching.",
+    "appearance": "Appearance",
+    "language": "Language",
+    "account": "Account",
+    "signOut": "Sign out",
+    "exportData": "Export data",
+    "deleteAccount": "Delete account",
+    "deleteConfirm": "This will permanently delete your account and all data. Are you sure?",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System"
+  },
+
+  "frameworks": {
+    "core": {
+      "name": "Core X",
+      "description": "Validation-driven business building. Test assumptions, capture insights, build propositions."
+    },
+    "air": {
+      "name": "Air X",
+      "description": "Async-first flex work. Information flow, team rhythms, remote culture."
+    },
+    "max": {
+      "name": "Max X",
+      "description": "Scaling without bureaucracy. Org structure, cross-team alignment, quality at scale."
+    },
+    "synergy": {
+      "name": "Synergy X",
+      "description": "Human-AI collaboration. Onboarding AI colleagues, trust calibration, decision protocols."
+    }
+  },
+
+  "stages": {
+    "solo": {
+      "label": "Solo Founder",
+      "description": "Just me, building and validating"
+    },
+    "small-team": {
+      "label": "Small Team",
+      "description": "2-10 people, finding product-market fit"
+    },
+    "growing": {
+      "label": "Growing",
+      "description": "10-50 people, scaling what works"
+    },
+    "scaling": {
+      "label": "Scaling",
+      "description": "50+ people, building for scale"
+    }
+  },
+
+  "maturity": {
+    "standing-still": "Standing Still",
+    "crawling": "Crawling",
+    "walking": "Walking",
+    "running": "Running",
+    "flying": "Flying"
+  },
+
+  "nudge": {
+    "dismiss": "Dismiss",
+    "openMode": "Open {{name}}"
+  },
+
+  "frameworkToggle": {
+    "activeHint": "Active \u2014 modes and health tracking enabled",
+    "tapToActivate": "Tap to activate"
+  },
+
+  "errors": {
+    "genericError": "Something went wrong",
+    "failedToFetch": "Failed to fetch",
+    "failedToStart": "Failed to start",
+    "failedToUpdate": "Failed to update",
+    "internalServerError": "Internal server error",
+    "userNotFound": "User not found",
+    "conversationNotFound": "Conversation not found",
+    "invalidData": "Invalid data",
+    "frameworkNotFound": "Framework not found",
+    "assessmentNotFound": "Assessment not found",
+    "assessmentAlreadyCompleted": "Assessment already completed",
+    "alreadyEnrolled": "Already enrolled in an active program",
+    "noActiveProgram": "No active program"
+  }
+}

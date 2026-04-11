@@ -1,7 +1,8 @@
-import { FRAMEWORK_COLORS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
+import { FRAMEWORK_COLORS, type FrameworkSlug } from '@synergy/shared'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ModeCard } from '../../../components/modes/ModeCard'
 import { useAuthStore } from '../../../stores/auth'
 
@@ -23,6 +24,7 @@ interface ModeListItem {
 }
 
 function ModeLibrary() {
+  const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
   const [activeFilter, setActiveFilter] = useState<FrameworkSlug | null>(null)
   const [search, setSearch] = useState('')
@@ -80,10 +82,8 @@ function ModeLibrary() {
   return (
     <div className="space-y-8">
       <div className="wave-entrance-1">
-        <h1 className="font-display text-3xl tracking-tight md:text-4xl">Mode Library</h1>
-        <p className="mt-2 text-[var(--text-secondary)]">
-          29 modes across 4 frameworks. Find the right workout for your business.
-        </p>
+        <h1 className="font-display text-3xl tracking-tight md:text-4xl">{t('modes.title')}</h1>
+        <p className="mt-2 text-[var(--text-secondary)]">{t('modes.subtitle')}</p>
       </div>
 
       {/* Filters */}
@@ -91,7 +91,7 @@ function ModeLibrary() {
         {/* Search */}
         <input
           type="text"
-          placeholder="Search modes..."
+          placeholder={t('modes.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="input-embossed flex-1 px-6 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] min-w-[200px]"
@@ -108,7 +108,7 @@ function ModeLibrary() {
                 : 'text-[var(--text-tertiary)]'
             }`}
           >
-            All
+            {t('modes.all')}
           </button>
           <button
             type="button"
@@ -118,7 +118,7 @@ function ModeLibrary() {
             }`}
             style={showRecommended ? { color: 'var(--color-synergy)' } : undefined}
           >
-            Recommended
+            {t('modes.recommended')}
           </button>
           {activeFrameworkSlugs.map((slug) => (
             <button
@@ -130,7 +130,7 @@ function ModeLibrary() {
               }`}
               style={activeFilter === slug ? { color: FRAMEWORK_COLORS[slug] } : undefined}
             >
-              {FRAMEWORK_NAMES[slug]}
+              {t(`frameworks.${slug}.name`)}
             </button>
           ))}
         </div>
@@ -146,7 +146,7 @@ function ModeLibrary() {
       ) : data?.modes.length === 0 ? (
         <div className="shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
           <p className="text-[var(--text-secondary)]">
-            {search ? `No modes match "${search}"` : 'Activate a framework in Settings to see modes.'}
+            {search ? t('modes.noResults', { search }) : t('modes.activateHint')}
           </p>
         </div>
       ) : (

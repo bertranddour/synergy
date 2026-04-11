@@ -2,6 +2,7 @@ import { TEAM_TYPES } from '@synergy/shared'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../../stores/auth'
 
 export const Route = createFileRoute('/_auth/teams/')({
@@ -9,6 +10,7 @@ export const Route = createFileRoute('/_auth/teams/')({
 })
 
 function TeamsPage() {
+  const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
   const queryClient = useQueryClient()
   const [showCreate, setShowCreate] = useState(false)
@@ -55,27 +57,27 @@ function TeamsPage() {
     <div className="space-y-8">
       <div className="wave-entrance-1 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl tracking-tight">Teams</h1>
-          <p className="mt-2 text-[var(--text-secondary)]">Collective health, shared progress, team-level coaching.</p>
+          <h1 className="font-display text-3xl tracking-tight">{t('teams.title')}</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">{t('teams.subtitle')}</p>
         </div>
         <button
           type="button"
           onClick={() => setShowCreate(true)}
           className="neo-btn shadow-neo-button rounded-full px-6 py-3 text-sm font-semibold"
         >
-          Create Team
+          {t('teams.createTeam')}
         </button>
       </div>
 
       {showCreate && (
         <div className="wave-entrance-2 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">New Team</h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('teams.newTeam')}</h2>
           <div className="mt-4 space-y-4">
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Team name"
+              placeholder={t('teams.teamNamePlaceholder')}
               className="input-embossed w-full max-w-sm px-5 py-2.5 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
             />
             <div className="flex gap-2">
@@ -99,14 +101,14 @@ function TeamsPage() {
                 disabled={!name || createTeam.isPending}
                 className="neo-btn shadow-neo-button rounded-full px-8 py-2.5 text-sm font-semibold disabled:opacity-40"
               >
-                Create
+                {t('common.create')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowCreate(false)}
                 className="text-sm text-[var(--text-tertiary)]"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </div>
@@ -121,20 +123,18 @@ function TeamsPage() {
         </div>
       ) : teamsQuery.isError ? (
         <div className="shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-8 text-center">
-          <p className="text-[var(--color-error)]">Failed to load teams</p>
+          <p className="text-[var(--color-error)]">{t('teams.failedToLoad')}</p>
           <button
             type="button"
             onClick={() => void teamsQuery.refetch()}
             className="neo-btn shadow-neo-button mt-4 rounded-full px-6 py-2 text-sm"
           >
-            Retry
+            {t('common.retry')}
           </button>
         </div>
       ) : teamsQuery.data?.teams.length === 0 ? (
         <div className="wave-entrance-3 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-          <p className="text-[var(--text-secondary)]">
-            Create a team to start tracking collective health and progress.
-          </p>
+          <p className="text-[var(--text-secondary)]">{t('teams.emptyState')}</p>
         </div>
       ) : (
         <div className="wave-entrance-3 space-y-4">

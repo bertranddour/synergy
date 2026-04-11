@@ -1,4 +1,5 @@
-import { FRAMEWORK_COLORS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
+import { FRAMEWORK_COLORS, type FrameworkSlug } from '@synergy/shared'
+import { useTranslation } from 'react-i18next'
 
 interface FrameworkToggleProps {
   slug: FrameworkSlug
@@ -8,6 +9,7 @@ interface FrameworkToggleProps {
 }
 
 export function FrameworkToggle({ slug, active, onToggle, disabled }: FrameworkToggleProps) {
+  const { t } = useTranslation()
   return (
     <button
       type="button"
@@ -20,7 +22,7 @@ export function FrameworkToggle({ slug, active, onToggle, disabled }: FrameworkT
       <div className="flex items-center gap-3">
         <span className="h-4 w-4 rounded-full" style={{ backgroundColor: FRAMEWORK_COLORS[slug] }} />
         <div className="flex-1">
-          <span className="font-display text-lg">{FRAMEWORK_NAMES[slug]}</span>
+          <span className="font-display text-lg">{t(`frameworks.${slug}.name`)}</span>
         </div>
         {/* Toggle switch */}
         <div
@@ -36,7 +38,7 @@ export function FrameworkToggle({ slug, active, onToggle, disabled }: FrameworkT
         </div>
       </div>
       <p className="mt-2 text-xs text-[var(--text-tertiary)]">
-        {active ? 'Active — modes and health tracking enabled' : 'Tap to activate'}
+        {active ? t('frameworkToggle.activeHint') : t('frameworkToggle.tapToActivate')}
       </p>
     </button>
   )

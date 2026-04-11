@@ -1,20 +1,17 @@
-import { FRAMEWORK_COLORS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
+import { FRAMEWORK_COLORS, type FrameworkSlug } from '@synergy/shared'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/auth'
 
 export const Route = createFileRoute('/onboarding')({
   component: OnboardingPage,
 })
 
-const STAGES = [
-  { value: 'solo', label: 'Solo Founder', description: 'Just me, building and validating' },
-  { value: 'small-team', label: 'Small Team', description: '2-10 people, finding product-market fit' },
-  { value: 'growing', label: 'Growing', description: '10-50 people, scaling what works' },
-  { value: 'scaling', label: 'Scaling', description: '50+ people, building for scale' },
-] as const
+const STAGE_KEYS = ['solo', 'small-team', 'growing', 'scaling'] as const
 
 function OnboardingPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, token } = useAuthStore()
   const updateUser = useAuthStore((s) => s.updateUser)
@@ -80,11 +77,11 @@ function OnboardingPage() {
       <div className="w-full max-w-lg">
         <div className="shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-10">
           {/* Header */}
-          <h1 className="font-display text-center text-2xl tracking-tight">Welcome to Synergy</h1>
+          <h1 className="font-display text-center text-2xl tracking-tight">{t('onboarding.welcome')}</h1>
           <p className="mt-2 text-center text-sm text-[var(--text-secondary)]">
-            {step === 0 && "Let's get to know you"}
-            {step === 1 && 'Where are you in your journey?'}
-            {step === 2 && 'Which frameworks do you want to track?'}
+            {step === 0 && t('onboarding.step1')}
+            {step === 1 && t('onboarding.step2')}
+            {step === 2 && t('onboarding.step3')}
           </p>
 
           {/* Step 1: Name */}
@@ -94,14 +91,14 @@ function OnboardingPage() {
                 htmlFor="onboarding-name"
                 className="mb-2 block text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]"
               >
-                What should we call you?
+                {t('onboarding.nameLabel')}
               </label>
               <input
                 id="onboarding-name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
+                placeholder={t('onboarding.namePlaceholder')}
                 className="input-embossed w-full px-6 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
               />
             </div>
@@ -110,17 +107,17 @@ function OnboardingPage() {
           {/* Step 2: Stage */}
           {step === 1 && (
             <div className="wave-entrance-1 mt-8 space-y-3">
-              {STAGES.map((s) => (
+              {STAGE_KEYS.map((stageKey) => (
                 <button
-                  key={s.value}
+                  key={stageKey}
                   type="button"
-                  onClick={() => setStage(s.value)}
+                  onClick={() => setStage(stageKey)}
                   className={`w-full rounded-[1.2rem] p-4 text-left transition-all ${
-                    stage === s.value ? 'shadow-neo-embossed' : 'shadow-neo-well'
+                    stage === stageKey ? 'shadow-neo-embossed' : 'shadow-neo-well'
                   }`}
                 >
-                  <p className="font-semibold">{s.label}</p>
-                  <p className="mt-1 text-xs text-[var(--text-secondary)]">{s.description}</p>
+                  <p className="font-semibold">{t(`stages.${stageKey}.label`)}</p>
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">{t(`stages.${stageKey}.description`)}</p>
                 </button>
               ))}
             </div>
@@ -149,7 +146,7 @@ function OnboardingPage() {
                   >
                     <span className="h-4 w-4 rounded-full" style={{ backgroundColor: FRAMEWORK_COLORS[slug] }} />
                     <div className="flex-1">
-                      <p className="font-semibold">{FRAMEWORK_NAMES[slug]}</p>
+                      <p className="font-semibold">{t(`frameworks.${slug}.name`)}</p>
                     </div>
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${
@@ -158,7 +155,7 @@ function OnboardingPage() {
                           : 'text-[var(--text-tertiary)]'
                       }`}
                     >
-                      {isActive ? 'Active' : 'Inactive'}
+                      {isActive ? t('common.active') : t('common.inactive')}
                     </span>
                   </button>
                 )
@@ -174,7 +171,7 @@ function OnboardingPage() {
                 onClick={() => setStep((s) => s - 1)}
                 className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               >
-                Back
+                {t('common.back')}
               </button>
             ) : (
               <div />
@@ -185,7 +182,7 @@ function OnboardingPage() {
               disabled={saving || (step === 0 && !name.trim()) || (step === 2 && activeFrameworks.size === 0)}
               className="neo-btn shadow-neo-button rounded-full px-8 py-3 font-semibold disabled:opacity-40"
             >
-              {saving ? 'Setting up...' : step === 2 ? 'Get Started' : 'Continue'}
+              {saving ? t('common.settingUp') : step === 2 ? t('common.getStarted') : t('common.continue')}
             </button>
           </div>
         </div>

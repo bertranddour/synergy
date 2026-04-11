@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface SparklineChartProps {
   data: number[]
   color?: string
@@ -6,6 +8,7 @@ interface SparklineChartProps {
 }
 
 export function SparklineChart({ data, color = 'var(--text-tertiary)', width = 80, height = 24 }: SparklineChartProps) {
+  const { t } = useTranslation()
   if (data.length < 2) return null
 
   const min = Math.min(...data)
@@ -27,9 +30,9 @@ export function SparklineChart({ data, color = 'var(--text-tertiary)', width = 8
       viewBox={`0 0 ${width} ${height}`}
       className="inline-block"
       role="img"
-      aria-label="Metric trend"
+      aria-label={t('dashboard.sparklineTrend')}
     >
-      <title>Sparkline chart</title>
+      <title>{t('dashboard.sparklineChart')}</title>
       <path d={pathD} fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
       {/* Dot on last point */}
       {data.length > 0 &&

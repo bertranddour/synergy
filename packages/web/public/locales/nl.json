@@ -1,0 +1,284 @@
+{
+  "common": {
+    "appName": "Synergy",
+    "appTagline": "7 Flows",
+    "active": "Actief",
+    "inactive": "Inactief",
+    "back": "Terug",
+    "continue": "Doorgaan",
+    "cancel": "Annuleren",
+    "create": "Aanmaken",
+    "save": "Opslaan",
+    "send": "Versturen",
+    "sending": "Wordt verstuurd...",
+    "retry": "Opnieuw proberen",
+    "dismiss": "Sluiten",
+    "loading": "Laden...",
+    "min": "{{count}} min.",
+    "days": "{{count}} dagen",
+    "starting": "Wordt gestart...",
+    "settingUp": "Wordt ingesteld...",
+    "yes": "Ja",
+    "no": "Nee",
+    "complete": "Afronden",
+    "next": "Volgende",
+    "getStarted": "Aan de slag",
+    "exit": "Afsluiten"
+  },
+  "nav": {
+    "dashboard": "Overzicht",
+    "modes": "Modi",
+    "coach": "Alicia",
+    "assess": "Analyse",
+    "programs": "Programma's",
+    "progress": "Voortgang",
+    "activity": "Activiteit",
+    "teams": "Teams",
+    "settings": "Instellingen",
+    "mainNavigation": "Hoofdnavigatie",
+    "mobileNavigation": "Mobiele navigatie"
+  },
+  "login": {
+    "title": "7 Flows Synergy",
+    "subtitle": "Jouw business-fitness-systeem",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "jij@bedrijf.nl",
+    "sendMagicLink": "Magic link versturen",
+    "checkEmail": "Controleer je e-mail",
+    "magicLinkSent": "We hebben een magic link gestuurd naar",
+    "differentEmail": "Ander e-mailadres gebruiken",
+    "genericError": "Er is iets misgegaan",
+    "emailSentAria": "E-mail verzonden"
+  },
+  "verify": {
+    "missingToken": "Verificatietoken ontbreekt",
+    "failed": "Verificatie mislukt",
+    "verifying": "Je magic link wordt geverifieerd...",
+    "backToLogin": "Terug naar inloggen"
+  },
+  "onboarding": {
+    "welcome": "Welkom bij Synergy",
+    "step1": "Laten we je leren kennen",
+    "step2": "Waar sta je in je reis?",
+    "step3": "Welke frameworks wil je bijhouden?",
+    "nameLabel": "Hoe mogen we je noemen?",
+    "namePlaceholder": "Je naam"
+  },
+  "dashboard": {
+    "sparklineTrend": "Metriek trend",
+    "sparklineChart": "Trend grafiek",
+    "welcomeBack": "Welkom terug, {{name}}",
+    "healthGlance": "Je zakelijke gezondheid in een oogopslag",
+    "browseModes": "Modi verkennen",
+    "fromAlicia": "Van Alicia",
+    "activateHint": "Activeer een framework in Instellingen om gezondheid bij te houden."
+  },
+  "modes": {
+    "title": "Modus-bibliotheek",
+    "subtitle": "29 modi in 4 frameworks. Vind de juiste workout voor je business.",
+    "searchPlaceholder": "Modi zoeken...",
+    "all": "Alle",
+    "recommended": "Aanbevolen",
+    "noResults": "Geen modi gevonden voor \"{{search}}\"",
+    "activateHint": "Activeer een framework in Instellingen om modi te zien.",
+    "notFound": "Modus niet gevonden",
+    "backToLibrary": "Terug naar Modus-bibliotheek",
+    "whenToUse": "Wanneer inzetten",
+    "fieldsCount": "Velden ({{count}})",
+    "example": "Voorbeeld: {{example}}",
+    "doneSignal": "Voltooiingssignaal",
+    "timeEstimate": "Geschatte tijd",
+    "connectedModes": "Verbonden modi",
+    "recentSessions": "Recente sessies",
+    "startMode": "{{name}} starten"
+  },
+  "runner": {
+    "modeComplete": "{{name}} voltooid",
+    "nextSuggested": "Volgende aanbevolen modus",
+    "hideResponses": "Antwoorden verbergen",
+    "reviewResponses": "Antwoorden bekijken",
+    "backToLibrary": "Terug naar Bibliotheek",
+    "dashboard": "Overzicht",
+    "goToField": "Ga naar veld {{index}}",
+    "goToFieldCurrent": "Ga naar veld {{index}} (huidig)",
+    "yourResponses": "Jouw antwoorden"
+  },
+  "fields": {
+    "fieldOf": "Veld {{current}} van {{total}}",
+    "enterPlaceholder": "{{name}} invoeren...",
+    "structuredPlaceholder": "Gestructureerde gegevens voor {{name}} invoeren...\n\nVoorbeeld:\n- Punt 1: waarde\n- Punt 2: waarde"
+  },
+  "coach": {
+    "title": "Praat met Alicia",
+    "subtitle": "Je zakelijke coaching-collega",
+    "newChat": "Nieuw gesprek",
+    "greeting": "Hey! Waar werken we aan?",
+    "greetingSub": "Ik ken je business. Vraag me alles \u2014 strategie, validatie, team, opschalen, AI-samenwerking.",
+    "placeholder": "Vraag Alicia alles...",
+    "continue": "Doorgaan",
+    "dismissAria": "Coaching sluiten"
+  },
+  "assessments": {
+    "title": "Assessment Center",
+    "subtitle": "Scenariogebaseerde diagnoses. Geen zelfbeoordelingen \u2014 echte situaties met echte keuzes.",
+    "lastResult": "Laatste resultaat:",
+    "startAssessment": "Assessment starten",
+    "history": "Assessmentgeschiedenis",
+    "scenarioOf": "Scenario {{current}} van {{total}}",
+    "assessmentComplete": "Assessment voltooid",
+    "aliciaDebrief": "Alicia's samenvatting",
+    "recommendedModes": "Aanbevolen modi",
+    "noScenarios": "Geen scenario's beschikbaar voor dit assessment.",
+    "backToAssessments": "Terug naar Assessments",
+    "scenarioBreakdown": "Scenario-overzicht",
+    "answer": "Antwoord: ",
+    "scoreOf5": "{{score}}/5",
+    "failedToLoad": "Assessment kon niet worden geladen"
+  },
+  "health": {
+    "suffix": "Gezondheid",
+    "categoryNotFound": "Categorie niet gevonden",
+    "backToDashboard": "Terug naar Overzicht",
+    "outOf100": "/100",
+    "metrics": "Statistieken",
+    "recentSessions": "Recente sessies",
+    "recommendedModes": "Aanbevolen modi"
+  },
+  "progress": {
+    "title": "Voortgang",
+    "subtitle": "Je business-fitness-ringen. Voltooiing, consistentie, groei.",
+    "completion": "Voltooiing",
+    "modesThisPeriod": "modi deze periode",
+    "streak": "Reeks",
+    "consecutiveWeeks": "opeenvolgende weken",
+    "growth": "Groei",
+    "metricsImproving": "statistieken met verbetering",
+    "trendsOverTime": "Trends in de tijd",
+    "percentThisWeek": "{{value}}% deze week",
+    "weekStreak": "{{value}} weken reeks",
+    "percentImproving": "{{value}}% met verbetering",
+    "consistency": "Consistentie",
+    "weeklyActivity": "Wekelijkse activiteit",
+    "modesCount": "{{count}} modi",
+    "progressRings": "Voortgangsringen",
+    "progressRingsAria": "Voortgangsringen tonen voltooiing, consistentie en groei"
+  },
+  "activity": {
+    "title": "Activiteit",
+    "subtitle": "Je business-fitness-tijdlijn. Sessies, assessments, coaching.",
+    "empty": "Nog geen activiteit. Start een modus om je tijdlijn te zien.",
+    "today": "Vandaag",
+    "yesterday": "Gisteren",
+    "thisWeek": "Deze week",
+    "earlier": "Eerder"
+  },
+  "programs": {
+    "title": "Trainingsprogramma's",
+    "subtitle": "Begeleide multi-modus-reeksen. Geen \"doe maar wat.\" Gestructureerde competentieopbouw.",
+    "activeProgram": "Actief programma",
+    "dayOf": "Dag {{current}} van {{total}}",
+    "dayNumber": "Dag {{day}}",
+    "modesCompleted": "{{completed}}/{{total}} modi voltooid",
+    "schedule": "Planning",
+    "noPrograms": "Nog geen trainingsprogramma's beschikbaar.",
+    "finishCurrent": "Rond eerst het huidige programma af",
+    "enroll": "Inschrijven",
+    "noActive": "Geen actief programma. Bekijk de catalogus om je in te schrijven.",
+    "programCatalog": "Programmacatalogus"
+  },
+  "teams": {
+    "title": "Teams",
+    "subtitle": "Collectieve gezondheid, gedeelde voortgang, coaching op teamniveau.",
+    "createTeam": "Team aanmaken",
+    "newTeam": "Nieuw team",
+    "teamNamePlaceholder": "Teamnaam",
+    "failedToLoad": "Teams konden niet worden geladen",
+    "emptyState": "Maak een team aan om collectieve gezondheid en voortgang bij te houden.",
+    "membersCount": "Leden ({{count}})"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "profile": "Profiel",
+    "name": "Naam",
+    "email": "E-mail",
+    "stage": "Fase",
+    "frameworks": "Frameworks",
+    "frameworksHint": "Schakel frameworks in om modi, gezondheidsbewaking en coaching te ontgrendelen.",
+    "appearance": "Weergave",
+    "language": "Taal",
+    "account": "Account",
+    "signOut": "Uitloggen",
+    "exportData": "Gegevens exporteren",
+    "deleteAccount": "Account verwijderen",
+    "deleteConfirm": "Hiermee worden je account en alle gegevens permanent verwijderd. Weet je het zeker?",
+    "themeLight": "Licht",
+    "themeDark": "Donker",
+    "themeSystem": "Systeem"
+  },
+  "frameworks": {
+    "core": {
+      "name": "Core X",
+      "description": "Validatiegedreven bedrijfsopbouw. Aannames testen, inzichten vastleggen, proposities ontwikkelen."
+    },
+    "air": {
+      "name": "Air X",
+      "description": "Asynchroon en flexibel werken. Informatiestromen, teamritmes, remote-cultuur."
+    },
+    "max": {
+      "name": "Max X",
+      "description": "Opschalen zonder bureaucratie. Organisatiestructuur, cross-team afstemming, kwaliteit op schaal."
+    },
+    "synergy": {
+      "name": "Synergy X",
+      "description": "Mens-AI-samenwerking. AI-collega's inwerken, vertrouwenskalibratie, besluitvormingsprotocollen."
+    }
+  },
+  "stages": {
+    "solo": {
+      "label": "Solo-oprichter",
+      "description": "Alleen ik, aan het bouwen en valideren"
+    },
+    "small-team": {
+      "label": "Klein team",
+      "description": "2-10 personen, op zoek naar product-market fit"
+    },
+    "growing": {
+      "label": "Groeiend",
+      "description": "10-50 personen, opschalen wat werkt"
+    },
+    "scaling": {
+      "label": "Schaalvergroting",
+      "description": "50+ personen, bouwen voor schaal"
+    }
+  },
+  "maturity": {
+    "standing-still": "Stilstand",
+    "crawling": "Kruipen",
+    "walking": "Lopen",
+    "running": "Rennen",
+    "flying": "Vliegen"
+  },
+  "nudge": {
+    "dismiss": "Sluiten",
+    "openMode": "{{name}} openen"
+  },
+  "frameworkToggle": {
+    "activeHint": "Actief \u2014 modi en gezondheidsbewaking ingeschakeld",
+    "tapToActivate": "Tik om te activeren"
+  },
+  "errors": {
+    "genericError": "Er is iets misgegaan",
+    "failedToFetch": "Ophalen mislukt",
+    "failedToStart": "Starten mislukt",
+    "failedToUpdate": "Bijwerken mislukt",
+    "internalServerError": "Interne serverfout",
+    "userNotFound": "Gebruiker niet gevonden",
+    "conversationNotFound": "Gesprek niet gevonden",
+    "invalidData": "Ongeldige gegevens",
+    "frameworkNotFound": "Framework niet gevonden",
+    "assessmentNotFound": "Assessment niet gevonden",
+    "assessmentAlreadyCompleted": "Assessment is al voltooid",
+    "alreadyEnrolled": "Al ingeschreven in een actief programma",
+    "noActiveProgram": "Geen actief programma"
+  }
+}

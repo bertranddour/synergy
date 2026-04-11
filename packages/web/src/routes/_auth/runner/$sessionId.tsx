@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CoachCard } from '../../../components/coach/CoachCard'
 import { FieldStep } from '../../../components/modes/FieldStep'
 import { SessionReview } from '../../../components/modes/SessionReview'
@@ -41,6 +42,7 @@ interface SessionData {
 }
 
 function ModeRunner() {
+  const { t } = useTranslation()
   const { sessionId } = Route.useParams()
   const token = useAuthStore((s) => s.token)
   const navigate = useNavigate()
@@ -167,14 +169,18 @@ function ModeRunner() {
           <div className="shadow-neo-panel mx-auto flex h-24 w-24 items-center justify-center rounded-full">
             <Icon name="check" size="xl" label="Complete" className="h-12 w-12" />
           </div>
-          <h1 className="font-display mt-6 text-3xl tracking-tight">{data.mode.name} Complete</h1>
+          <h1 className="font-display mt-6 text-3xl tracking-tight">
+            {t('runner.modeComplete', { name: data.mode.name })}
+          </h1>
           <p className="mt-3 text-[var(--text-secondary)]">{data.mode.doneSignal}</p>
         </div>
 
         {completeMutation.data?.composabilitySuggestions &&
           completeMutation.data.composabilitySuggestions.length > 0 && (
             <div className="wave-entrance-2 mt-8 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-              <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Next suggested mode</p>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+                {t('runner.nextSuggested')}
+              </p>
               {completeMutation.data.composabilitySuggestions.map((s) => (
                 <p key={s.modeSlug} className="mt-2 inline-flex items-center gap-1 text-[var(--text-secondary)]">
                   <Icon name="arrow-right" size="sm" />{' '}
@@ -191,7 +197,7 @@ function ModeRunner() {
             className="neo-btn shadow-neo-button rounded-full px-8 py-3"
             style={{ color: 'var(--color-synergy)' }}
           >
-            {showReview ? 'Hide Responses' : 'Review Responses'}
+            {showReview ? t('runner.hideResponses') : t('runner.reviewResponses')}
           </button>
           <button
             type="button"
@@ -201,14 +207,14 @@ function ModeRunner() {
             }}
             className="neo-btn shadow-neo-button rounded-full px-8 py-3"
           >
-            Back to Library
+            {t('runner.backToLibrary')}
           </button>
           <button
             type="button"
             onClick={() => void navigate({ to: '/' })}
             className="neo-btn shadow-neo-button rounded-full px-8 py-3"
           >
-            Dashboard
+            {t('runner.dashboard')}
           </button>
         </div>
 
@@ -241,7 +247,7 @@ function ModeRunner() {
           }}
           className="text-sm text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
         >
-          Exit
+          {t('common.exit')}
         </button>
       </div>
 

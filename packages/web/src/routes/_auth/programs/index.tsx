@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Icon } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
@@ -17,6 +18,7 @@ interface Program {
 }
 
 function ProgramCatalog() {
+  const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
 
   const programsQuery = useQuery({
@@ -60,10 +62,8 @@ function ProgramCatalog() {
   return (
     <div className="space-y-8">
       <div className="wave-entrance-1">
-        <h1 className="font-display text-3xl tracking-tight">Training Programs</h1>
-        <p className="mt-2 text-[var(--text-secondary)]">
-          Guided multi-mode sequences. Not "do whatever." Structured capability building.
-        </p>
+        <h1 className="font-display text-3xl tracking-tight">{t('programs.title')}</h1>
+        <p className="mt-2 text-[var(--text-secondary)]">{t('programs.subtitle')}</p>
       </div>
 
       {/* Active program */}
@@ -71,10 +71,14 @@ function ProgramCatalog() {
         <div className="wave-entrance-2 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs uppercase tracking-[0.3em] text-[var(--color-synergy)]">Active Program</span>
+              <span className="text-xs uppercase tracking-[0.3em] text-[var(--color-synergy)]">
+                {t('programs.activeProgram')}
+              </span>
               <h2 className="font-display mt-1 text-xl">{activeQuery.data.program.name}</h2>
             </div>
-            <span className="text-sm text-[var(--text-tertiary)]">Day {activeQuery.data.userProgram.currentDay}</span>
+            <span className="text-sm text-[var(--text-tertiary)]">
+              {t('programs.dayNumber', { day: activeQuery.data.userProgram.currentDay })}
+            </span>
           </div>
           <div className="mt-4 space-y-2">
             {activeQuery.data.schedule.map((day) => (
@@ -104,7 +108,7 @@ function ProgramCatalog() {
           Array.from({ length: 4 }).map((_, i) => <div key={i} className="wave-skeleton h-48 rounded-[1.8rem]" />)
         ) : programsQuery.data?.programs.length === 0 ? (
           <div className="col-span-2 shadow-neo-inset rounded-[2rem] p-12 text-center">
-            <p className="text-[var(--text-secondary)]">No training programs available yet.</p>
+            <p className="text-[var(--text-secondary)]">{t('programs.noPrograms')}</p>
           </div>
         ) : (
           programsQuery.data?.programs.map((program) => (
@@ -112,7 +116,7 @@ function ProgramCatalog() {
               <h3 className="font-display text-lg">{program.name}</h3>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">{program.description}</p>
               <div className="mt-3 flex items-center gap-3 text-xs text-[var(--text-tertiary)]">
-                <span>{program.durationDays} days</span>
+                <span>{t('common.days', { count: program.durationDays })}</span>
                 <span>·</span>
                 <span>{program.frameworksRequired.join(', ')}</span>
               </div>
@@ -122,7 +126,7 @@ function ProgramCatalog() {
                 disabled={!!activeQuery.data || enrollMutation.isPending}
                 className="neo-btn shadow-neo-button mt-4 w-full rounded-full px-6 py-2.5 text-sm font-semibold disabled:opacity-40"
               >
-                {activeQuery.data ? 'Finish current program first' : 'Enroll'}
+                {activeQuery.data ? t('programs.finishCurrent') : t('programs.enroll')}
               </button>
             </div>
           ))

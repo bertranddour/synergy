@@ -42,6 +42,14 @@ export default defineConfig({
               expiration: { maxEntries: 1, maxAgeSeconds: 300 },
             },
           },
+          {
+            urlPattern: /\/locales\/.*\.json$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'locale-cache',
+              expiration: { maxEntries: 10, maxAgeSeconds: 86400 },
+            },
+          },
         ],
       },
     }),

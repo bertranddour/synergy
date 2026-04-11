@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { ProgressRings } from '../../../components/dashboard/ProgressRings'
 import { SparklineChart } from '../../../components/dashboard/SparklineChart'
 import { useAuthStore } from '../../../stores/auth'
@@ -9,6 +10,7 @@ export const Route = createFileRoute('/_auth/progress/')({
 })
 
 function ProgressPage() {
+  const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
 
   const progressQuery = useQuery({
@@ -50,10 +52,8 @@ function ProgressPage() {
   return (
     <div className="space-y-8">
       <div className="wave-entrance-1">
-        <h1 className="font-display text-3xl tracking-tight">Progress</h1>
-        <p className="mt-2 text-[var(--text-secondary)]">
-          Your business fitness rings. Completion, consistency, growth.
-        </p>
+        <h1 className="font-display text-3xl tracking-tight">{t('progress.title')}</h1>
+        <p className="mt-2 text-[var(--text-secondary)]">{t('progress.subtitle')}</p>
       </div>
 
       {/* Current rings */}
@@ -73,25 +73,31 @@ function ProgressPage() {
       {progressQuery.data && (
         <div className="wave-entrance-3 grid gap-6 md:grid-cols-3">
           <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-            <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Completion</span>
+            <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+              {t('progress.completion')}
+            </span>
             <p className="mt-2 text-3xl font-bold" style={{ color: 'var(--color-core)' }}>
               {progressQuery.data.completion.value}/{progressQuery.data.completion.target}
             </p>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">modes this period</p>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('progress.modesThisPeriod')}</p>
           </div>
           <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-            <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Streak</span>
+            <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+              {t('progress.streak')}
+            </span>
             <p className="mt-2 text-3xl font-bold" style={{ color: 'var(--color-health-green)' }}>
               {progressQuery.data.consistency.streakWeeks}
             </p>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">consecutive weeks</p>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('progress.consecutiveWeeks')}</p>
           </div>
           <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-            <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Growth</span>
+            <span className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+              {t('progress.growth')}
+            </span>
             <p className="mt-2 text-3xl font-bold" style={{ color: 'var(--color-synergy)' }}>
               {progressQuery.data.growth.score}%
             </p>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">metrics improving</p>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('progress.metricsImproving')}</p>
           </div>
         </div>
       )}
@@ -99,10 +105,14 @@ function ProgressPage() {
       {/* History Sparklines */}
       {historyQuery.data && historyQuery.data.history.length >= 2 && (
         <div className="wave-entrance-4 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Trends Over Time</h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            {t('progress.trendsOverTime')}
+          </h2>
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             <div className="shadow-neo-well rounded-[1.5rem] bg-[var(--surface)] p-5">
-              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">Completion</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">
+                {t('progress.completion')}
+              </span>
               <div className="mt-3">
                 <SparklineChart
                   data={historyQuery.data.history.map((h) => h.completion)}
@@ -112,11 +122,15 @@ function ProgressPage() {
                 />
               </div>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                {historyQuery.data.history[historyQuery.data.history.length - 1]?.completion ?? 0}% this week
+                {t('progress.percentThisWeek', {
+                  value: historyQuery.data.history[historyQuery.data.history.length - 1]?.completion ?? 0,
+                })}
               </p>
             </div>
             <div className="shadow-neo-well rounded-[1.5rem] bg-[var(--surface)] p-5">
-              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">Consistency</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">
+                {t('progress.consistency')}
+              </span>
               <div className="mt-3">
                 <SparklineChart
                   data={historyQuery.data.history.map((h) => h.consistency)}
@@ -126,11 +140,15 @@ function ProgressPage() {
                 />
               </div>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                {historyQuery.data.history[historyQuery.data.history.length - 1]?.consistency ?? 0} week streak
+                {t('progress.weekStreak', {
+                  value: historyQuery.data.history[historyQuery.data.history.length - 1]?.consistency ?? 0,
+                })}
               </p>
             </div>
             <div className="shadow-neo-well rounded-[1.5rem] bg-[var(--surface)] p-5">
-              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">Growth</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-[var(--text-tertiary)]">
+                {t('progress.growth')}
+              </span>
               <div className="mt-3">
                 <SparklineChart
                   data={historyQuery.data.history.map((h) => h.growth)}
@@ -140,7 +158,9 @@ function ProgressPage() {
                 />
               </div>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                {historyQuery.data.history[historyQuery.data.history.length - 1]?.growth ?? 0}% improving
+                {t('progress.percentImproving', {
+                  value: historyQuery.data.history[historyQuery.data.history.length - 1]?.growth ?? 0,
+                })}
               </p>
             </div>
           </div>
@@ -150,7 +170,9 @@ function ProgressPage() {
       {/* Modes per week */}
       {historyQuery.data && historyQuery.data.history.length > 0 && (
         <div className="wave-entrance-5 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Weekly Activity</h2>
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            {t('progress.weeklyActivity')}
+          </h2>
           <div className="mt-4 space-y-2">
             {historyQuery.data.history.map((entry) => (
               <div key={entry.periodStart} className="flex items-center gap-4 text-sm">
@@ -165,7 +187,9 @@ function ProgressPage() {
                     />
                   </div>
                 </div>
-                <span className="w-16 text-right text-[var(--text-tertiary)]">{entry.modesCompleted} modes</span>
+                <span className="w-16 text-right text-[var(--text-tertiary)]">
+                  {t('progress.modesCount', { count: entry.modesCompleted })}
+                </span>
               </div>
             ))}
           </div>

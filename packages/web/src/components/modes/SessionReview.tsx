@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface SessionReviewProps {
   fieldsSchema: Array<{
     name: string
@@ -8,9 +10,10 @@ interface SessionReviewProps {
 }
 
 export function SessionReview({ fieldsSchema, fieldsData }: SessionReviewProps) {
+  const { t } = useTranslation()
   return (
     <div className="space-y-4">
-      <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Your Responses</h2>
+      <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('runner.yourResponses')}</h2>
       {fieldsSchema.map((field, i) => {
         const value = fieldsData[String(i)]
         return (

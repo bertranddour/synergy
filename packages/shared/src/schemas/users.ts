@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+export const SUPPORTED_LOCALES = ['en', 'fr', 'es', 'pt', 'it', 'de', 'nl'] as const
+
 export const userSchema = z.object({
   id: z.string(),
   email: z.string().email(),
@@ -8,6 +10,7 @@ export const userSchema = z.object({
   stage: z.enum(['solo', 'small-team', 'growing', 'scaling']),
   teamSize: z.number().int().positive(),
   onboardingCompleted: z.boolean(),
+  locale: z.enum(SUPPORTED_LOCALES),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 })
@@ -17,6 +20,7 @@ export const updateUserSchema = z.object({
   stage: z.enum(['solo', 'small-team', 'growing', 'scaling']).optional(),
   teamSize: z.number().int().positive().optional(),
   onboardingCompleted: z.boolean().optional(),
+  locale: z.enum(SUPPORTED_LOCALES).optional(),
 })
 
 export const userWithFrameworksSchema = z.object({

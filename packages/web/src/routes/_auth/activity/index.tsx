@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Icon, type IconName } from '../../../components/ui/Icon'
 import { useAuthStore } from '../../../stores/auth'
 
@@ -41,10 +42,10 @@ function groupByDate(events: ActivityEvent[]): Array<{ label: string; events: Ac
   }
 
   const groups = [
-    { label: 'Today', events: todayGroup },
-    { label: 'Yesterday', events: yesterdayGroup },
-    { label: 'This Week', events: weekGroup },
-    { label: 'Earlier', events: earlierGroup },
+    { label: 'activity.today', events: todayGroup },
+    { label: 'activity.yesterday', events: yesterdayGroup },
+    { label: 'activity.thisWeek', events: weekGroup },
+    { label: 'activity.earlier', events: earlierGroup },
   ]
 
   return groups.filter((g) => g.events.length > 0)
@@ -61,6 +62,7 @@ function relativeTime(timestamp: string): string {
 }
 
 function ActivityPage() {
+  const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
 
   const { data, isLoading } = useQuery({
@@ -79,10 +81,8 @@ function ActivityPage() {
   return (
     <div className="space-y-8">
       <div className="wave-entrance-1">
-        <h1 className="font-display text-3xl tracking-tight">Activity</h1>
-        <p className="mt-2 text-[var(--text-secondary)]">
-          Your business fitness timeline. Sessions, assessments, coaching.
-        </p>
+        <h1 className="font-display text-3xl tracking-tight">{t('activity.title')}</h1>
+        <p className="mt-2 text-[var(--text-secondary)]">{t('activity.subtitle')}</p>
       </div>
 
       {isLoading ? (
@@ -93,19 +93,19 @@ function ActivityPage() {
         </div>
       ) : groups.length === 0 ? (
         <div className="wave-entrance-2 shadow-neo-inset rounded-[2rem] bg-[var(--surface)] p-12 text-center">
-          <p className="text-[var(--text-secondary)]">No activity yet. Start a mode to see your timeline.</p>
+          <p className="text-[var(--text-secondary)]">{t('activity.empty')}</p>
           <Link
             to="/modes"
             className="neo-btn shadow-neo-button mt-4 inline-block rounded-full px-8 py-3 font-semibold"
           >
-            Browse Modes
+            {t('dashboard.browseModes')}
           </Link>
         </div>
       ) : (
         <div className="wave-entrance-2 space-y-6">
           {groups.map((group) => (
             <div key={group.label}>
-              <h2 className="mb-3 text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{group.label}</h2>
+              <h2 className="mb-3 text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t(group.label)}</h2>
               <div className="space-y-2">
                 {group.events.map((event) => (
                   <div

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../../stores/auth'
 import { Icon } from '../ui/Icon'
 
@@ -12,6 +13,7 @@ interface NudgeCardProps {
 }
 
 export function NudgeCard({ id, title, message, suggestedModeSlug }: NudgeCardProps) {
+  const { t } = useTranslation()
   const token = useAuthStore((s) => s.token)
   const queryClient = useQueryClient()
 
@@ -39,7 +41,7 @@ export function NudgeCard({ id, title, message, suggestedModeSlug }: NudgeCardPr
           onClick={() => dismiss.mutate()}
           className="shrink-0 text-xs text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
         >
-          Dismiss
+          {t('nudge.dismiss')}
         </button>
       </div>
       {suggestedModeSlug && (
@@ -50,7 +52,9 @@ export function NudgeCard({ id, title, message, suggestedModeSlug }: NudgeCardPr
           style={{ color: 'var(--color-synergy)' }}
         >
           <span className="inline-flex items-center gap-1">
-            Open {suggestedModeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+            {t('nudge.openMode', {
+              name: suggestedModeSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+            })}
             <Icon name="arrow-right" size="sm" />
           </span>
         </Link>

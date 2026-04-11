@@ -14,6 +14,7 @@ export const users = sqliteTable('users', {
     .default('solo'),
   teamSize: integer('team_size').notNull().default(1),
   onboardingCompleted: integer('onboarding_completed', { mode: 'boolean' }).notNull().default(false),
+  locale: text('locale').notNull().default('en'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 })

@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface ScenarioBreakdownProps {
   responses: Array<{
     scenarioId: string
@@ -14,9 +16,12 @@ function scoreColor(score: number): string {
 }
 
 export function ScenarioBreakdown({ responses }: ScenarioBreakdownProps) {
+  const { t } = useTranslation()
   return (
     <div className="space-y-3">
-      <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Scenario Breakdown</h2>
+      <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+        {t('assessments.scenarioBreakdown')}
+      </h2>
       {responses.map((r, i) => (
         <div key={r.scenarioId} className="shadow-neo-embossed rounded-xl p-4">
           <div className="flex items-center justify-between">
@@ -25,11 +30,11 @@ export function ScenarioBreakdown({ responses }: ScenarioBreakdownProps) {
                 {i + 1}
               </span>
               <span className="text-sm">
-                Answer: <span className="font-semibold uppercase">{r.answer}</span>
+                {t('assessments.answer')} <span className="font-semibold uppercase">{r.answer}</span>
               </span>
             </div>
             <span className="text-sm font-bold" style={{ color: scoreColor(r.score) }}>
-              {r.score}/5
+              {t('assessments.scoreOf5', { score: r.score })}
             </span>
           </div>
           <div className="shadow-neo-inset mt-3 h-2 overflow-hidden rounded-full">
