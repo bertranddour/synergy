@@ -45,6 +45,24 @@ function ModeLibrary() {
 
   const recommendedSlugs = new Set(healthQuery.data?.categories.flatMap((c) => c.recommendedModes) ?? [])
 
+  // Fetch user's active frameworks
+  const frameworksQuery = useQuery({
+    queryKey: ['user-frameworks'],
+    queryFn: async () => {
+      const res = await fetch('/api/users/me/frameworks', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) return []
+      const data = (await res.json()) as {
+        frameworks: Array<{ slug: string; active: boolean }>
+      }
+      return data.frameworks.filter((f) => f.active).map((f) => f.slug as FrameworkSlug)
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const activeFrameworkSlugs = frameworksQuery.data ?? []
+
   const { data, isLoading } = useQuery({
     queryKey: ['modes', activeFilter, search],
     queryFn: async () => {
@@ -58,8 +76,6 @@ function ModeLibrary() {
       return res.json() as Promise<{ modes: ModeListItem[]; total: number }>
     },
   })
-
-  const frameworkSlugs = Object.keys(FRAMEWORK_COLORS) as FrameworkSlug[]
 
   return (
     <div className="space-y-8">
@@ -104,7 +120,7 @@ function ModeLibrary() {
           >
             Recommended
           </button>
-          {frameworkSlugs.map((slug) => (
+          {activeFrameworkSlugs.map((slug) => (
             <button
               key={slug}
               type="button"
