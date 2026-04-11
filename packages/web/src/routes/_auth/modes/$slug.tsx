@@ -126,69 +126,48 @@ function ModeDetail() {
         <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">{mode.trigger}</p>
       </div>
 
-      {/* Fields */}
-      <div className="wave-entrance-3 shadow-neo-panel rounded-[2rem] bg-[var(--surface)] p-8">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-          {t('modes.fieldsCount', { count: mode.fieldsSchema.length })}
-        </h2>
-        <div className="mt-4 space-y-4">
-          {mode.fieldsSchema.map((field, i) => (
-            <div key={i} className="shadow-neo-embossed rounded-xl p-4">
-              <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--surface)] text-xs font-semibold shadow-neo-button">
-                  {i + 1}
-                </span>
-                <span className="font-semibold">{field.name}</span>
-                <span className="text-xs text-[var(--text-tertiary)]">({field.type})</span>
-              </div>
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">{field.description}</p>
-              {field.example && (
-                <p className="mt-1 text-xs italic text-[var(--text-tertiary)]">
-                  {t('modes.example', { example: field.example })}
-                </p>
-              )}
-            </div>
-          ))}
+      {/* At a glance: steps, time, done signal */}
+      <div className="wave-entrance-3 grid gap-6 md:grid-cols-3">
+        <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            {t('modes.fieldsCount', { count: mode.fieldsSchema.length })}
+          </h2>
+          <p className="mt-3 text-2xl font-bold">{mode.fieldsSchema.length}</p>
         </div>
-      </div>
-
-      {/* Done Signal */}
-      <div className="wave-entrance-4 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('modes.doneSignal')}</h2>
-        <p className="mt-3 font-semibold italic text-[var(--text-secondary)]">"{mode.doneSignal}"</p>
-      </div>
-
-      {/* Meta: time, metrics, composability */}
-      <div className="wave-entrance-5 grid gap-6 md:grid-cols-2">
         <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
           <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('modes.timeEstimate')}</h2>
           <p className="mt-3 text-2xl font-bold">{t('common.min', { count: mode.timeEstimateMinutes })}</p>
         </div>
-
-        {mode.composabilityHooks.length > 0 && (
-          <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
-            <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
-              {t('modes.connectedModes')}
-            </h2>
-            <div className="mt-3 space-y-2">
-              {mode.composabilityHooks.map((hook, i) => (
-                <div key={i} className="text-sm">
-                  <span className="text-[var(--text-tertiary)]">
-                    <Icon name={hook.direction === 'feeds_into' ? 'arrow-right' : 'arrow-left'} size="sm" />
-                  </span>{' '}
-                  <Link
-                    to="/modes/$slug"
-                    params={{ slug: hook.modeSlug }}
-                    className="underline decoration-[var(--text-tertiary)] underline-offset-2 hover:text-[var(--text-primary)]"
-                  >
-                    {hook.modeName ?? hook.modeSlug}
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">{t('modes.doneSignal')}</h2>
+          <p className="mt-3 text-sm font-semibold italic text-[var(--text-secondary)]">"{mode.doneSignal}"</p>
+        </div>
       </div>
+
+      {/* Connected Modes */}
+      {mode.composabilityHooks.length > 0 && (
+        <div className="wave-entrance-4 shadow-neo-well rounded-[1.8rem] bg-[var(--surface)] p-6">
+          <h2 className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">
+            {t('modes.connectedModes')}
+          </h2>
+          <div className="mt-3 space-y-2">
+            {mode.composabilityHooks.map((hook, i) => (
+              <div key={i} className="text-sm">
+                <span className="text-[var(--text-tertiary)]">
+                  <Icon name={hook.direction === 'feeds_into' ? 'arrow-right' : 'arrow-left'} size="sm" />
+                </span>{' '}
+                <Link
+                  to="/modes/$slug"
+                  params={{ slug: hook.modeSlug }}
+                  className="underline decoration-[var(--text-tertiary)] underline-offset-2 hover:text-[var(--text-primary)]"
+                >
+                  {hook.modeName ?? hook.modeSlug}
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Recent Sessions */}
       {recentSessions.length > 0 && (
