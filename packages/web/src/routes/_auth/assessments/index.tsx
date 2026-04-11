@@ -1,4 +1,4 @@
-import { FRAMEWORK_COLORS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
+import { FRAMEWORK_COLORS, FRAMEWORK_DESCRIPTIONS, FRAMEWORK_NAMES, type FrameworkSlug } from '@synergy/shared'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { SparklineChart } from '../../../components/dashboard/SparklineChart'
@@ -73,6 +73,9 @@ function AssessmentCenter() {
                 <span className="h-3 w-3 rounded-full" style={{ backgroundColor: FRAMEWORK_COLORS[slug] }} />
                 <span className="font-display text-xl">{FRAMEWORK_NAMES[slug]}</span>
               </div>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
+                {FRAMEWORK_DESCRIPTIONS[slug]}
+              </p>
 
               {lastAssessment?.level && (
                 <div className="mt-3 flex items-center justify-between">

@@ -14,6 +14,14 @@ export const FRAMEWORK_NAMES = {
   synergy: 'Synergy X',
 } as const
 
+/** Framework descriptions for assessments and onboarding */
+export const FRAMEWORK_DESCRIPTIONS = {
+  core: 'Validation-driven business building. Test assumptions, capture insights, build propositions.',
+  air: 'Async-first flex work. Information flow, team rhythms, remote culture.',
+  max: 'Scaling without bureaucracy. Org structure, cross-team alignment, quality at scale.',
+  synergy: 'Human-AI collaboration. Onboarding AI colleagues, trust calibration, decision protocols.',
+} as const
+
 /** Health score color thresholds */
 export const HEALTH_COLORS = {
   green: { min: 70, color: '#22C55E' },
